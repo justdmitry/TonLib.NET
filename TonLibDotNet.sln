@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{316F096F-709B-4BFC-922A-7E4A8019C9B8}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TonLibDotNet", "TonLibDotNet\TonLibDotNet.csproj", "{1BA80F1A-3820-4A7B-BB72-DBCD5B9DF1C7}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TonLibDotNet.Demo", "TonLibDotNet.Demo\TonLibDotNet.Demo.csproj", "{CD530CC3-B77B-41C7-A487-2356566A4216}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1BA80F1A-3820-4A7B-BB72-DBCD5B9DF1C7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1BA80F1A-3820-4A7B-BB72-DBCD5B9DF1C7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1BA80F1A-3820-4A7B-BB72-DBCD5B9DF1C7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1BA80F1A-3820-4A7B-BB72-DBCD5B9DF1C7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CD530CC3-B77B-41C7-A487-2356566A4216}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CD530CC3-B77B-41C7-A487-2356566A4216}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CD530CC3-B77B-41C7-A487-2356566A4216}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CD530CC3-B77B-41C7-A487-2356566A4216}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FD0994B2-986E-4059-BE3A-51E67A477972}
+	EndGlobalSection
+EndGlobal

@@ -1,5 +1,7 @@
 /.vs
 *.user
+*.dll
+*.so
 bin
 obj
 log
