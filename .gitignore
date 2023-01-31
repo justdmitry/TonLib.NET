@@ -1,0 +1,6 @@
+/.vs
+*.user
+bin
+obj
+log
+appsettings.Production.json
