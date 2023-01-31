@@ -3,14 +3,14 @@ TonLib.NET
 
 Wrapper around `libtonlibjson` library for accessing [Telegram Open Network](https://ton.org/) lite servers (nodes) via ADNL protocol.
 
-**Important!** You need to obtain complied `tonlibjson.dll` (or appropriate for your OS) and its depenencies (e.g. `libcrypto-1_1-x64.dll`) yourself. See below for details.
+**Important!** You need to obtain compiled `tonlibjson.dll` (or appropriate for your OS) and its dependencies (e.g. `libcrypto-1_1-x64.dll`) yourself. See below for details.
 
 [![NuGet](https://img.shields.io/nuget/v/TonLib.Net.svg?maxAge=86400&style=flat)](https://www.nuget.org/packages/TonLib.Net/) 
 
 
 ## Usage
 
-Register in `Startup` (for console projects create instance manually or see demo project for hosted sample):
+Register in `Startup` (for console projects - create instance manually or see demo project for hosted sample):
 
 ```csharp
 services.AddSingleton<ITonClient, TonClient>();
@@ -41,12 +41,12 @@ And the result is:
 
 ![Sample](README_sample.png)
 
-⚠ All `Execute` requests are syncronous for now. Help is wanted to make them asyncronous.
+⚠ All `Execute` requests are synchronous for now. Help is wanted to make them asynchronous.
 
 
 ## Installing dependencies and running a demo
 
-This library is a wrapper around `tonlibjson` library. You need to obtain complied copy of it (and its depenencies) yourself.
+This library is a wrapper around `tonlibjson` library. You need to obtain complied copy of it (and its dependencies) yourself.
 
 ### 1. Obtaining `tonlibjson` library
 
@@ -62,7 +62,7 @@ This library is a wrapper around `tonlibjson` library. You need to obtain compli
 3. Look for run with tag named like `v2023.01` (or newer) and open that build/run.
 4. Scroll down to "Artifacts" section, you'll find something like `ton-win-binaries` file about 70MB in size. Download it.
 5. Open downloaded archive and extract `tonlibjson.dll` (or similair for your OS).
-6. Make sure this file wil be available for your running program (for example, add it to your project and set "Copy to Output Directory" to "Copy if newer").
+6. Make sure this file will be available for your running program (for example, add it to your project and set "Copy to Output Directory" to "Copy if newer").
 
 ### 2. Obtaining dependencies
 
