@@ -1,4 +1,4 @@
-﻿TonLib.NET
+TonLib.NET
 ===========
 
 Wrapper around `libtonlibjson` library for accessing [Telegram Open Network](https://ton.org/) lite servers (nodes) via ADNL protocol.
@@ -36,6 +36,10 @@ logger.LogInformation("Server time: {Now}", lsi.Now);
 var mi = tonClient.Execute(new GetMasterchainInfo());
 logger.LogInformation("Last block: shard = {Shard}, seqno = {Seqno}", mi.Last.Shard, mi.Last.Seqno);
 ```
+
+And the result is:
+
+![Sample](README_sample.png)
 
 ⚠ All `Execute` requests are syncronous for now. Help is wanted to make them asyncronous.
 

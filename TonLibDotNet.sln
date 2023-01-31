@@ -8,6 +8,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitignore = .gitignore
 		LICENSE = LICENSE
 		README.md = README.md
+		README_sample.png = README_sample.png
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TonLibDotNet", "TonLibDotNet\TonLibDotNet.csproj", "{1BA80F1A-3820-4A7B-BB72-DBCD5B9DF1C7}"
