@@ -8,6 +8,8 @@ Wrapper around `libtonlibjson` library for accessing [Telegram Open Network](htt
 [![NuGet](https://img.shields.io/nuget/v/TonLib.Net.svg?maxAge=86400&style=flat)](https://www.nuget.org/packages/TonLib.Net/) 
 
 
+⚠ Uses `System.Text.Json` package **v7.0.1** (from `net7.0`) - it makes [de]serialization much simpler (because of [Polymorphic serialization](https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/polymorphism)). It only updates `System.text.Encodings.Web` (v6.0 -> v7.0) as a transitive dependency, which I think is acceptable.
+
 ## Usage
 
 Register in `Startup` (for console projects - create instance manually or see demo project for hosted sample):
@@ -30,10 +32,10 @@ var tonClient = app.Services.GetRequiredService<ITonClient>();
 await tonClient.InitIfNeeded();
 
 // Use 'Execute' to send requests.
-var lsi = tonClient.Execute(new LiteServerGetInfo());
+var lsi = await tonClient.Execute(new LiteServerGetInfo());
 logger.LogInformation("Server time: {Now}", lsi.Now);
 
-var mi = tonClient.Execute(new GetMasterchainInfo());
+var mi = await tonClient.Execute(new GetMasterchainInfo());
 logger.LogInformation("Last block: shard = {Shard}, seqno = {Seqno}", mi.Last.Shard, mi.Last.Seqno);
 ```
 
@@ -41,7 +43,7 @@ And the result is:
 
 ![Sample](README_sample.png)
 
-⚠ All `Execute` requests are synchronous for now. Help is wanted to make them asynchronous.
+⚠ `Execute` requests are not truly asynchronous now - calls to tonlib are synchronous, and only waiting between them is a reason for 'async'. Help is wanted to make `Execute` really asynchronous.
 
 
 ## Installing dependencies and running a demo

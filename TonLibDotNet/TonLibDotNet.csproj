@@ -10,14 +10,14 @@
     <Title>TonLib wrapper for accessing Telegram Open Network lite servers (nodes) via ADNL protocol</Title>
 
     <Authors>just_dmitry</Authors>
-    <Copyright>© Dmitry Popov, 2023</Copyright>
+    <Copyright>Copyright © Dmitry Popov, 2023</Copyright>
     <PackageProjectUrl>https://github.com/justdmitry/TonLib.NET</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>git@github.com:justdmitry/TonLib.NET.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>ton, tonlib, libtonlibjson</PackageTags>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <Version>0.1.0</Version>
+    <Version>0.2.0</Version>
   </PropertyGroup>
 
   <ItemGroup>
