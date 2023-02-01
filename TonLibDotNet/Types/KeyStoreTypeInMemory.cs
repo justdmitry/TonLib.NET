@@ -1,14 +1,8 @@
 ﻿namespace TonLibDotNet.Types
 {
-    /// <remarks>
-    /// TL Schema:
-    /// <code>keyStoreTypeInMemory = KeyStoreType;</code>
-    /// </remarks>
+    [TLSchema("keyStoreTypeInMemory = KeyStoreType")]
     public class KeyStoreTypeInMemory : KeyStoreType
     {
-        public KeyStoreTypeInMemory()
-        {
-            TypeName = "keyStoreTypeInMemory";
-        }
+        // Nothing
     }
 }

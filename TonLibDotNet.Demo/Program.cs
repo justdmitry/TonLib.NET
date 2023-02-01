@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using TonLibDotNet.Requests;
+using TonLibDotNet.Types;
 
 namespace TonLibDotNet
 {
@@ -11,6 +11,7 @@ namespace TonLibDotNet
         {
             var builder = Host.CreateDefaultBuilder(args);
 
+            ////builder.ConfigureLogging(o => o.AddSystemdConsole());
             builder.UseConsoleLifetime();
             builder.ConfigureServices((context, services) =>
             {
@@ -18,6 +19,8 @@ namespace TonLibDotNet
                 {
                     o.UseMainnet = true;
                     o.LogTextLimit = 500;
+                    o.VerbosityLevel = 0;
+                    o.Options.KeystoreType = new KeyStoreTypeDirectory("D:/Temp/keys");
                 });
                 services.AddSingleton<ITonClient, TonClient>();
             });
@@ -30,14 +33,17 @@ namespace TonLibDotNet
 
             await tonClient.InitIfNeeded();
 
-            var lsi = tonClient.Execute(new LiteServerGetInfo());
+            var lsi = tonClient.LiteServerGetInfo();
             logger.LogInformation("Server time: {Now}", lsi.Now);
 
-            var mi = tonClient.Execute(new GetMasterchainInfo());
+            var mi = tonClient.GetMasterchainInfo();
             logger.LogInformation("Last block: shard = {Shard}, seqno = {Seqno}", mi.Last.Shard, mi.Last.Seqno);
 
+            var bi = tonClient.GetAccountState("EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh"); // TON Diamonds
+            logger.LogInformation("Acc info: balance = {Value}", bi.Balance);
+
             // Loggers need some time to flush data to screen/console.
-            await Task.Delay(2000);
+            await Task.Delay(TimeSpan.FromSeconds(1));
         }
     }
 }

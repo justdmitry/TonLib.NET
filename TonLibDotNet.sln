@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TonLibDotNet", "TonLibDotNe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TonLibDotNet.Demo", "TonLibDotNet.Demo\TonLibDotNet.Demo.csproj", "{CD530CC3-B77B-41C7-A487-2356566A4216}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TonLibDotNet.Tests", "TonLibDotNet.Tests\TonLibDotNet.Tests.csproj", "{E351F78A-3FE1-4B20-8F41-C95A868BDB33}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{CD530CC3-B77B-41C7-A487-2356566A4216}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD530CC3-B77B-41C7-A487-2356566A4216}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD530CC3-B77B-41C7-A487-2356566A4216}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E351F78A-3FE1-4B20-8F41-C95A868BDB33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E351F78A-3FE1-4B20-8F41-C95A868BDB33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E351F78A-3FE1-4B20-8F41-C95A868BDB33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E351F78A-3FE1-4B20-8F41-C95A868BDB33}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -2,17 +2,9 @@
 
 namespace TonLibDotNet.Types
 {
-    /// <remarks>
-    /// TL Schema:
-    /// <code>config config:string blockchain_name:string use_callbacks_for_network:Bool ignore_cache:Bool = Config;</code>
-    /// </remarks>
+    [TLSchema("config config:string blockchain_name:string use_callbacks_for_network:Bool ignore_cache:Bool = Config")]
     public class Config : TypeBase
     {
-        public Config()
-        {
-            TypeName = "config";
-        }
-
         [JsonPropertyName("config")]
         public string ConfigJson { get; set; } = string.Empty;
 

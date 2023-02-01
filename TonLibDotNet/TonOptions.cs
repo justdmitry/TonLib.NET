@@ -1,4 +1,6 @@
-﻿namespace TonLibDotNet
+﻿using System.Text.Json.Nodes;
+
+namespace TonLibDotNet
 {
     public class TonOptions
     {
@@ -36,5 +38,24 @@
         /// Options to apply in init() call.
         /// </summary>
         public Types.Options Options { get; set; } = new();
+
+        /// <summary>
+        /// Serializer to use.
+        /// </summary>
+        public ITonJsonSerializer Serializer { get; set; } = new TonJsonSerializer();
+
+        public Func<JsonArray, JsonNode> LiteServerSelector { get; set; } = LiteServerSelectorRandom;
+
+        public static JsonNode LiteServerSelectorFirst(JsonArray liteServers)
+        {
+            return liteServers[0]!;
+        }
+
+        public static JsonNode LiteServerSelectorRandom(JsonArray liteServers)
+        {
+            var rnd = new Random();
+            var index = rnd.Next(liteServers.Count);
+            return liteServers[index]!;
+        }
     }
 }

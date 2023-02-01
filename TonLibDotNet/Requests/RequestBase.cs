@@ -1,6 +1,4 @@
-﻿using TonLibDotNet.Types;
-
-namespace TonLibDotNet.Requests
+﻿namespace TonLibDotNet.Requests
 {
     public abstract class RequestBase : TypeBase
     {

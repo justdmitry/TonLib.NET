@@ -1,20 +1,12 @@
 ﻿using System.Runtime.InteropServices;
-using System.Text.Json;
+using System.Text.Json.Nodes;
 using Microsoft.Extensions.Logging;
 using TonLibDotNet.Requests;
-using TonLibDotNet.Types;
 
 namespace TonLibDotNet
 {
     public class TonClient : ITonClient, IDisposable
     {
-        protected readonly JsonSerializerOptions jsonOptions = new()
-        {
-            NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString,
-            PropertyNamingPolicy = new Utils.JsonSnakeCaseNamingPolicy(),
-            WriteIndented = false,
-        };
-
         private readonly ILogger logger;
         private readonly TonOptions tonOptions;
 
@@ -27,8 +19,6 @@ namespace TonLibDotNet
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.tonOptions = options?.Value ?? throw new ArgumentNullException(nameof(options));
-
-            jsonOptions.Converters.Add(new Utils.DateTimeOffsetConverter());
         }
 
         [DllImport("tonlibjson")]
@@ -57,7 +47,16 @@ namespace TonLibDotNet
             }
 
             var httpClient = new HttpClient();
-            tonOptions.Options.Config.ConfigJson = await httpClient.GetStringAsync(tonOptions.UseMainnet ? tonOptions.ConfigPathMainnet : tonOptions.ConfigPathTestnet).ConfigureAwait(false);
+            var fullConfig = await httpClient.GetStringAsync(tonOptions.UseMainnet ? tonOptions.ConfigPathMainnet : tonOptions.ConfigPathTestnet).ConfigureAwait(false);
+
+            var jdoc = JsonNode.Parse(fullConfig);
+            var servers = jdoc["liteservers"].AsArray();
+            var choosen = tonOptions.LiteServerSelector(servers);
+            servers.Clear();
+            servers.Add(choosen);
+            logger.LogInformation("LiteServer choosen: ip={IP}, port={Port}, key={Key}", choosen["ip"], choosen["port"], choosen["id"]?["key"]);
+
+            tonOptions.Options.Config.ConfigJson = jdoc.ToJsonString();
 
             return Execute(new Init(tonOptions.Options));
         }
@@ -101,7 +100,7 @@ namespace TonLibDotNet
                 throw new InvalidOperationException("Client not connected");
             }
 
-            var reqText = JsonSerializer.Serialize((object)request, jsonOptions);
+            var reqText = tonOptions.Serializer.Serialize(request);
 
             if (tonOptions.LogTextLimit > 0 && reqText.Length > tonOptions.LogTextLimit)
             {
@@ -114,50 +113,49 @@ namespace TonLibDotNet
 
             tonlib_client_json_send(client.Value, reqText);
 
-            var respTextPtr = tonlib_client_json_receive(client.Value, tonOptions.Timeout.TotalSeconds);
-            var respText = Marshal.PtrToStringAnsi(respTextPtr);
-
-            if (string.IsNullOrEmpty(respText))
+            while (true)
             {
-                throw new TonClientException(0, "Empty response received");
-            }
+                var respTextPtr = tonlib_client_json_receive(client.Value, tonOptions.Timeout.TotalSeconds);
+                var respText = Marshal.PtrToStringAnsi(respTextPtr);
 
-            if (tonOptions.LogTextLimit > 0 && respText.Length > tonOptions.LogTextLimit)
-            {
-                logger.LogDebug("Recieved (trimmed): {Text}...", respText[..tonOptions.LogTextLimit]);
-            }
-            else
-            {
-                logger.LogDebug("Recieved: {Text}", respText);
-            }
+                if (string.IsNullOrEmpty(respText))
+                {
+                    throw new TonClientException(0, "Empty response received");
+                }
 
-            var respObj = System.Text.Json.JsonDocument.Parse(respText);
-            if (respObj == null)
-            {
-                throw new TonClientException(0, "Failed to parse response as Json");
+                if (tonOptions.LogTextLimit > 0 && respText.Length > tonOptions.LogTextLimit)
+                {
+                    logger.LogDebug("Recieved (trimmed): {Text}...", respText[..tonOptions.LogTextLimit]);
+                }
+                else
+                {
+                    logger.LogDebug("Recieved: {Text}", respText);
+                }
+
+                var respObj = tonOptions.Serializer.Deserialize(respText);
+
+                if (respObj == null)
+                {
+                    throw new TonClientException(0, "Failed to parse response as Json");
+                }
+
+                if (respObj is Error error)
+                {
+                    throw new TonClientException(error.Code, error.Message) { ActualAnswer = error };
+                }
+
+                if (respObj is UpdateSyncState)
+                {
+                    continue;
+                }
+
+                if (respObj is TResponse resp)
+                {
+                    return resp;
+                }
+
+                throw new TonClientException(0, "Invalid (unexpected) response type") { ActualAnswer = respObj };
             }
-
-            if (!respObj.RootElement.TryGetProperty("@type", out var val))
-            {
-                throw new TonClientException(0, "Failed to get @type of response");
-            }
-
-            var respObjType = val.GetString();
-
-            if (respObjType == Error.ErrorTypeName)
-            {
-                var error = respObj.Deserialize<Error>(jsonOptions)!;
-                throw new TonClientException(error.Code, error.Message);
-            }
-
-            var retVal = respObj.Deserialize<TResponse>(jsonOptions)!;
-            if (respObjType != retVal.TypeName)
-            {
-                var msg = $"Wrong type returned: '{retVal.TypeName}' expected, '{respObjType}' returned";
-                throw new TonClientException(0, msg);
-            }
-
-            return retVal;
         }
 
         protected virtual void Dispose(bool disposing)
