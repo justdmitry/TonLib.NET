@@ -5,7 +5,7 @@ namespace TonLibDotNet
 {
     public static class TonClientBlocksExtensions
     {
-        public static MasterchainInfo GetMasterchainInfo(this ITonClient client)
+        public static Task<MasterchainInfo> GetMasterchainInfo(this ITonClient client)
         {
             return client.Execute(new GetMasterchainInfo());
         }

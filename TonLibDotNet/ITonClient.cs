@@ -7,7 +7,7 @@ namespace TonLibDotNet
     {
         Task<OptionsInfo?> InitIfNeeded();
 
-        TResponse Execute<TResponse>(RequestBase<TResponse> request)
+        Task<TResponse> Execute<TResponse>(RequestBase<TResponse> request)
             where TResponse : TypeBase;
     }
 }

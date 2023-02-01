@@ -10,7 +10,7 @@ namespace TonLibDotNet
         private readonly ILogger logger;
         private readonly TonOptions tonOptions;
 
-        private readonly object syncRoot = new();
+        private readonly SemaphoreSlim syncRoot = new (1);
 
         private IntPtr? client;
         private bool isDisposed;
@@ -58,10 +58,10 @@ namespace TonLibDotNet
 
             tonOptions.Options.Config.ConfigJson = jdoc.ToJsonString();
 
-            return Execute(new Init(tonOptions.Options));
+            return await Execute(new Init(tonOptions.Options));
         }
 
-        public TResponse Execute<TResponse>(RequestBase<TResponse> request)
+        public async Task<TResponse> Execute<TResponse>(RequestBase<TResponse> request)
             where TResponse: TypeBase
         {
             if (client == null && request is not Init)
@@ -69,16 +69,25 @@ namespace TonLibDotNet
                 throw new InvalidOperationException($"Must call {nameof(InitIfNeeded)}() first");
             }
 
-            lock (syncRoot)
+            if (await syncRoot.WaitAsync(tonOptions.TonClientTimeout))
             {
-                if (client == null)
+                try
                 {
-                    tonlib_client_set_verbosity_level(tonOptions.VerbosityLevel);
-                    client = tonlib_client_json_create();
-                }
+                    if (client == null)
+                    {
+                        tonlib_client_set_verbosity_level(tonOptions.VerbosityLevel);
+                        client = tonlib_client_json_create();
+                    }
 
-                return ExecuteInternal(request);
+                    return await ExecuteInternal(request);
+                }
+                finally
+                {
+                    syncRoot.Release();
+                }
             }
+
+            throw new TimeoutException("Failed while waiting for semaphore");
         }
 
         public void Dispose()
@@ -92,7 +101,7 @@ namespace TonLibDotNet
             Dispose(disposing: false);
         }
 
-        protected TResponse ExecuteInternal<TResponse>(RequestBase<TResponse> request)
+        protected async Task<TResponse> ExecuteInternal<TResponse>(RequestBase<TResponse> request)
             where TResponse : TypeBase
         {
             if (client == null)
@@ -113,9 +122,11 @@ namespace TonLibDotNet
 
             tonlib_client_json_send(client.Value, reqText);
 
+            var endOfLoop = DateTimeOffset.UtcNow.Add(tonOptions.TonClientTimeout);
+
             while (true)
             {
-                var respTextPtr = tonlib_client_json_receive(client.Value, tonOptions.Timeout.TotalSeconds);
+                var respTextPtr = tonlib_client_json_receive(client.Value, tonOptions.TonLibTimeout.TotalSeconds);
                 var respText = Marshal.PtrToStringAnsi(respTextPtr);
 
                 if (string.IsNullOrEmpty(respText))
@@ -144,9 +155,22 @@ namespace TonLibDotNet
                     throw new TonClientException(error.Code, error.Message) { ActualAnswer = error };
                 }
 
-                if (respObj is UpdateSyncState)
+                if (respObj is UpdateSyncState uss)
                 {
-                    continue;
+                    if (uss.SyncState is UpdateSyncState.SyncStateDone)
+                    {
+                        // next 'receive' will give us required data!
+                        continue;
+                    }
+
+                    if (DateTimeOffset.UtcNow < endOfLoop && uss.SyncState is UpdateSyncState.SyncStateInProgress ssip)
+                    {
+                        var delay = (ssip.ToSeqno - ssip.CurrentSeqno) < 1000 ? 50 : 500;
+                        await Task.Delay(delay);
+                        continue;
+                    }
+
+                    throw new TonClientException(0, "Failed to wait for sync to complete") { ActualAnswer = uss };
                 }
 
                 if (respObj is TResponse resp)

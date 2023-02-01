@@ -33,13 +33,13 @@ namespace TonLibDotNet
 
             await tonClient.InitIfNeeded();
 
-            var lsi = tonClient.LiteServerGetInfo();
+            var lsi = await tonClient.LiteServerGetInfo();
             logger.LogInformation("Server time: {Now}", lsi.Now);
 
-            var mi = tonClient.GetMasterchainInfo();
+            var mi = await tonClient.GetMasterchainInfo();
             logger.LogInformation("Last block: shard = {Shard}, seqno = {Seqno}", mi.Last.Shard, mi.Last.Seqno);
 
-            var bi = tonClient.GetAccountState("EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh"); // TON Diamonds
+            var bi = await tonClient.GetAccountState("EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh"); // TON Diamonds
             logger.LogInformation("Acc info: balance = {Value}", bi.Balance);
 
             // Loggers need some time to flush data to screen/console.

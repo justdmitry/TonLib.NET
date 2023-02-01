@@ -20,9 +20,14 @@ namespace TonLibDotNet
         public bool UseMainnet { get; set; } = true;
 
         /// <summary>
-        /// TonLib timeout when making calls to LiteServer.
+        /// Max amount of time TonClient will wait for valid (synced!) response from tonlib.
         /// </summary>
-        public TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(15);
+        public TimeSpan TonClientTimeout { get; set; } = TimeSpan.FromSeconds(20);
+
+        /// <summary>
+        /// TonLib timeout when making calls to tonlib/LiteServer.
+        /// </summary>
+        public TimeSpan TonLibTimeout { get; set; } = TimeSpan.FromSeconds(5);
 
         /// <summary>
         /// TonLib verbosity level, from 0 (FATAL) to 4 (DEBUG).

@@ -5,7 +5,7 @@ namespace TonLibDotNet
 {
     public static class TonClientLiteServerExtensions
     {
-        public static Info LiteServerGetInfo(this ITonClient client)
+        public static Task<Info> LiteServerGetInfo(this ITonClient client)
         {
             return client.Execute(new GetInfo());
         }
