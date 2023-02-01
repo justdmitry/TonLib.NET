@@ -18,7 +18,7 @@ namespace TonLibDotNet
                 services.Configure<TonOptions>(o =>
                 {
                     o.UseMainnet = true;
-                    o.LogTextLimit = 1000;
+                    o.LogTextLimit = 0;
                     o.VerbosityLevel = 0;
                     o.Options.KeystoreType = new KeyStoreTypeDirectory("D:/Temp/keys");
                 });
@@ -39,11 +39,26 @@ namespace TonLibDotNet
             var mi = await tonClient.GetMasterchainInfo();
             logger.LogInformation("Last block: shard = {Shard}, seqno = {Seqno}", mi.Last.Shard, mi.Last.Seqno);
 
-            var ast = await tonClient.GetAccountState("EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh"); // TON Diamonds
+            var account = "EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh";
+
+            var ast = await tonClient.GetAccountState(account); // TON Diamonds
             logger.LogInformation("Acc info: balance = {Value}", ast.Balance);
 
-            var rast = await tonClient.GetRawAccountState("EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh"); // TON Diamonds
+            var rast = await tonClient.RawGetAccountState(account); // TON Diamonds
             logger.LogInformation("Acc info: balance = {Value}", rast.Balance);
+
+            var txs = await tonClient.RawGetTransactions(account, rast.LastTransactionId);
+            foreach(var item in txs.TransactionsList)
+            {
+                if (item.InMsg?.Value > 0)
+                {
+                    logger.LogInformation("TX {Id}: {Value} from {Address}", item.TransactionId.Hash, item.InMsg.Value, item.InMsg.Source.Value);
+                }
+                else if (item.OutMsgs?.Any() ?? false)
+                {
+                    logger.LogInformation("TX {Id}: {Value} to {Address}", item.TransactionId.Hash, item.OutMsgs[0].Value, item.OutMsgs[0].Destination.Value);
+                }
+            }
 
             // Loggers need some time to flush data to screen/console.
             await Task.Delay(TimeSpan.FromSeconds(1));

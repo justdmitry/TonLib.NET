@@ -12,6 +12,7 @@ namespace TonLibDotNet.Utils
             PropertyNamingPolicy = new SnakeCaseNamingPolicy(),
             WriteIndented = false,
             TypeInfoResolver = new TonTypeResolver(),
+            DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
             Converters =
             {
                 new Seconds2DateTimeOffsetConverter(),

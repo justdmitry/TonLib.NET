@@ -5,7 +5,7 @@
         [Fact]
         public void DeserializeOk()
         {
-            var baseObj = new TonJsonSerializer().Deserialize(SampleValues.RawFullAccountState);
+            var baseObj = new TonJsonSerializer().Deserialize(SampleValues.Raw_FullAccountState);
 
             Assert.NotNull(baseObj);
 

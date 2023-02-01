@@ -163,14 +163,32 @@
   <data name="LiteServer_Info" xml:space="preserve">
     <value>{"@type":"liteServer.info","now":1675246773,"version":257,"capabilities":"7"}</value>
   </data>
+  <data name="Msg_DataRaw" xml:space="preserve">
+    <value>{"@type":"msg.dataRaw","body":"te6cckEBAQEAAgAAAEysuc0=","init_state":"???"}</value>
+  </data>
+  <data name="Msg_DataText" xml:space="preserve">
+    <value>{"@type":"msg.dataText","text":"Um95YWx0eQ=="}</value>
+  </data>
   <data name="Options_Info" xml:space="preserve">
     <value>{"@type":"options.info","config_info":{"@type":"options.configInfo","default_wallet_id":"698983191","default_rwallet_init_public_key":"Puasxr0QfFZZnYISRphVse7XHKfW7pZU5SJarVHXvQ+rpzkD"}}</value>
   </data>
-  <data name="RawFullAccountState" xml:space="preserve">
+  <data name="Raw_FullAccountState" xml:space="preserve">
     <value>{"@type":"raw.fullAccountState","balance":"136219372128177","code":"te6cckEBAQEAcQAA3v8AIN0gggFMl7ohggEznLqxn3Gw7UTQ0x/THzHXC//jBOCk8mCDCNcYINMf0x/TH/gjE7vyY+1E0NMf0x/T/9FRMrryoVFEuvKiBPkBVBBV+RDyo/gAkyDXSpbTB9QC+wDo0QGkyMsfyx/L/8ntVBC9ba0=","data":"te6cckEBAQEAKgAAUAAAACMpqaMXb7DhKt9TV4heY445fd1j4cnc24PkHSaiiBxRdV3sZK6FBhF3","last_transaction_id":{"@type":"internal.transactionId","lt":"34948872000007","hash":"j2fRsAIg2Abex+P+GCRu9dNcmGs36Wd9U0gedEGX8oA="},"block_id":{"@type":"ton.blockIdExt","workchain":-1,"shard":"-9223372036854775808","seqno":27016796,"root_hash":"ld4MbnHygFd/z7oG3LCnBZtH+2iIDu5N7tRnjeSGwJE=","file_hash":"N6CepThwpP7E0EIxEWCHks/VLuUT+ZuEwLHZpWyfO54="},"frozen_hash":"---","sync_utime":1675267268}</value>
   </data>
-  <data name="RawGetAccountState" xml:space="preserve">
+  <data name="Raw_GetAccountState" xml:space="preserve">
     <value>{"@type":"raw.getAccountState","account_address":{"@type":"accountAddress","account_address":"EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh"}}</value>
+  </data>
+  <data name="Raw_GetTransactions" xml:space="preserve">
+    <value>{"@type":"raw.getTransactions","account_address":{"@type":"accountAddress","account_address":"EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh"},"from_transaction_id":{"@type":"internal.transactionId","lt":34948872000007,"hash":"j2fRsAIg2Abex\u002BP\u002BGCRu9dNcmGs36Wd9U0gedEGX8oA="}}</value>
+  </data>
+  <data name="Raw_Message" xml:space="preserve">
+    <value>{"@type":"raw.message","source":{"@type":"accountAddress","account_address":"EQAyAAlbgteBHCuI50EzuVvu9Zrk4Ts7pKU3bsphGBcyY0O_"},"destination":{"@type":"accountAddress","account_address":"EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh"},"value":"880000000","fwd_fee":"666672","ihr_fee":"1","created_lt":"34948872000005","body_hash":"lqKW0iTyhcZ77pPDD4owkVfw2qNdxbh+QQt4YwoJz8c=","msg_data":{"@type":"msg.dataRaw","body":"te6cckEBAQEAAgAAAEysuc0=","init_state":"12345"}}</value>
+  </data>
+  <data name="Raw_Transaction" xml:space="preserve">
+    <value>{"@type":"raw.transaction","utime":1675263677,"data":"te6cC9u5d6","transaction_id":{"@type":"internal.transactionId","lt":"34948872000007","hash":"j2fRsAIg2Abex+P+GCRu9dNcmGs36Wd9U0gedEGX8oA="},"fee":"12","storage_fee":"13","other_fee":"15","in_msg":{"@type":"raw.message","source":{"@type":"accountAddress","account_address":"EQAyAAlbgteBHCuI50EzuVvu9Zrk4Ts7pKU3bsphGBcyY0O_"},"destination":{"@type":"accountAddress","account_address":"EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh"},"value":"0","fwd_fee":"666672","ihr_fee":"0","created_lt":"34948872000006","body_hash":"lqKW0iTyhcZ77pPDD4owkVfw2qNdxbh+QQt4YwoJz8c=","msg_data":{"@type":"msg.dataRaw","body":"te6cckEBAQEAAgAAAEysuc0=","init_state":""}},"out_msgs":[{"@type":"raw.message","source":{"@type":"accountAddress","account_address":"EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh"},"destination":{"@type":"accountAddress","account_address":"EQCbaDHDARMlFhARDFKHh_EFhugr_Ffc8cqLkbTXlGwUsyNB"},"value":"24122000000000","fwd_fee":"666672","ihr_fee":"0","created_lt":"34952739000002","body_hash":"7bbKzPJQlgSoXts1birKs/81068A59f3Tm9QUdxlPUQ=","msg_data":{"@type":"msg.dataText","text":"VGVhbSBhbmQgb3BlcmF0aW5nIGNvc3Rz"}}]}</value>
+  </data>
+  <data name="Raw_Transactions" xml:space="preserve">
+    <value>{"@type":"raw.transactions","transactions":[{"@type":"raw.transaction","utime":1675263677,"data":"abcdef","transaction_id":{"@type":"internal.transactionId","lt":"34948872000007","hash":"j2fRsAIg2Abex+P+GCRu9dNcmGs36Wd9U0gedEGX8oA="},"fee":"0","storage_fee":"0","other_fee":"0","in_msg":{"@type":"raw.message","source":{"@type":"accountAddress","account_address":"EQAyAAlbgteBHCuI50EzuVvu9Zrk4Ts7pKU3bsphGBcyY0O_"},"destination":{"@type":"accountAddress","account_address":"EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh"},"value":"0","fwd_fee":"666672","ihr_fee":"0","created_lt":"34948872000006","body_hash":"lqKW0iTyhcZ77pPDD4owkVfw2qNdxbh+QQt4YwoJz8c=","msg_data":{"@type":"msg.dataRaw","body":"te6cckEBAQEAAgAAAEysuc0=","init_state":""}},"out_msgs":[]},{"@type":"raw.transaction","utime":1675263677,"data":"some-data","transaction_id":{"@type":"internal.transactionId","lt":"34948872000006","hash":"04SaPBuJe5OoLjP4A943p86Y2OLqrRcwv9wQbc1b9YQ="},"fee":"100067","storage_fee":"67","other_fee":"100000","in_msg":{"@type":"raw.message","source":{"@type":"accountAddress","account_address":"EQAyAAlbgteBHCuI50EzuVvu9Zrk4Ts7pKU3bsphGBcyY0O_"},"destination":{"@type":"accountAddress","account_address":"EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh"},"value":"880000000","fwd_fee":"666672","ihr_fee":"0","created_lt":"34948872000005","body_hash":"lqKW0iTyhcZ77pPDD4owkVfw2qNdxbh+QQt4YwoJz8c=","msg_data":{"@type":"msg.dataRaw","body":"te6cckEBAQEAAgAAAEysuc0=","init_state":""}},"out_msgs":[]}],"previous_transaction_id":{"@type":"internal.transactionId","lt":"34925318000006","hash":"YsAb3Pf4oUwn7H6MFZCnH26CqdosbJnAlzfg3KTW4H4="}}</value>
   </data>
   <data name="Sync" xml:space="preserve">
     <value>{"@type":"sync"}</value>
@@ -186,7 +204,7 @@
   <data name="UpdateSyncState" xml:space="preserve">
     <value>{"@type":"updateSyncState","sync_state":{"@type":"syncStateInProgress","from_seqno":27005885,"to_seqno":27011756,"current_seqno":27011750}}</value>
   </data>
-  <data name="WalletV3AccountState" xml:space="preserve">
+  <data name="Wallet_V3AccountState" xml:space="preserve">
     <value>{"@type":"wallet.v3.accountState","wallet_id":"698983191","seqno":35}</value>
   </data>
 </root>

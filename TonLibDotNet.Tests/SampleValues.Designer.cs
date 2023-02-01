@@ -172,6 +172,24 @@ namespace TonLibDotNet {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;msg.dataRaw&quot;,&quot;body&quot;:&quot;te6cckEBAQEAAgAAAEysuc0=&quot;,&quot;init_state&quot;:&quot;???&quot;}.
+        /// </summary>
+        public static string Msg_DataRaw {
+            get {
+                return ResourceManager.GetString("Msg_DataRaw", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;msg.dataText&quot;,&quot;text&quot;:&quot;Um95YWx0eQ==&quot;}.
+        /// </summary>
+        public static string Msg_DataText {
+            get {
+                return ResourceManager.GetString("Msg_DataText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;options.info&quot;,&quot;config_info&quot;:{&quot;@type&quot;:&quot;options.configInfo&quot;,&quot;default_wallet_id&quot;:&quot;698983191&quot;,&quot;default_rwallet_init_public_key&quot;:&quot;Puasxr0QfFZZnYISRphVse7XHKfW7pZU5SJarVHXvQ+rpzkD&quot;}}.
         /// </summary>
         public static string Options_Info {
@@ -183,18 +201,54 @@ namespace TonLibDotNet {
         /// <summary>
         ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;raw.fullAccountState&quot;,&quot;balance&quot;:&quot;136219372128177&quot;,&quot;code&quot;:&quot;te6cckEBAQEAcQAA3v8AIN0gggFMl7ohggEznLqxn3Gw7UTQ0x/THzHXC//jBOCk8mCDCNcYINMf0x/TH/gjE7vyY+1E0NMf0x/T/9FRMrryoVFEuvKiBPkBVBBV+RDyo/gAkyDXSpbTB9QC+wDo0QGkyMsfyx/L/8ntVBC9ba0=&quot;,&quot;data&quot;:&quot;te6cckEBAQEAKgAAUAAAACMpqaMXb7DhKt9TV4heY445fd1j4cnc24PkHSaiiBxRdV3sZK6FBhF3&quot;,&quot;last_transaction_id&quot;:{&quot;@type&quot;:&quot;internal.transactionId&quot;,&quot;lt&quot;:&quot;34948872000007&quot;,&quot;hash&quot;:&quot;j2fRsAIg2Abex+P+GCRu9dNcmGs36Wd9U0gedEGX8oA=&quot;},&quot;block_id&quot;:{&quot;@type&quot;:&quot;ton.blockIdExt&quot;,&quot;workchain&quot;:-1 [rest of string was truncated]&quot;;.
         /// </summary>
-        public static string RawFullAccountState {
+        public static string Raw_FullAccountState {
             get {
-                return ResourceManager.GetString("RawFullAccountState", resourceCulture);
+                return ResourceManager.GetString("Raw_FullAccountState", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;raw.getAccountState&quot;,&quot;account_address&quot;:{&quot;@type&quot;:&quot;accountAddress&quot;,&quot;account_address&quot;:&quot;EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh&quot;}}.
         /// </summary>
-        public static string RawGetAccountState {
+        public static string Raw_GetAccountState {
             get {
-                return ResourceManager.GetString("RawGetAccountState", resourceCulture);
+                return ResourceManager.GetString("Raw_GetAccountState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;raw.getTransactions&quot;,&quot;account_address&quot;:{&quot;@type&quot;:&quot;accountAddress&quot;,&quot;account_address&quot;:&quot;EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh&quot;},&quot;from_transaction_id&quot;:{&quot;@type&quot;:&quot;internal.transactionId&quot;,&quot;lt&quot;:34948872000007,&quot;hash&quot;:&quot;j2fRsAIg2Abex\u002BP\u002BGCRu9dNcmGs36Wd9U0gedEGX8oA=&quot;}}.
+        /// </summary>
+        public static string Raw_GetTransactions {
+            get {
+                return ResourceManager.GetString("Raw_GetTransactions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;raw.message&quot;,&quot;source&quot;:{&quot;@type&quot;:&quot;accountAddress&quot;,&quot;account_address&quot;:&quot;EQAyAAlbgteBHCuI50EzuVvu9Zrk4Ts7pKU3bsphGBcyY0O_&quot;},&quot;destination&quot;:{&quot;@type&quot;:&quot;accountAddress&quot;,&quot;account_address&quot;:&quot;EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh&quot;},&quot;value&quot;:&quot;880000000&quot;,&quot;fwd_fee&quot;:&quot;666672&quot;,&quot;ihr_fee&quot;:&quot;1&quot;,&quot;created_lt&quot;:&quot;34948872000005&quot;,&quot;body_hash&quot;:&quot;lqKW0iTyhcZ77pPDD4owkVfw2qNdxbh+QQt4YwoJz8c=&quot;,&quot;msg_data&quot;:{&quot;@type&quot;:&quot;msg.dataRaw&quot;,&quot;body&quot;:&quot;te6cckEBAQEAAgAAAEysuc0=&quot;,&quot;init_state&quot;:&quot;12345&quot;}}.
+        /// </summary>
+        public static string Raw_Message {
+            get {
+                return ResourceManager.GetString("Raw_Message", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;raw.transaction&quot;,&quot;utime&quot;:1675263677,&quot;data&quot;:&quot;te6cC9u5d6&quot;,&quot;transaction_id&quot;:{&quot;@type&quot;:&quot;internal.transactionId&quot;,&quot;lt&quot;:&quot;34948872000007&quot;,&quot;hash&quot;:&quot;j2fRsAIg2Abex+P+GCRu9dNcmGs36Wd9U0gedEGX8oA=&quot;},&quot;fee&quot;:&quot;12&quot;,&quot;storage_fee&quot;:&quot;13&quot;,&quot;other_fee&quot;:&quot;15&quot;,&quot;in_msg&quot;:{&quot;@type&quot;:&quot;raw.message&quot;,&quot;source&quot;:{&quot;@type&quot;:&quot;accountAddress&quot;,&quot;account_address&quot;:&quot;EQAyAAlbgteBHCuI50EzuVvu9Zrk4Ts7pKU3bsphGBcyY0O_&quot;},&quot;destination&quot;:{&quot;@type&quot;:&quot;accountAddress&quot;,&quot;account_address&quot;:&quot;EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh&quot;},&quot;value&quot;:&quot;0&quot;,&quot;fwd_fee&quot;:&quot;6 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string Raw_Transaction {
+            get {
+                return ResourceManager.GetString("Raw_Transaction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;raw.transactions&quot;,&quot;transactions&quot;:[{&quot;@type&quot;:&quot;raw.transaction&quot;,&quot;utime&quot;:1675263677,&quot;data&quot;:&quot;abcdef&quot;,&quot;transaction_id&quot;:{&quot;@type&quot;:&quot;internal.transactionId&quot;,&quot;lt&quot;:&quot;34948872000007&quot;,&quot;hash&quot;:&quot;j2fRsAIg2Abex+P+GCRu9dNcmGs36Wd9U0gedEGX8oA=&quot;},&quot;fee&quot;:&quot;0&quot;,&quot;storage_fee&quot;:&quot;0&quot;,&quot;other_fee&quot;:&quot;0&quot;,&quot;in_msg&quot;:{&quot;@type&quot;:&quot;raw.message&quot;,&quot;source&quot;:{&quot;@type&quot;:&quot;accountAddress&quot;,&quot;account_address&quot;:&quot;EQAyAAlbgteBHCuI50EzuVvu9Zrk4Ts7pKU3bsphGBcyY0O_&quot;},&quot;destination&quot;:{&quot;@type&quot;:&quot;accountAddress&quot;,&quot;account_address&quot;:&quot;EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7m [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string Raw_Transactions {
+            get {
+                return ResourceManager.GetString("Raw_Transactions", resourceCulture);
             }
         }
         
@@ -233,9 +287,9 @@ namespace TonLibDotNet {
         /// <summary>
         ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;wallet.v3.accountState&quot;,&quot;wallet_id&quot;:&quot;698983191&quot;,&quot;seqno&quot;:35}.
         /// </summary>
-        public static string WalletV3AccountState {
+        public static string Wallet_V3AccountState {
             get {
-                return ResourceManager.GetString("WalletV3AccountState", resourceCulture);
+                return ResourceManager.GetString("Wallet_V3AccountState", resourceCulture);
             }
         }
     }

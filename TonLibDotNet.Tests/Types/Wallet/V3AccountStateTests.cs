@@ -5,7 +5,7 @@
         [Fact]
         public void DeserializeOk()
         {
-            var baseObj = new TonJsonSerializer().Deserialize(SampleValues.WalletV3AccountState);
+            var baseObj = new TonJsonSerializer().Deserialize(SampleValues.Wallet_V3AccountState);
 
             Assert.NotNull(baseObj);
 
