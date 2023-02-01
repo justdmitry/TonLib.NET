@@ -1,4 +1,5 @@
 ﻿using System.Runtime.Serialization;
+using TonLibDotNet.Types;
 
 namespace TonLibDotNet
 {

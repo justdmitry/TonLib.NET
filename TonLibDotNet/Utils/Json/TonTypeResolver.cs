@@ -12,7 +12,7 @@ namespace TonLibDotNet.Utils.Json
         {
             var jsonTypeInfo = base.GetTypeInfo(type, options);
 
-            if (type.IsAssignableTo(typeof(TypeBase)))
+            if (type.IsAssignableTo(typeof(Types.TypeBase)))
             {
                 jsonTypeInfo.PolymorphismOptions = new JsonPolymorphismOptions
                 {

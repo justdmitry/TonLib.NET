@@ -1,10 +1,10 @@
 ﻿using System.Text.Json.Serialization;
 using TonLibDotNet.Types;
 
-namespace TonLibDotNet.Requests
+namespace TonLibDotNet.Requests.Raw
 {
-    [TLSchema("getAccountState account_address:accountAddress = FullAccountState")]
-    public class GetAccountState : RequestBase<FullAccountState>
+    [TLSchema("raw.getAccountState account_address:accountAddress = raw.FullAccountState")]
+    public class GetAccountState : RequestBase<Types.Raw.FullAccountState>
     {
         public GetAccountState(string accountAddress)
             : this(new AccountAddress(accountAddress))

@@ -181,6 +181,24 @@ namespace TonLibDotNet {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;raw.fullAccountState&quot;,&quot;balance&quot;:&quot;136219372128177&quot;,&quot;code&quot;:&quot;te6cckEBAQEAcQAA3v8AIN0gggFMl7ohggEznLqxn3Gw7UTQ0x/THzHXC//jBOCk8mCDCNcYINMf0x/TH/gjE7vyY+1E0NMf0x/T/9FRMrryoVFEuvKiBPkBVBBV+RDyo/gAkyDXSpbTB9QC+wDo0QGkyMsfyx/L/8ntVBC9ba0=&quot;,&quot;data&quot;:&quot;te6cckEBAQEAKgAAUAAAACMpqaMXb7DhKt9TV4heY445fd1j4cnc24PkHSaiiBxRdV3sZK6FBhF3&quot;,&quot;last_transaction_id&quot;:{&quot;@type&quot;:&quot;internal.transactionId&quot;,&quot;lt&quot;:&quot;34948872000007&quot;,&quot;hash&quot;:&quot;j2fRsAIg2Abex+P+GCRu9dNcmGs36Wd9U0gedEGX8oA=&quot;},&quot;block_id&quot;:{&quot;@type&quot;:&quot;ton.blockIdExt&quot;,&quot;workchain&quot;:-1 [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string RawFullAccountState {
+            get {
+                return ResourceManager.GetString("RawFullAccountState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;raw.getAccountState&quot;,&quot;account_address&quot;:{&quot;@type&quot;:&quot;accountAddress&quot;,&quot;account_address&quot;:&quot;EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh&quot;}}.
+        /// </summary>
+        public static string RawGetAccountState {
+            get {
+                return ResourceManager.GetString("RawGetAccountState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;sync&quot;}.
         /// </summary>
         public static string Sync {

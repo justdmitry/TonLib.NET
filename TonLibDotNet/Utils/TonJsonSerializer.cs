@@ -1,4 +1,5 @@
 ﻿using System.Text.Json;
+using TonLibDotNet.Types;
 using TonLibDotNet.Utils.Json;
 
 namespace TonLibDotNet.Utils

@@ -2,6 +2,7 @@
 using System.Text.Json.Nodes;
 using Microsoft.Extensions.Logging;
 using TonLibDotNet.Requests;
+using TonLibDotNet.Types;
 
 namespace TonLibDotNet
 {

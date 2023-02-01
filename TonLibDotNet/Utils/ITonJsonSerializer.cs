@@ -1,4 +1,6 @@
-﻿namespace TonLibDotNet.Utils
+﻿using TonLibDotNet.Types;
+
+namespace TonLibDotNet.Utils
 {
     public interface ITonJsonSerializer
     {

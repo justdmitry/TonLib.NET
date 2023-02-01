@@ -166,6 +166,12 @@
   <data name="Options_Info" xml:space="preserve">
     <value>{"@type":"options.info","config_info":{"@type":"options.configInfo","default_wallet_id":"698983191","default_rwallet_init_public_key":"Puasxr0QfFZZnYISRphVse7XHKfW7pZU5SJarVHXvQ+rpzkD"}}</value>
   </data>
+  <data name="RawFullAccountState" xml:space="preserve">
+    <value>{"@type":"raw.fullAccountState","balance":"136219372128177","code":"te6cckEBAQEAcQAA3v8AIN0gggFMl7ohggEznLqxn3Gw7UTQ0x/THzHXC//jBOCk8mCDCNcYINMf0x/TH/gjE7vyY+1E0NMf0x/T/9FRMrryoVFEuvKiBPkBVBBV+RDyo/gAkyDXSpbTB9QC+wDo0QGkyMsfyx/L/8ntVBC9ba0=","data":"te6cckEBAQEAKgAAUAAAACMpqaMXb7DhKt9TV4heY445fd1j4cnc24PkHSaiiBxRdV3sZK6FBhF3","last_transaction_id":{"@type":"internal.transactionId","lt":"34948872000007","hash":"j2fRsAIg2Abex+P+GCRu9dNcmGs36Wd9U0gedEGX8oA="},"block_id":{"@type":"ton.blockIdExt","workchain":-1,"shard":"-9223372036854775808","seqno":27016796,"root_hash":"ld4MbnHygFd/z7oG3LCnBZtH+2iIDu5N7tRnjeSGwJE=","file_hash":"N6CepThwpP7E0EIxEWCHks/VLuUT+ZuEwLHZpWyfO54="},"frozen_hash":"---","sync_utime":1675267268}</value>
+  </data>
+  <data name="RawGetAccountState" xml:space="preserve">
+    <value>{"@type":"raw.getAccountState","account_address":{"@type":"accountAddress","account_address":"EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh"}}</value>
+  </data>
   <data name="Sync" xml:space="preserve">
     <value>{"@type":"sync"}</value>
   </data>

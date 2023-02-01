@@ -18,7 +18,7 @@ namespace TonLibDotNet
                 services.Configure<TonOptions>(o =>
                 {
                     o.UseMainnet = true;
-                    o.LogTextLimit = 500;
+                    o.LogTextLimit = 1000;
                     o.VerbosityLevel = 0;
                     o.Options.KeystoreType = new KeyStoreTypeDirectory("D:/Temp/keys");
                 });
@@ -39,8 +39,11 @@ namespace TonLibDotNet
             var mi = await tonClient.GetMasterchainInfo();
             logger.LogInformation("Last block: shard = {Shard}, seqno = {Seqno}", mi.Last.Shard, mi.Last.Seqno);
 
-            var bi = await tonClient.GetAccountState("EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh"); // TON Diamonds
-            logger.LogInformation("Acc info: balance = {Value}", bi.Balance);
+            var ast = await tonClient.GetAccountState("EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh"); // TON Diamonds
+            logger.LogInformation("Acc info: balance = {Value}", ast.Balance);
+
+            var rast = await tonClient.GetRawAccountState("EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh"); // TON Diamonds
+            logger.LogInformation("Acc info: balance = {Value}", rast.Balance);
 
             // Loggers need some time to flush data to screen/console.
             await Task.Delay(TimeSpan.FromSeconds(1));

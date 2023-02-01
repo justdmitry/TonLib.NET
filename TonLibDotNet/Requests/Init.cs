@@ -1,4 +1,6 @@
-﻿namespace TonLibDotNet.Requests
+﻿using TonLibDotNet.Types;
+
+namespace TonLibDotNet.Requests
 {
     [TLSchema("init options:options = options.Info")]
     public class Init : RequestBase<OptionsInfo>
