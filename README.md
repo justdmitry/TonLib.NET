@@ -41,7 +41,7 @@ logger.LogInformation("Last block: shard = {Shard}, seqno = {Seqno}", mi.Last.Sh
 
 And the result is:
 
-![Sample](README_sample.png)
+![Sample](https://raw.githubusercontent.com/justdmitry/TonLib.NET/master/README_sample.png)
 
 ⚠ `Execute` requests are not truly asynchronous now - calls to tonlib are synchronous, and only waiting between them is a reason for 'async'. Help is wanted to make `Execute` really asynchronous.
 
