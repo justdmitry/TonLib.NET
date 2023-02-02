@@ -201,6 +201,9 @@
           "root_hash":"k1nEMD+7m+DZAEyktBfy99GTAl/YvFVRBgw3tXr5Xt8=",
           "file_hash":"BKPbMdegxyBMEdeWTNY0RG4SI8Cw7tlqCOQkahlj0cM="}</value>
   </data>
+  <data name="Uninited_AccountState" xml:space="preserve">
+    <value>{"@type":"uninited.accountState","frozen_hash":"---"}</value>
+  </data>
   <data name="UpdateSyncState" xml:space="preserve">
     <value>{"@type":"updateSyncState","sync_state":{"@type":"syncStateInProgress","from_seqno":27005885,"to_seqno":27011756,"current_seqno":27011750}}</value>
   </data>

@@ -276,6 +276,15 @@ namespace TonLibDotNet {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;uninited.accountState&quot;,&quot;frozen_hash&quot;:&quot;---&quot;}.
+        /// </summary>
+        public static string Uninited_AccountState {
+            get {
+                return ResourceManager.GetString("Uninited_AccountState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;updateSyncState&quot;,&quot;sync_state&quot;:{&quot;@type&quot;:&quot;syncStateInProgress&quot;,&quot;from_seqno&quot;:27005885,&quot;to_seqno&quot;:27011756,&quot;current_seqno&quot;:27011750}}.
         /// </summary>
         public static string UpdateSyncState {

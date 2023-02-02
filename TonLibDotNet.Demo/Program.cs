@@ -17,7 +17,7 @@ namespace TonLibDotNet
             {
                 services.Configure<TonOptions>(o =>
                 {
-                    o.UseMainnet = true;
+                    o.UseMainnet = false;
                     o.LogTextLimit = 0;
                     o.VerbosityLevel = 0;
                     o.Options.KeystoreType = new KeyStoreTypeDirectory("D:/Temp/keys");
