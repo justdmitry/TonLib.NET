@@ -120,6 +120,9 @@
   <data name="AccountAddress" xml:space="preserve">
     <value>{"@type":"accountAddress","account_address":"EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh"}</value>
   </data>
+  <data name="Bip39Hints" xml:space="preserve">
+    <value>{"@type":"bip39Hints","words":["auction","audit","august","aunt","author","auto","autumn"]}</value>
+  </data>
   <data name="Blocks_GetMasterchainInfo" xml:space="preserve">
     <value>{"@type":"blocks.getMasterchainInfo"}</value>
   </data>
@@ -142,6 +145,9 @@
   <data name="Config" xml:space="preserve">
     <value>{"@type":"config","config":"test-value","blockchain_name":"test","use_callbacks_for_network":true,"ignore_cache":true}</value>
   </data>
+  <data name="CreateNewKey" xml:space="preserve">
+    <value>{"@type":"createNewKey","local_password":"111","mnemonic_password":"222","random_extra_seed":"333"}</value>
+  </data>
   <data name="Error" xml:space="preserve">
     <value>{"@type":"error","code":400,"message":"INVALID_ACCOUNT_ADDRESSFailed to parse account address"}</value>
   </data>
@@ -151,11 +157,17 @@
   <data name="GetAccountState" xml:space="preserve">
     <value>{"@type":"getAccountState","account_address":{"@type":"accountAddress","account_address":"EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh"}}</value>
   </data>
+  <data name="GetBip39Hints" xml:space="preserve">
+    <value>{"@type":"getBip39Hints","prefix":"au"}</value>
+  </data>
   <data name="Init" xml:space="preserve">
     <value>{"@type":"init","options":{"@type":"options","config":{"@type":"config","config":"test-value","blockchain_name":"test","use_callbacks_for_network":true,"ignore_cache":true},"keystore_type":{"@type":"keyStoreTypeDirectory","directory":"D:/Temp/"}}}</value>
   </data>
   <data name="Internal_TransactionId" xml:space="preserve">
     <value>{"@type":"internal.transactionId","lt":"34942442000005","hash":"vhl79O/OZ4LCC7cdkKj22uNv5diIrIltOLujpFOLwTk="}</value>
+  </data>
+  <data name="Key" xml:space="preserve">
+    <value>{"@type":"key","public_key":"Pua...ywkQ","secret":"gSu4...WTnQe0="}</value>
   </data>
   <data name="LiteServer_GetInfo" xml:space="preserve">
     <value>{"@type":"liteServer.getInfo"}</value>

@@ -70,6 +70,15 @@ namespace TonLibDotNet {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;bip39Hints&quot;,&quot;words&quot;:[&quot;auction&quot;,&quot;audit&quot;,&quot;august&quot;,&quot;aunt&quot;,&quot;author&quot;,&quot;auto&quot;,&quot;autumn&quot;]}.
+        /// </summary>
+        public static string Bip39Hints {
+            get {
+                return ResourceManager.GetString("Bip39Hints", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;blocks.getMasterchainInfo&quot;}.
         /// </summary>
         public static string Blocks_GetMasterchainInfo {
@@ -109,6 +118,15 @@ namespace TonLibDotNet {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;createNewKey&quot;,&quot;local_password&quot;:&quot;111&quot;,&quot;mnemonic_password&quot;:&quot;222&quot;,&quot;random_extra_seed&quot;:&quot;333&quot;}.
+        /// </summary>
+        public static string CreateNewKey {
+            get {
+                return ResourceManager.GetString("CreateNewKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;error&quot;,&quot;code&quot;:400,&quot;message&quot;:&quot;INVALID_ACCOUNT_ADDRESSFailed to parse account address&quot;}.
         /// </summary>
         public static string Error {
@@ -136,6 +154,15 @@ namespace TonLibDotNet {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;getBip39Hints&quot;,&quot;prefix&quot;:&quot;au&quot;}.
+        /// </summary>
+        public static string GetBip39Hints {
+            get {
+                return ResourceManager.GetString("GetBip39Hints", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;init&quot;,&quot;options&quot;:{&quot;@type&quot;:&quot;options&quot;,&quot;config&quot;:{&quot;@type&quot;:&quot;config&quot;,&quot;config&quot;:&quot;test-value&quot;,&quot;blockchain_name&quot;:&quot;test&quot;,&quot;use_callbacks_for_network&quot;:true,&quot;ignore_cache&quot;:true},&quot;keystore_type&quot;:{&quot;@type&quot;:&quot;keyStoreTypeDirectory&quot;,&quot;directory&quot;:&quot;D:/Temp/&quot;}}}.
         /// </summary>
         public static string Init {
@@ -150,6 +177,15 @@ namespace TonLibDotNet {
         public static string Internal_TransactionId {
             get {
                 return ResourceManager.GetString("Internal_TransactionId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;key&quot;,&quot;public_key&quot;:&quot;Pua...ywkQ&quot;,&quot;secret&quot;:&quot;gSu4...WTnQe0=&quot;}.
+        /// </summary>
+        public static string Key {
+            get {
+                return ResourceManager.GetString("Key", resourceCulture);
             }
         }
         

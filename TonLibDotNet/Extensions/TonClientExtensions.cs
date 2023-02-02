@@ -15,6 +15,11 @@ namespace TonLibDotNet
             return client.Execute(new GetAccountState(new AccountAddress(accountAddress)));
         }
 
+        public static Task<Bip39Hints> GetBip39Hints(this ITonClient client, string? prefix = null)
+        {
+            return client.Execute(new GetBip39Hints() { Prefix = prefix });
+        }
+
         public static Task<Types.Ton.BlockIdEx> Sync(this ITonClient client)
         {
             return client.Execute(new Sync());
