@@ -7,6 +7,7 @@ namespace TonLibDotNet.Requests
     {
         public UnpackAccountAddress(string accountAddress)
         {
+            IsStatic = true;
             AccountAddress = accountAddress;
         }
 

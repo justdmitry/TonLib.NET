@@ -7,6 +7,7 @@ namespace TonLibDotNet.Requests
     {
         public PackAccountAddress(UnpackedAccountAddress accountAddress)
         {
+            IsStatic = true;
             AccountAddress = accountAddress ?? throw new ArgumentNullException(nameof(accountAddress));
         }
 
