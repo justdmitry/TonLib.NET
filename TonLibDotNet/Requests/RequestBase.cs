@@ -1,7 +1,10 @@
-﻿namespace TonLibDotNet.Requests
+﻿using System.Text.Json.Serialization;
+
+namespace TonLibDotNet.Requests
 {
     public abstract class RequestBase : Types.TypeBase
     {
-        // Nothing
+        [JsonIgnore]
+        public bool IsStatic { get; protected set; } = false;
     }
 }

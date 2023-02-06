@@ -14,6 +14,7 @@ namespace TonLibDotNet
         private readonly SemaphoreSlim syncRoot = new (1);
 
         private IntPtr? client;
+        private bool initialized;
         private bool isDisposed;
 
         public TonClient(ILogger<TonClient> logger, Microsoft.Extensions.Options.IOptions<TonOptions> options)
@@ -42,7 +43,7 @@ namespace TonLibDotNet
 
         public async Task<OptionsInfo?> InitIfNeeded()
         {
-            if (client != null)
+            if (initialized)
             {
                 return null;
             }
@@ -65,7 +66,27 @@ namespace TonLibDotNet
         public async Task<TResponse> Execute<TResponse>(RequestBase<TResponse> request)
             where TResponse: TypeBase
         {
-            if (client == null && request is not Init)
+            if (client == null)
+            {
+                if (await syncRoot.WaitAsync(tonOptions.TonClientTimeout))
+                {
+                    if (client == null)
+                    {
+                        tonlib_client_set_verbosity_level(tonOptions.VerbosityLevel);
+                        client = tonlib_client_json_create();
+                        initialized = false;
+                    }
+
+                    syncRoot.Release();
+                }
+            }
+
+            if (request.IsStatic)
+            {
+                return ExecuteInternalStatic(request);
+            }
+
+            if (!initialized && request is not Init)
             {
                 throw new InvalidOperationException($"Must call {nameof(InitIfNeeded)}() first");
             }
@@ -74,13 +95,14 @@ namespace TonLibDotNet
             {
                 try
                 {
-                    if (client == null)
+                    var res = await ExecuteInternalAsync(request);
+
+                    if (request is Init)
                     {
-                        tonlib_client_set_verbosity_level(tonOptions.VerbosityLevel);
-                        client = tonlib_client_json_create();
+                        initialized = true;
                     }
 
-                    return await ExecuteInternal(request);
+                    return res;
                 }
                 finally
                 {
@@ -102,12 +124,17 @@ namespace TonLibDotNet
             Dispose(disposing: false);
         }
 
-        protected async Task<TResponse> ExecuteInternal<TResponse>(RequestBase<TResponse> request)
+        protected async Task<TResponse> ExecuteInternalAsync<TResponse>(RequestBase<TResponse> request)
             where TResponse : TypeBase
         {
             if (client == null)
             {
                 throw new InvalidOperationException("Client not connected");
+            }
+
+            if (request.IsStatic)
+            {
+                throw new InvalidOperationException("This request must be sent as 'static'");
             }
 
             var reqText = tonOptions.Serializer.Serialize(request);
@@ -181,6 +208,67 @@ namespace TonLibDotNet
 
                 throw new TonClientException(0, "Invalid (unexpected) response type") { ActualAnswer = respObj };
             }
+        }
+
+        protected TResponse ExecuteInternalStatic<TResponse>(RequestBase<TResponse> request)
+            where TResponse : TypeBase
+        {
+            if (client == null)
+            {
+                throw new InvalidOperationException("Client not connected");
+            }
+
+            if (!request.IsStatic)
+            {
+                throw new InvalidOperationException("This request can not be sent as 'static'");
+            }
+
+            var reqText = tonOptions.Serializer.Serialize(request);
+
+            if (tonOptions.LogTextLimit > 0 && reqText.Length > tonOptions.LogTextLimit)
+            {
+                logger.LogDebug("Sending static (trimmed):  {Text}...", reqText[..tonOptions.LogTextLimit]);
+            }
+            else
+            {
+                logger.LogDebug("Sending static:  {Text}", reqText);
+            }
+
+            var respTextPtr = tonlib_client_json_execute(client.Value, reqText);
+            var respText = Marshal.PtrToStringAnsi(respTextPtr);
+
+            if (string.IsNullOrEmpty(respText))
+            {
+                throw new TonClientException(0, "Empty response received");
+            }
+
+            if (tonOptions.LogTextLimit > 0 && respText.Length > tonOptions.LogTextLimit)
+            {
+                logger.LogDebug("Recieved static (trimmed): {Text}...", respText[..tonOptions.LogTextLimit]);
+            }
+            else
+            {
+                logger.LogDebug("Recieved static: {Text}", respText);
+            }
+
+            var respObj = tonOptions.Serializer.Deserialize(respText);
+
+            if (respObj == null)
+            {
+                throw new TonClientException(0, "Failed to parse response as Json");
+            }
+
+            if (respObj is Error error)
+            {
+                throw new TonClientException(error.Code, error.Message) { ActualAnswer = error };
+            }
+
+            if (respObj is TResponse resp)
+            {
+                return resp;
+            }
+
+            throw new TonClientException(0, "Invalid (unexpected) response type") { ActualAnswer = respObj };
         }
 
         protected virtual void Dispose(bool disposing)

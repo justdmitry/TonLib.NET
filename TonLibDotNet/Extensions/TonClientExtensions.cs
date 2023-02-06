@@ -24,5 +24,15 @@ namespace TonLibDotNet
         {
             return client.Execute(new Sync());
         }
+
+        public static Task<UnpackedAccountAddress> UnpackAccountAddress(this ITonClient client, string accountAddress)
+        {
+            return client.Execute(new UnpackAccountAddress(accountAddress));
+        }
+
+        public static Task<AccountAddress> PackAccountAddress(this ITonClient client, UnpackedAccountAddress accountAddress)
+        {
+            return client.Execute(new PackAccountAddress(accountAddress));
+        }
     }
 }

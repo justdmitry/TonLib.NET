@@ -39,16 +39,19 @@ namespace TonLibDotNet
             var mi = await tonClient.GetMasterchainInfo();
             logger.LogInformation("Last block: shard = {Shard}, seqno = {Seqno}", mi.Last.Shard, mi.Last.Seqno);
 
-            var account = "EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh";
+            var account = "EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh"; // TON Diamonds
 
-            var ast = await tonClient.GetAccountState(account); // TON Diamonds
+            var uaa = await tonClient.UnpackAccountAddress(account);
+            var paa = await tonClient.PackAccountAddress(uaa);
+
+            var ast = await tonClient.GetAccountState(account);
             logger.LogInformation("Acc info: balance = {Value}", ast.Balance);
 
-            var rast = await tonClient.RawGetAccountState(account); // TON Diamonds
+            var rast = await tonClient.RawGetAccountState(account);
             logger.LogInformation("Acc info: balance = {Value}", rast.Balance);
 
             var txs = await tonClient.RawGetTransactions(account, rast.LastTransactionId);
-            foreach(var item in txs.TransactionsList)
+            foreach (var item in txs.TransactionsList)
             {
                 if (item.InMsg?.Value > 0)
                 {
@@ -59,6 +62,8 @@ namespace TonLibDotNet
                     logger.LogInformation("TX {Id}: {Value} to {Address}", item.TransactionId.Hash, item.OutMsgs[0].Value, item.OutMsgs[0].Destination.Value);
                 }
             }
+
+            var key = await tonClient.GetBip39Hints("zo");
 
             // Loggers need some time to flush data to screen/console.
             await Task.Delay(TimeSpan.FromSeconds(1));
