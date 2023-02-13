@@ -17,28 +17,33 @@ namespace TonLibDotNet
         private bool initialized;
         private bool isDisposed;
 
+        static TonClient()
+        {
+            TonLibResolver.Register(typeof(TonClient).Assembly);
+        }
+
         public TonClient(ILogger<TonClient> logger, Microsoft.Extensions.Options.IOptions<TonOptions> options)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.tonOptions = options?.Value ?? throw new ArgumentNullException(nameof(options));
         }
 
-        [DllImport("tonlibjson")]
+        [DllImport(TonLibResolver.DllNamePlaceholder)]
         private static extern IntPtr tonlib_client_json_create();
 
-        [DllImport("tonlibjson")]
+        [DllImport(TonLibResolver.DllNamePlaceholder)]
         private static extern void tonlib_client_json_destroy(IntPtr client);
 
-        [DllImport("tonlibjson")]
+        [DllImport(TonLibResolver.DllNamePlaceholder)]
         private static extern void tonlib_client_set_verbosity_level(int level);
 
-        [DllImport("tonlibjson", CharSet = CharSet.Ansi)]
+        [DllImport(TonLibResolver.DllNamePlaceholder, CharSet = CharSet.Ansi)]
         private static extern IntPtr tonlib_client_json_execute(IntPtr client, string request);
 
-        [DllImport("tonlibjson", CharSet = CharSet.Ansi)]
+        [DllImport(TonLibResolver.DllNamePlaceholder, CharSet = CharSet.Ansi)]
         private static extern void tonlib_client_json_send(IntPtr client, string request);
 
-        [DllImport("tonlibjson")]
+        [DllImport(TonLibResolver.DllNamePlaceholder)]
         private static extern IntPtr tonlib_client_json_receive(IntPtr client, double timeout);
 
         public async Task<OptionsInfo?> InitIfNeeded()
