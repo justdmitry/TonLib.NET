@@ -199,11 +199,11 @@ namespace TonLibDotNet
 
                 if (tonOptions.LogTextLimit > 0 && respText.Length > tonOptions.LogTextLimit)
                 {
-                    logger.LogDebug("Recieved (trimmed): {Text}...", respText[..tonOptions.LogTextLimit]);
+                    logger.LogDebug("Received (trimmed): {Text}...", respText[..tonOptions.LogTextLimit]);
                 }
                 else
                 {
-                    logger.LogDebug("Recieved: {Text}", respText);
+                    logger.LogDebug("Received: {Text}", respText);
                 }
 
                 var respObj = tonOptions.Serializer.Deserialize(respText);
