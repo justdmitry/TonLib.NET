@@ -8,6 +8,8 @@ namespace TonLibDotNet
     {
         Task<OptionsInfo?> InitIfNeeded();
 
+        Task<OptionsInfo?> Reinit();
+
         Task<TResponse> Execute<TResponse>(RequestBase<TResponse> request)
             where TResponse : TypeBase;
 

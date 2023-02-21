@@ -16,6 +16,7 @@ namespace TonLibDotNet
 
         private IntPtr? client;
         private bool initialized;
+        private bool needReinit;
         private bool isDisposed;
 
         static TonClient()
@@ -49,6 +50,25 @@ namespace TonLibDotNet
 
         public async Task<OptionsInfo?> InitIfNeeded()
         {
+            if (needReinit)
+            {
+                logger.LogDebug("Reinitializing...");
+
+                if (await syncRoot.WaitAsync(tonOptions.TonClientTimeout))
+                {
+                    if (client != null)
+                    {
+                        tonlib_client_json_destroy(client.Value);
+                        client = null;
+                    }
+
+                    initialized = false;
+                    needReinit = false;
+
+                    syncRoot.Release();
+                }
+            }
+
             if (initialized)
             {
                 return null;
@@ -67,6 +87,12 @@ namespace TonLibDotNet
             tonOptions.Options.Config.ConfigJson = jdoc.ToJsonString();
 
             return await Execute(new Init(tonOptions.Options));
+        }
+
+        public Task<OptionsInfo?> Reinit()
+        {
+            Deinit();
+            return InitIfNeeded();
         }
 
         public async Task<TResponse> Execute<TResponse>(RequestBase<TResponse> request)
@@ -210,11 +236,17 @@ namespace TonLibDotNet
 
                 if (respObj == null)
                 {
+                    Deinit();
                     throw new TonClientException(0, "Failed to parse response as Json");
                 }
 
                 if (respObj is Error error)
                 {
+                    if (error.Code == 500)
+                    {
+                        Deinit();
+                    }
+
                     throw new TonClientException(error.Code, error.Message) { ActualAnswer = error };
                 }
 
@@ -233,6 +265,7 @@ namespace TonLibDotNet
                         continue;
                     }
 
+                    Deinit();
                     throw new TonClientException(0, "Failed to wait for sync to complete") { ActualAnswer = uss };
                 }
 
@@ -241,6 +274,7 @@ namespace TonLibDotNet
                     return resp;
                 }
 
+                Deinit();
                 throw new TonClientException(0, "Invalid (unexpected) response type") { ActualAnswer = respObj };
             }
         }
@@ -279,22 +313,28 @@ namespace TonLibDotNet
 
             if (tonOptions.LogTextLimit > 0 && respText.Length > tonOptions.LogTextLimit)
             {
-                logger.LogDebug("Recieved static (trimmed): {Text}...", respText[..tonOptions.LogTextLimit]);
+                logger.LogDebug("Received static (trimmed): {Text}...", respText[..tonOptions.LogTextLimit]);
             }
             else
             {
-                logger.LogDebug("Recieved static: {Text}", respText);
+                logger.LogDebug("Received static: {Text}", respText);
             }
 
             var respObj = tonOptions.Serializer.Deserialize(respText);
 
             if (respObj == null)
             {
+                Deinit();
                 throw new TonClientException(0, "Failed to parse response as Json");
             }
 
             if (respObj is Error error)
             {
+                if (error.Code == 500)
+                {
+                    Deinit();
+                }
+
                 throw new TonClientException(error.Code, error.Message) { ActualAnswer = error };
             }
 
@@ -303,7 +343,14 @@ namespace TonLibDotNet
                 return resp;
             }
 
+            Deinit();
             throw new TonClientException(0, "Invalid (unexpected) response type") { ActualAnswer = respObj };
+        }
+
+        protected virtual void Deinit()
+        {
+            logger.LogWarning("De-initializing.");
+            needReinit = true;
         }
 
         protected virtual void Dispose(bool disposing)
