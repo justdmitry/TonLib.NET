@@ -1,4 +1,5 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
 using System.Text.Json.Nodes;
 using Microsoft.Extensions.Logging;
 using TonLibDotNet.Requests;
@@ -69,7 +70,7 @@ namespace TonLibDotNet
         }
 
         public async Task<TResponse> Execute<TResponse>(RequestBase<TResponse> request)
-            where TResponse: TypeBase
+            where TResponse : TypeBase
         {
             if (client == null)
             {
@@ -116,6 +117,35 @@ namespace TonLibDotNet
             }
 
             throw new TimeoutException("Failed while waiting for semaphore");
+        }
+
+        public decimal ConvertFromNanoTon(long nano)
+        {
+            return nano * 0.000_000_001M;
+        }
+
+        public long ConvertToNanoTon(decimal ton)
+        {
+            return Convert.ToInt64(ton * 1_000_000_000M);
+        }
+
+        public bool TryDecodeBase64AsString(string? source, [NotNullWhen(true)] out string? result)
+        {
+            if (string.IsNullOrEmpty(source))
+            {
+                result = null;
+                return false;
+            }
+
+            var bytes = new byte[source.Length];
+            if (!Convert.TryFromBase64String(source, bytes, out var count))
+            {
+                result = null;
+                return false;
+            }
+
+            result = System.Text.Encoding.UTF8.GetString(bytes.AsSpan()[..count]);
+            return true;
         }
 
         public void Dispose()
