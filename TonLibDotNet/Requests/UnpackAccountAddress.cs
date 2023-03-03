@@ -7,7 +7,9 @@ namespace TonLibDotNet.Requests
     {
         public UnpackAccountAddress(string accountAddress)
         {
+            // Proof: https://github.com/ton-blockchain/ton/blob/v2023.01/tonlib/tonlib/TonlibClient.cpp#L1851
             IsStatic = true;
+
             AccountAddress = accountAddress;
         }
 
