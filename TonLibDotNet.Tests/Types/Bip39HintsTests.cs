@@ -14,6 +14,5 @@
             Assert.NotEmpty(obj.Words);
             Assert.Equal(new[] { "auction", "audit", "august", "aunt", "author", "auto", "autumn" }, obj.Words);
         }
-
     }
 }
