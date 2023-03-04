@@ -148,8 +148,20 @@
   <data name="CreateNewKey" xml:space="preserve">
     <value>{"@type":"createNewKey","local_password":"111","mnemonic_password":"222","random_extra_seed":"333"}</value>
   </data>
+  <data name="DeleteAllKeys" xml:space="preserve">
+    <value>{"@type":"deleteAllKeys"}</value>
+  </data>
+  <data name="DeleteKey" xml:space="preserve">
+    <value>{"@type":"deleteKey","key":{"@type":"key","public_key":"Pub...HnG","secret":"gbV...bA="}}</value>
+  </data>
   <data name="Error" xml:space="preserve">
     <value>{"@type":"error","code":400,"message":"INVALID_ACCOUNT_ADDRESSFailed to parse account address"}</value>
+  </data>
+  <data name="ExportedKey" xml:space="preserve">
+    <value>{"@type":"exportedKey","word_list":["gasp","shine","patient","poverty","oak","leaf","actor","shift","festival","route","six","track","same","home","derive","ready","table","eye","card","praise","affair","when","ship","trim"]}</value>
+  </data>
+  <data name="ExportKey" xml:space="preserve">
+    <value>{"@type":"exportKey","input_key":{"@type":"inputKeyRegular","key":{"@type":"key","public_key":"PuY...CQ","secret":"K5F..I="},"local_password":"PQ...Q="}}</value>
   </data>
   <data name="FullAccountState" xml:space="preserve">
     <value>{"@type":"fullAccountState","address":{"@type":"accountAddress","account_address":"EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh"},"balance":"136217239329079","last_transaction_id":{"@type":"internal.transactionId","lt":"34942442000005","hash":"vhl79O/OZ4LCC7cdkKj22uNv5diIrIltOLujpFOLwTk="},"block_id":{"@type":"ton.blockIdExt","workchain":-1,"shard":"-9223372036854775808","seqno":27011756,"root_hash":"AhS55h8lmOyxtw29gWux0XZzXgiAbE69UsP44xIWdXM=","file_hash":"TwDj86Fbvgvxte2UXpYtm2CpMSC/wIyxZph6mPDn99A="},"sync_utime":1675249913,"account_state":{"@type":"wallet.v3.accountState","wallet_id":"698983191","seqno":35},"revision":2}</value>
@@ -162,6 +174,12 @@
   </data>
   <data name="Init" xml:space="preserve">
     <value>{"@type":"init","options":{"@type":"options","config":{"@type":"config","config":"test-value","blockchain_name":"test","use_callbacks_for_network":true,"ignore_cache":true},"keystore_type":{"@type":"keyStoreTypeDirectory","directory":"D:/Temp/"}}}</value>
+  </data>
+  <data name="InputKey_Fake" xml:space="preserve">
+    <value>{"@type":"inputKeyFake"}</value>
+  </data>
+  <data name="InputKey_Regular" xml:space="preserve">
+    <value>{"@type":"inputKeyRegular","key":{"@type":"key","public_key":"PuY...qoCQ","secret":"K5F...JhgI="},"local_password":"PQ...Q="}</value>
   </data>
   <data name="Internal_TransactionId" xml:space="preserve">
     <value>{"@type":"internal.transactionId","lt":"34942442000005","hash":"vhl79O/OZ4LCC7cdkKj22uNv5diIrIltOLujpFOLwTk="}</value>
@@ -180,6 +198,9 @@
   </data>
   <data name="Msg_DataText" xml:space="preserve">
     <value>{"@type":"msg.dataText","text":"Um95YWx0eQ=="}</value>
+  </data>
+  <data name="Ok" xml:space="preserve">
+    <value>{"@type":"ok"}</value>
   </data>
   <data name="Options_Info" xml:space="preserve">
     <value>{"@type":"options.info","config_info":{"@type":"options.configInfo","default_wallet_id":"698983191","default_rwallet_init_public_key":"Puasxr0QfFZZnYISRphVse7XHKfW7pZU5SJarVHXvQ+rpzkD"}}</value>

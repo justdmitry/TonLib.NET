@@ -1,6 +1,7 @@
 ﻿namespace TonLibDotNet.Types
 {
-    public abstract class InputKey : TypeBase
+    [TLSchema("ok = Ok")]
+    public class Ok : TypeBase
     {
         // Nothing
     }

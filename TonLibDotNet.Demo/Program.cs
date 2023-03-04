@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using TonLibDotNet.Requests;
 using TonLibDotNet.Types;
 
 namespace TonLibDotNet
@@ -63,7 +64,13 @@ namespace TonLibDotNet
                 }
             }
 
-            var key = await tonClient.GetBip39Hints("zo");
+            var hints = await tonClient.GetBip39Hints("zo");
+
+            var key = await tonClient.CreateNewKey();
+            var ek = await tonClient.ExportKey(key);
+            await tonClient.DeleteKey(key);
+
+            // await tonClient.DeleteAllKeys();
 
             // Loggers need some time to flush data to screen/console.
             await Task.Delay(TimeSpan.FromSeconds(1));

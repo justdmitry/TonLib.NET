@@ -127,11 +127,47 @@ namespace TonLibDotNet {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;deleteAllKeys&quot;}.
+        /// </summary>
+        public static string DeleteAllKeys {
+            get {
+                return ResourceManager.GetString("DeleteAllKeys", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;deleteKey&quot;,&quot;key&quot;:{&quot;@type&quot;:&quot;key&quot;,&quot;public_key&quot;:&quot;Pub...HnG&quot;,&quot;secret&quot;:&quot;gbV...bA=&quot;}}.
+        /// </summary>
+        public static string DeleteKey {
+            get {
+                return ResourceManager.GetString("DeleteKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;error&quot;,&quot;code&quot;:400,&quot;message&quot;:&quot;INVALID_ACCOUNT_ADDRESSFailed to parse account address&quot;}.
         /// </summary>
         public static string Error {
             get {
                 return ResourceManager.GetString("Error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;exportedKey&quot;,&quot;word_list&quot;:[&quot;gasp&quot;,&quot;shine&quot;,&quot;patient&quot;,&quot;poverty&quot;,&quot;oak&quot;,&quot;leaf&quot;,&quot;actor&quot;,&quot;shift&quot;,&quot;festival&quot;,&quot;route&quot;,&quot;six&quot;,&quot;track&quot;,&quot;same&quot;,&quot;home&quot;,&quot;derive&quot;,&quot;ready&quot;,&quot;table&quot;,&quot;eye&quot;,&quot;card&quot;,&quot;praise&quot;,&quot;affair&quot;,&quot;when&quot;,&quot;ship&quot;,&quot;trim&quot;]}.
+        /// </summary>
+        public static string ExportedKey {
+            get {
+                return ResourceManager.GetString("ExportedKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;exportKey&quot;,&quot;input_key&quot;:{&quot;@type&quot;:&quot;inputKeyRegular&quot;,&quot;key&quot;:{&quot;@type&quot;:&quot;key&quot;,&quot;public_key&quot;:&quot;PuY...CQ&quot;,&quot;secret&quot;:&quot;K5F..I=&quot;},&quot;local_password&quot;:&quot;PQ...Q=&quot;}}.
+        /// </summary>
+        public static string ExportKey {
+            get {
+                return ResourceManager.GetString("ExportKey", resourceCulture);
             }
         }
         
@@ -168,6 +204,24 @@ namespace TonLibDotNet {
         public static string Init {
             get {
                 return ResourceManager.GetString("Init", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;inputKeyFake&quot;}.
+        /// </summary>
+        public static string InputKey_Fake {
+            get {
+                return ResourceManager.GetString("InputKey_Fake", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;inputKeyRegular&quot;,&quot;key&quot;:{&quot;@type&quot;:&quot;key&quot;,&quot;public_key&quot;:&quot;PuY...qoCQ&quot;,&quot;secret&quot;:&quot;K5F...JhgI=&quot;},&quot;local_password&quot;:&quot;PQ...Q=&quot;}.
+        /// </summary>
+        public static string InputKey_Regular {
+            get {
+                return ResourceManager.GetString("InputKey_Regular", resourceCulture);
             }
         }
         
@@ -222,6 +276,15 @@ namespace TonLibDotNet {
         public static string Msg_DataText {
             get {
                 return ResourceManager.GetString("Msg_DataText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;ok&quot;}.
+        /// </summary>
+        public static string Ok {
+            get {
+                return ResourceManager.GetString("Ok", resourceCulture);
             }
         }
         
