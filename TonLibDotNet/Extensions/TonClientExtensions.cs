@@ -6,64 +6,6 @@ namespace TonLibDotNet
     public static class TonClientExtensions
     {
         /// <summary>
-        /// Creates new keypair.
-        /// </summary>
-        /// <param name="client">ITonClient instance.</param>
-        /// <param name="localPassword">Local password (base64 bytes).</param>
-        /// <param name="mnemonicPassword">Mnemonic password (base64 bytes).</param>
-        /// <param name="randomExtraSeed">Extra seed (base64 bytes).</param>
-        /// <seealso href="https://github.com/ton-blockchain/ton/blob/v2023.01/tonlib/tonlib/TonlibClient.cpp#L4273" />
-        public static Task<Key> CreateNewKey(this ITonClient client, string? localPassword = null, string? mnemonicPassword = null, string? randomExtraSeed = null)
-        {
-            return client.Execute(new CreateNewKey() { LocalPassword = localPassword, MnemonicPassword = mnemonicPassword, RandomExtraSeed = randomExtraSeed });
-        }
-
-        /// <summary>
-        /// Delete all stored keys.
-        /// </summary>
-        /// <param name="client">ITonClient instance.</param>
-        /// <seealso href="https://github.com/ton-blockchain/ton/blob/v2023.01/tonlib/tonlib/TonlibClient.cpp#L4310" />
-        public static Task<Ok> DeleteAllKeys(this ITonClient client)
-        {
-            return client.Execute(new DeleteAllKeys());
-        }
-
-        /// <summary>
-        /// Delete stored key.
-        /// </summary>
-        /// <param name="client">ITonClient instance.</param>
-        /// <param name="key">Key to delete.</param>
-        /// <seealso href="https://github.com/ton-blockchain/ton/blob/v2023.01/tonlib/tonlib/TonlibClient.cpp#L4310" />
-        public static Task<Ok> DeleteKey(this ITonClient client, Key key)
-        {
-            ArgumentNullException.ThrowIfNull(key);
-
-            return client.Execute(new DeleteKey(key));
-        }
-
-        /// <summary>
-        /// Returns mnemonic (24 words) that corresponds to provided key.
-        /// </summary>
-        /// <param name="client">ITonClient instance.</param>
-        /// <param name="key">Key to get mnemonic for.</param>
-        /// <seealso href="https://github.com/ton-blockchain/ton/blob/v2023.01/tonlib/tonlib/TonlibClient.cpp#L4285" />
-        public static Task<ExportedKey> ExportKey(this ITonClient client, InputKey key)
-        {
-            ArgumentNullException.ThrowIfNull(key);
-
-            return client.Execute(new ExportKey(key));
-        }
-
-        /// <inheritdoc cref="ExportKey(ITonClient, InputKey)"/>
-        /// <param name="localPassword">Local password.</param>
-        public static Task<ExportedKey> ExportKey(this ITonClient client, Key key, string? localPassword = null)
-        {
-            ArgumentNullException.ThrowIfNull(key);
-
-            return ExportKey(client, new InputKeyRegular(key) { LocalPassword = localPassword });
-        }
-
-        /// <summary>
         /// Returns <see cref="FullAccountState"/> for specified account address.
         /// </summary>
         /// <param name="client">ITonClient instance.</param>

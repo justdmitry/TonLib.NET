@@ -109,6 +109,15 @@ namespace TonLibDotNet {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;changeLocalPassword&quot;,&quot;input_key&quot;:{&quot;@type&quot;:&quot;inputKeyRegular&quot;,&quot;key&quot;:{&quot;@type&quot;:&quot;key&quot;,&quot;public_key&quot;:&quot;Pub...NZz4&quot;,&quot;secret&quot;:&quot;yXO...nA=&quot;},&quot;local_password&quot;:&quot;AQIDBAU=&quot;},&quot;new_local_password&quot;:&quot;BwYF&quot;}.
+        /// </summary>
+        public static string ChangeLocalPassword {
+            get {
+                return ResourceManager.GetString("ChangeLocalPassword", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;config&quot;,&quot;config&quot;:&quot;test-value&quot;,&quot;blockchain_name&quot;:&quot;test&quot;,&quot;use_callbacks_for_network&quot;:true,&quot;ignore_cache&quot;:true}.
         /// </summary>
         public static string Config {
@@ -154,6 +163,15 @@ namespace TonLibDotNet {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;exportedEncryptedKey&quot;,&quot;data&quot;:&quot;iMX/cKz...zpg==&quot;}.
+        /// </summary>
+        public static string ExportedEncryptedKey {
+            get {
+                return ResourceManager.GetString("ExportedEncryptedKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;exportedKey&quot;,&quot;word_list&quot;:[&quot;gasp&quot;,&quot;shine&quot;,&quot;patient&quot;,&quot;poverty&quot;,&quot;oak&quot;,&quot;leaf&quot;,&quot;actor&quot;,&quot;shift&quot;,&quot;festival&quot;,&quot;route&quot;,&quot;six&quot;,&quot;track&quot;,&quot;same&quot;,&quot;home&quot;,&quot;derive&quot;,&quot;ready&quot;,&quot;table&quot;,&quot;eye&quot;,&quot;card&quot;,&quot;praise&quot;,&quot;affair&quot;,&quot;when&quot;,&quot;ship&quot;,&quot;trim&quot;]}.
         /// </summary>
         public static string ExportedKey {
@@ -163,11 +181,56 @@ namespace TonLibDotNet {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;exportedPemKey&quot;,&quot;pem&quot;:&quot;-----BEGIN ENCRYPTED PRIVATE KEY-----\nMIGbMFcG...WE71Nf4=\n-----END ENCRYPTED PRIVATE KEY-----\n&quot;}.
+        /// </summary>
+        public static string ExportedPemKey {
+            get {
+                return ResourceManager.GetString("ExportedPemKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;exportedUnencryptedKey&quot;,&quot;data&quot;:&quot;Vn9nPsOY7YZ3iNnpV5Opsk7oY1eDclOkm5ht0N0XtrE=&quot;}.
+        /// </summary>
+        public static string ExportedUnencryptedKey {
+            get {
+                return ResourceManager.GetString("ExportedUnencryptedKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;exportEncryptedKey&quot;,&quot;input_key&quot;:{&quot;@type&quot;:&quot;inputKeyRegular&quot;,&quot;key&quot;:{&quot;@type&quot;:&quot;key&quot;,&quot;public_key&quot;:&quot;PuY...EIP&quot;,&quot;secret&quot;:&quot;B6Y...rg=&quot;},&quot;local_password&quot;:&quot;AQIDBAU=&quot;},&quot;key_password&quot;:&quot;FQMHCw==&quot;}.
+        /// </summary>
+        public static string ExportEncryptedKey {
+            get {
+                return ResourceManager.GetString("ExportEncryptedKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;exportKey&quot;,&quot;input_key&quot;:{&quot;@type&quot;:&quot;inputKeyRegular&quot;,&quot;key&quot;:{&quot;@type&quot;:&quot;key&quot;,&quot;public_key&quot;:&quot;PuY...CQ&quot;,&quot;secret&quot;:&quot;K5F..I=&quot;},&quot;local_password&quot;:&quot;PQ...Q=&quot;}}.
         /// </summary>
         public static string ExportKey {
             get {
                 return ResourceManager.GetString("ExportKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;exportPemKey&quot;,&quot;input_key&quot;:{&quot;@type&quot;:&quot;inputKeyRegular&quot;,&quot;key&quot;:{&quot;@type&quot;:&quot;key&quot;,&quot;public_key&quot;:&quot;PuZ...aLD&quot;,&quot;secret&quot;:&quot;Qe6...bc=&quot;},&quot;local_password&quot;:&quot;AQIDBAU=&quot;},&quot;key_password&quot;:&quot;FQMHCw==&quot;}.
+        /// </summary>
+        public static string ExportPemKey {
+            get {
+                return ResourceManager.GetString("ExportPemKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;exportUnencryptedKey&quot;,&quot;input_key&quot;:{&quot;@type&quot;:&quot;inputKeyRegular&quot;,&quot;key&quot;:{&quot;@type&quot;:&quot;key&quot;,&quot;public_key&quot;:&quot;PuYJ...gEIP&quot;,&quot;secret&quot;:&quot;B6Ya...Aorg=&quot;},&quot;local_password&quot;:&quot;AQIDBAU=&quot;}}.
+        /// </summary>
+        public static string ExportUnencryptedKey {
+            get {
+                return ResourceManager.GetString("ExportUnencryptedKey", resourceCulture);
             }
         }
         
@@ -195,6 +258,42 @@ namespace TonLibDotNet {
         public static string GetBip39Hints {
             get {
                 return ResourceManager.GetString("GetBip39Hints", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;importEncryptedKey&quot;,&quot;exported_encrypted_key&quot;:{&quot;@type&quot;:&quot;exportedEncryptedKey&quot;,&quot;data&quot;:&quot;sAtI...YOYg=&quot;},&quot;local_password&quot;:&quot;AQIDBAU=&quot;,&quot;key_password&quot;:&quot;FQMHCw==&quot;}.
+        /// </summary>
+        public static string ImportEncryptedKey {
+            get {
+                return ResourceManager.GetString("ImportEncryptedKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;importKey&quot;,&quot;exported_key&quot;:{&quot;@type&quot;:&quot;exportedKey&quot;,&quot;word_list&quot;:[&quot;fabric&quot;,&quot;draw&quot;,&quot;forward&quot;,&quot;olive&quot;,&quot;lamp&quot;,&quot;purpose&quot;,&quot;sight&quot;,&quot;loan&quot;,&quot;elevator&quot;,&quot;diet&quot;,&quot;clutch&quot;,&quot;fit&quot;,&quot;eagle&quot;,&quot;useless&quot;,&quot;tiger&quot;,&quot;useless&quot;,&quot;veteran&quot;,&quot;night&quot;,&quot;curtain&quot;,&quot;spend&quot;,&quot;crack&quot;,&quot;intact&quot;,&quot;resource&quot;,&quot;orbit&quot;]},&quot;local_password&quot;:&quot;MTIz&quot;,&quot;mnemonic_password&quot;:&quot;NDU2&quot;}.
+        /// </summary>
+        public static string ImportKey {
+            get {
+                return ResourceManager.GetString("ImportKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;importPemKey&quot;,&quot;exported_key&quot;:{&quot;@type&quot;:&quot;exportedPemKey&quot;,&quot;pem&quot;:&quot;-----BEGIN ENCRYPTED PRIVATE KEY-----\nMI...lJU=\n-----END ENCRYPTED PRIVATE KEY-----\n&quot;},&quot;local_password&quot;:&quot;AQIDBAU=&quot;,&quot;key_password&quot;:&quot;FQMHCw==&quot;}.
+        /// </summary>
+        public static string ImportPemKey {
+            get {
+                return ResourceManager.GetString("ImportPemKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;importUnencryptedKey&quot;,&quot;exported_unencrypted_key&quot;:{&quot;@type&quot;:&quot;exportedUnencryptedKey&quot;,&quot;data&quot;:&quot;Zdb...YM=&quot;},&quot;local_password&quot;:&quot;AQIDBAU=&quot;}.
+        /// </summary>
+        public static string ImportUnencryptedKey {
+            get {
+                return ResourceManager.GetString("ImportUnencryptedKey", resourceCulture);
             }
         }
         

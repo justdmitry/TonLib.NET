@@ -142,6 +142,9 @@
           "root_hash":"F6OpKZKqvqeFp6CQmFomXNMfMj2EnaUSOXN+Mh+wVWk=",
           "file_hash":"XplPz01CXAps5qeSWUtxcyBfdAo5zVb1N979KLSKD24="}}</value>
   </data>
+  <data name="ChangeLocalPassword" xml:space="preserve">
+    <value>{"@type":"changeLocalPassword","input_key":{"@type":"inputKeyRegular","key":{"@type":"key","public_key":"Pub...NZz4","secret":"yXO...nA="},"local_password":"AQIDBAU="},"new_local_password":"BwYF"}</value>
+  </data>
   <data name="Config" xml:space="preserve">
     <value>{"@type":"config","config":"test-value","blockchain_name":"test","use_callbacks_for_network":true,"ignore_cache":true}</value>
   </data>
@@ -157,11 +160,29 @@
   <data name="Error" xml:space="preserve">
     <value>{"@type":"error","code":400,"message":"INVALID_ACCOUNT_ADDRESSFailed to parse account address"}</value>
   </data>
+  <data name="ExportedEncryptedKey" xml:space="preserve">
+    <value>{"@type":"exportedEncryptedKey","data":"iMX/cKz...zpg=="}</value>
+  </data>
   <data name="ExportedKey" xml:space="preserve">
     <value>{"@type":"exportedKey","word_list":["gasp","shine","patient","poverty","oak","leaf","actor","shift","festival","route","six","track","same","home","derive","ready","table","eye","card","praise","affair","when","ship","trim"]}</value>
   </data>
+  <data name="ExportedPemKey" xml:space="preserve">
+    <value>{"@type":"exportedPemKey","pem":"-----BEGIN ENCRYPTED PRIVATE KEY-----\nMIGbMFcG...WE71Nf4=\n-----END ENCRYPTED PRIVATE KEY-----\n"}</value>
+  </data>
+  <data name="ExportedUnencryptedKey" xml:space="preserve">
+    <value>{"@type":"exportedUnencryptedKey","data":"Vn9nPsOY7YZ3iNnpV5Opsk7oY1eDclOkm5ht0N0XtrE="}</value>
+  </data>
+  <data name="ExportEncryptedKey" xml:space="preserve">
+    <value>{"@type":"exportEncryptedKey","input_key":{"@type":"inputKeyRegular","key":{"@type":"key","public_key":"PuY...EIP","secret":"B6Y...rg="},"local_password":"AQIDBAU="},"key_password":"FQMHCw=="}</value>
+  </data>
   <data name="ExportKey" xml:space="preserve">
     <value>{"@type":"exportKey","input_key":{"@type":"inputKeyRegular","key":{"@type":"key","public_key":"PuY...CQ","secret":"K5F..I="},"local_password":"PQ...Q="}}</value>
+  </data>
+  <data name="ExportPemKey" xml:space="preserve">
+    <value>{"@type":"exportPemKey","input_key":{"@type":"inputKeyRegular","key":{"@type":"key","public_key":"PuZ...aLD","secret":"Qe6...bc="},"local_password":"AQIDBAU="},"key_password":"FQMHCw=="}</value>
+  </data>
+  <data name="ExportUnencryptedKey" xml:space="preserve">
+    <value>{"@type":"exportUnencryptedKey","input_key":{"@type":"inputKeyRegular","key":{"@type":"key","public_key":"PuYJ...gEIP","secret":"B6Ya...Aorg="},"local_password":"AQIDBAU="}}</value>
   </data>
   <data name="FullAccountState" xml:space="preserve">
     <value>{"@type":"fullAccountState","address":{"@type":"accountAddress","account_address":"EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh"},"balance":"136217239329079","last_transaction_id":{"@type":"internal.transactionId","lt":"34942442000005","hash":"vhl79O/OZ4LCC7cdkKj22uNv5diIrIltOLujpFOLwTk="},"block_id":{"@type":"ton.blockIdExt","workchain":-1,"shard":"-9223372036854775808","seqno":27011756,"root_hash":"AhS55h8lmOyxtw29gWux0XZzXgiAbE69UsP44xIWdXM=","file_hash":"TwDj86Fbvgvxte2UXpYtm2CpMSC/wIyxZph6mPDn99A="},"sync_utime":1675249913,"account_state":{"@type":"wallet.v3.accountState","wallet_id":"698983191","seqno":35},"revision":2}</value>
@@ -171,6 +192,18 @@
   </data>
   <data name="GetBip39Hints" xml:space="preserve">
     <value>{"@type":"getBip39Hints","prefix":"au"}</value>
+  </data>
+  <data name="ImportEncryptedKey" xml:space="preserve">
+    <value>{"@type":"importEncryptedKey","exported_encrypted_key":{"@type":"exportedEncryptedKey","data":"sAtI...YOYg="},"local_password":"AQIDBAU=","key_password":"FQMHCw=="}</value>
+  </data>
+  <data name="ImportKey" xml:space="preserve">
+    <value>{"@type":"importKey","exported_key":{"@type":"exportedKey","word_list":["fabric","draw","forward","olive","lamp","purpose","sight","loan","elevator","diet","clutch","fit","eagle","useless","tiger","useless","veteran","night","curtain","spend","crack","intact","resource","orbit"]},"local_password":"MTIz","mnemonic_password":"NDU2"}</value>
+  </data>
+  <data name="ImportPemKey" xml:space="preserve">
+    <value>{"@type":"importPemKey","exported_key":{"@type":"exportedPemKey","pem":"-----BEGIN ENCRYPTED PRIVATE KEY-----\nMI...lJU=\n-----END ENCRYPTED PRIVATE KEY-----\n"},"local_password":"AQIDBAU=","key_password":"FQMHCw=="}</value>
+  </data>
+  <data name="ImportUnencryptedKey" xml:space="preserve">
+    <value>{"@type":"importUnencryptedKey","exported_unencrypted_key":{"@type":"exportedUnencryptedKey","data":"Zdb...YM="},"local_password":"AQIDBAU="}</value>
   </data>
   <data name="Init" xml:space="preserve">
     <value>{"@type":"init","options":{"@type":"options","config":{"@type":"config","config":"test-value","blockchain_name":"test","use_callbacks_for_network":true,"ignore_cache":true},"keystore_type":{"@type":"keyStoreTypeDirectory","directory":"D:/Temp/"}}}</value>

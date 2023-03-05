@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using TonLibDotNet.Requests;
 using TonLibDotNet.Types;
 
 namespace TonLibDotNet
@@ -66,14 +65,44 @@ namespace TonLibDotNet
 
             var hints = await tonClient.GetBip39Hints("zo");
 
-            var key = await tonClient.CreateNewKey();
-            var ek = await tonClient.ExportKey(key);
-            await tonClient.DeleteKey(key);
-
-            // await tonClient.DeleteAllKeys();
+            await RunKeyDemo(tonClient);
 
             // Loggers need some time to flush data to screen/console.
             await Task.Delay(TimeSpan.FromSeconds(1));
+        }
+
+        private static async Task RunKeyDemo(ITonClient tonClient)
+        {
+            // some "random" bytes
+            var localPass = Convert.ToBase64String(new byte[] { 1, 2, 3, 4, 5 });
+            var mnemonicPass = Convert.ToBase64String(new byte[] { 19, 42, 148 });
+            var randomExtra = Convert.ToBase64String(new byte[] { 10, 9, 8, 7, 6, 5, 4, 3, 2, 1 });
+            var keyPass = Convert.ToBase64String(new byte[] { 21, 3, 7, 11 });
+
+            var key = await tonClient.CreateNewKey(localPass, mnemonicPass, randomExtra);
+            var ek = await tonClient.ExportKey(key, localPass);
+            var epk = await tonClient.ExportPemKey(key, localPass, keyPass);
+            var eek = await tonClient.ExportEncryptedKey(key, localPass, keyPass);
+            var euk = await tonClient.ExportUnencryptedKey(key, localPass);
+
+            //// does not work, see https://github.com/ton-blockchain/ton/issues/202
+            //// key = await tonClient.ChangeLocalPassword(key, localPass, Convert.ToBase64String(new byte[] { 7, 6, 5 }));
+
+            await tonClient.DeleteKey(key);
+
+            var key2 = await tonClient.ImportKey(ek, localPass, mnemonicPass);
+            await tonClient.DeleteKey(key2);
+
+            var key3 = await tonClient.ImportPemKey(epk, localPass, keyPass);
+            await tonClient.DeleteKey(key3);
+
+            var key4 = await tonClient.ImportEncryptedKey(eek, localPass, keyPass);
+            await tonClient.DeleteKey(key4);
+
+            var key5 = await tonClient.ImportUnencryptedKey(euk, localPass);
+            await tonClient.DeleteKey(key5);
+
+            await tonClient.DeleteAllKeys();
         }
     }
 }
