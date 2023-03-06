@@ -519,11 +519,38 @@ namespace TonLibDotNet {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;wallet.highload.v1.initialAccountState&quot;,&quot;public_key&quot;:&quot;PuZi0henKVaHtfaaRZs-DedaOxKUlWkS_jBE1qYLQ4m9mpU9&quot;,&quot;wallet_id&quot;:4085333890}.
+        /// </summary>
+        public static string Wallet_HighloadV1InitialAccountState {
+            get {
+                return ResourceManager.GetString("Wallet_HighloadV1InitialAccountState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;wallet.highload.v2.initialAccountState&quot;,&quot;public_key&quot;:&quot;PuZi0henKVaHtfaaRZs-DedaOxKUlWkS_jBE1qYLQ4m9mpU9&quot;,&quot;wallet_id&quot;:4085333890}.
+        /// </summary>
+        public static string Wallet_HighloadV2InitialAccountState {
+            get {
+                return ResourceManager.GetString("Wallet_HighloadV2InitialAccountState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;wallet.v3.accountState&quot;,&quot;wallet_id&quot;:&quot;698983191&quot;,&quot;seqno&quot;:35}.
         /// </summary>
         public static string Wallet_V3AccountState {
             get {
                 return ResourceManager.GetString("Wallet_V3AccountState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;wallet.v3.initialAccountState&quot;,&quot;public_key&quot;:&quot;PuZi0henKVaHtfaaRZs-DedaOxKUlWkS_jBE1qYLQ4m9mpU9&quot;,&quot;wallet_id&quot;:4085333890}.
+        /// </summary>
+        public static string Wallet_V3InitialAccountState {
+            get {
+                return ResourceManager.GetString("Wallet_V3InitialAccountState", resourceCulture);
             }
         }
     }

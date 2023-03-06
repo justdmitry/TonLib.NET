@@ -282,7 +282,16 @@
   <data name="UpdateSyncState" xml:space="preserve">
     <value>{"@type":"updateSyncState","sync_state":{"@type":"syncStateInProgress","from_seqno":27005885,"to_seqno":27011756,"current_seqno":27011750}}</value>
   </data>
+  <data name="Wallet_HighloadV1InitialAccountState" xml:space="preserve">
+    <value>{"@type":"wallet.highload.v1.initialAccountState","public_key":"PuZi0henKVaHtfaaRZs-DedaOxKUlWkS_jBE1qYLQ4m9mpU9","wallet_id":4085333890}</value>
+  </data>
+  <data name="Wallet_HighloadV2InitialAccountState" xml:space="preserve">
+    <value>{"@type":"wallet.highload.v2.initialAccountState","public_key":"PuZi0henKVaHtfaaRZs-DedaOxKUlWkS_jBE1qYLQ4m9mpU9","wallet_id":4085333890}</value>
+  </data>
   <data name="Wallet_V3AccountState" xml:space="preserve">
     <value>{"@type":"wallet.v3.accountState","wallet_id":"698983191","seqno":35}</value>
+  </data>
+  <data name="Wallet_V3InitialAccountState" xml:space="preserve">
+    <value>{"@type":"wallet.v3.initialAccountState","public_key":"PuZi0henKVaHtfaaRZs-DedaOxKUlWkS_jBE1qYLQ4m9mpU9","wallet_id":4085333890}</value>
   </data>
 </root>
