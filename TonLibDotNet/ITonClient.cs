@@ -6,6 +6,8 @@ namespace TonLibDotNet
 {
     public interface ITonClient
     {
+        OptionsInfo OptionsInfo { get; }
+
         Task<OptionsInfo?> InitIfNeeded();
 
         Task<OptionsInfo?> Reinit();
@@ -16,6 +18,9 @@ namespace TonLibDotNet
         decimal ConvertFromNanoTon(long nano);
 
         long ConvertToNanoTon(decimal ton);
+
+        [return: NotNullIfNotNull("source")]
+        string? EncodeStringAsBase64(string? source);
 
         bool TryDecodeBase64AsString(string? source, [NotNullWhen(true)] out string? result);
     }

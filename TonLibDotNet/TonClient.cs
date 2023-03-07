@@ -48,6 +48,8 @@ namespace TonLibDotNet
         [DllImport(TonLibResolver.DllNamePlaceholder)]
         private static extern IntPtr tonlib_client_json_receive(IntPtr client, double timeout);
 
+        public OptionsInfo OptionsInfo { get; private set; }
+
         public async Task<OptionsInfo?> InitIfNeeded()
         {
             if (needReinit)
@@ -86,7 +88,8 @@ namespace TonLibDotNet
 
             tonOptions.Options.Config.ConfigJson = jdoc.ToJsonString();
 
-            return await Execute(new Init(tonOptions.Options));
+            OptionsInfo = await Execute(new Init(tonOptions.Options));
+            return OptionsInfo;
         }
 
         public Task<OptionsInfo?> Reinit()
@@ -153,6 +156,17 @@ namespace TonLibDotNet
         public long ConvertToNanoTon(decimal ton)
         {
             return Convert.ToInt64(ton * 1_000_000_000M);
+        }
+
+        [return: NotNullIfNotNull("source")]
+        public string? EncodeStringAsBase64(string? source)
+        {
+            if (string.IsNullOrEmpty(source))
+            {
+                return source;
+            }
+
+            return Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(source));
         }
 
         public bool TryDecodeBase64AsString(string? source, [NotNullWhen(true)] out string? result)
