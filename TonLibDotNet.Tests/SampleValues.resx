@@ -120,6 +120,12 @@
   <data name="AccountAddress" xml:space="preserve">
     <value>{"@type":"accountAddress","account_address":"EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh"}</value>
   </data>
+  <data name="ActionMsg" xml:space="preserve">
+    <value>{"@type":"actionMsg","messages":[{"@type":"msg.message","destination":{"@type":"accountAddress","account_address":"...."},"public_key":".....","amount":10000000,"data":{"@type":"msg.dataText","text":"???"},"send_mode":1}],"allow_send_to_uninited":true}</value>
+  </data>
+  <data name="ActionNoop" xml:space="preserve">
+    <value>{"@type":"actionNoop"}</value>
+  </data>
   <data name="Bip39Hints" xml:space="preserve">
     <value>{"@type":"bip39Hints","words":["auction","audit","august","aunt","author","auto","autumn"]}</value>
   </data>
@@ -231,6 +237,9 @@
   </data>
   <data name="Msg_DataText" xml:space="preserve">
     <value>{"@type":"msg.dataText","text":"Um95YWx0eQ=="}</value>
+  </data>
+  <data name="Msg_Message" xml:space="preserve">
+    <value>{"@type":"msg.message","destination":{"@type":"accountAddress","account_address":"EQAk...mdT0"},"public_key":"PuZi...pU9","amount":10000000,"data":{"@type":"msg.dataText","text":"U2VudCB1c2luZyBodHRwczovL2dpdGh1Yi5jb20vanVzdGRtaXRyeS9Ub25MaWIuTkVU"},"send_mode":1}</value>
   </data>
   <data name="Ok" xml:space="preserve">
     <value>{"@type":"ok"}</value>

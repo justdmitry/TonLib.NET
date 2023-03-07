@@ -3,6 +3,11 @@
     [TLSchema("msg.dataEncryptedText text:bytes = msg.Data")]
     public class DataEncryptedText : Data
     {
-        public string Text { get; set; } = string.Empty;
+        public DataEncryptedText(string text)
+        {
+            Text = text;
+        }
+
+        public string Text { get; set; }
     }
 }

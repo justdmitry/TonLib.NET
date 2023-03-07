@@ -70,6 +70,24 @@ namespace TonLibDotNet {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;actionMsg&quot;,&quot;messages&quot;:[{&quot;@type&quot;:&quot;msg.message&quot;,&quot;destination&quot;:{&quot;@type&quot;:&quot;accountAddress&quot;,&quot;account_address&quot;:&quot;....&quot;},&quot;public_key&quot;:&quot;.....&quot;,&quot;amount&quot;:10000000,&quot;data&quot;:{&quot;@type&quot;:&quot;msg.dataText&quot;,&quot;text&quot;:&quot;???&quot;},&quot;send_mode&quot;:1}],&quot;allow_send_to_uninited&quot;:true}.
+        /// </summary>
+        public static string ActionMsg {
+            get {
+                return ResourceManager.GetString("ActionMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;actionNoop&quot;}.
+        /// </summary>
+        public static string ActionNoop {
+            get {
+                return ResourceManager.GetString("ActionNoop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;bip39Hints&quot;,&quot;words&quot;:[&quot;auction&quot;,&quot;audit&quot;,&quot;august&quot;,&quot;aunt&quot;,&quot;author&quot;,&quot;auto&quot;,&quot;autumn&quot;]}.
         /// </summary>
         public static string Bip39Hints {
@@ -375,6 +393,15 @@ namespace TonLibDotNet {
         public static string Msg_DataText {
             get {
                 return ResourceManager.GetString("Msg_DataText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;msg.message&quot;,&quot;destination&quot;:{&quot;@type&quot;:&quot;accountAddress&quot;,&quot;account_address&quot;:&quot;EQAk...mdT0&quot;},&quot;public_key&quot;:&quot;PuZi...pU9&quot;,&quot;amount&quot;:10000000,&quot;data&quot;:{&quot;@type&quot;:&quot;msg.dataText&quot;,&quot;text&quot;:&quot;U2VudCB1c2luZyBodHRwczovL2dpdGh1Yi5jb20vanVzdGRtaXRyeS9Ub25MaWIuTkVU&quot;},&quot;send_mode&quot;:1}.
+        /// </summary>
+        public static string Msg_Message {
+            get {
+                return ResourceManager.GetString("Msg_Message", resourceCulture);
             }
         }
         

@@ -3,8 +3,14 @@
     [TLSchema("msg.dataRaw body:bytes init_state:bytes = msg.Data")]
     public class DataRaw : Data
     {
-        public string Body { get; set; } = string.Empty;
+        public DataRaw(string body, string initState)
+        {
+            Body = body;
+            InitState = initState;
+        }
 
-        public string InitState { get; set; } = string.Empty;
+        public string Body { get; set; }
+
+        public string InitState { get; set; }
     }
 }
