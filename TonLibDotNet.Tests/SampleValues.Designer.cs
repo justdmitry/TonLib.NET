@@ -154,6 +154,15 @@ namespace TonLibDotNet {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;createQuery&quot;,&quot;private_key&quot;:{&quot;@type&quot;:&quot;inputKeyRegular&quot;,&quot;key&quot;:{&quot;@type&quot;:&quot;key&quot;,&quot;public_key&quot;:&quot;PuZ...pU9&quot;,&quot;secret&quot;:&quot;zB...WY=&quot;}},&quot;address&quot;:{&quot;@type&quot;:&quot;accountAddress&quot;,&quot;account_address&quot;:&quot;EQA...dT0&quot;},&quot;timeout&quot;:60,&quot;action&quot;:{&quot;@type&quot;:&quot;actionMsg&quot;,&quot;messages&quot;:[{&quot;@type&quot;:&quot;msg.message&quot;,&quot;destination&quot;:{&quot;@type&quot;:&quot;accountAddress&quot;,&quot;account_address&quot;:&quot;EQA...dT0&quot;},&quot;amount&quot;:10000000,&quot;data&quot;:{&quot;@type&quot;:&quot;msg.dataText&quot;,&quot;text&quot;:&quot;U2Vu...kVU&quot;},&quot;send_mode&quot;:1}],&quot;allow_send_to_uninited&quot;:true},&quot;initial_account_state&quot;:{&quot;@type&quot;:&quot;wallet.v3.ini [rest of string was truncated]&quot;;.
+        /// </summary>
+        public static string CreateQuery {
+            get {
+                return ResourceManager.GetString("CreateQuery", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;deleteAllKeys&quot;}.
         /// </summary>
         public static string DeleteAllKeys {
@@ -249,6 +258,15 @@ namespace TonLibDotNet {
         public static string ExportUnencryptedKey {
             get {
                 return ResourceManager.GetString("ExportUnencryptedKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;fees&quot;,&quot;in_fwd_fee&quot;:2048000,&quot;storage_fee&quot;:1575,&quot;gas_fee&quot;:2994000,&quot;fwd_fee&quot;:1228000}.
+        /// </summary>
+        public static string Fees {
+            get {
+                return ResourceManager.GetString("Fees", resourceCulture);
             }
         }
         
@@ -438,6 +456,60 @@ namespace TonLibDotNet {
         public static string PackAccountAddress {
             get {
                 return ResourceManager.GetString("PackAccountAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;query.estimateFees&quot;,&quot;id&quot;:1,&quot;ignore_chksig&quot;:true}.
+        /// </summary>
+        public static string Query_EstimateFees {
+            get {
+                return ResourceManager.GetString("Query_EstimateFees", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;query.fees&quot;,&quot;source_fees&quot;:{&quot;@type&quot;:&quot;fees&quot;,&quot;in_fwd_fee&quot;:2048000,&quot;storage_fee&quot;:1575,&quot;gas_fee&quot;:2994000,&quot;fwd_fee&quot;:1228000},&quot;destination_fees&quot;:[{&quot;@type&quot;:&quot;fees&quot;,&quot;in_fwd_fee&quot;:0,&quot;storage_fee&quot;:1575,&quot;gas_fee&quot;:100000,&quot;fwd_fee&quot;:0}]}.
+        /// </summary>
+        public static string Query_Fees {
+            get {
+                return ResourceManager.GetString("Query_Fees", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;query.forget&quot;,&quot;id&quot;:1}.
+        /// </summary>
+        public static string Query_Forget {
+            get {
+                return ResourceManager.GetString("Query_Forget", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;query.getInfo&quot;,&quot;id&quot;:1}.
+        /// </summary>
+        public static string Query_GetInfo {
+            get {
+                return ResourceManager.GetString("Query_GetInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;query.info&quot;,&quot;id&quot;:1,&quot;valid_until&quot;:1678173619,&quot;body_hash&quot;:&quot;XWY...NdE=&quot;,&quot;body&quot;:&quot;te6...BL1U=&quot;,&quot;init_state&quot;:&quot;???&quot;}.
+        /// </summary>
+        public static string Query_Info {
+            get {
+                return ResourceManager.GetString("Query_Info", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;query.send&quot;,&quot;id&quot;:1}.
+        /// </summary>
+        public static string Query_Send {
+            get {
+                return ResourceManager.GetString("Query_Send", resourceCulture);
             }
         }
         

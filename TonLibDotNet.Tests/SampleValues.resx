@@ -157,6 +157,9 @@
   <data name="CreateNewKey" xml:space="preserve">
     <value>{"@type":"createNewKey","local_password":"111","mnemonic_password":"222","random_extra_seed":"333"}</value>
   </data>
+  <data name="CreateQuery" xml:space="preserve">
+    <value>{"@type":"createQuery","private_key":{"@type":"inputKeyRegular","key":{"@type":"key","public_key":"PuZ...pU9","secret":"zB...WY="}},"address":{"@type":"accountAddress","account_address":"EQA...dT0"},"timeout":60,"action":{"@type":"actionMsg","messages":[{"@type":"msg.message","destination":{"@type":"accountAddress","account_address":"EQA...dT0"},"amount":10000000,"data":{"@type":"msg.dataText","text":"U2Vu...kVU"},"send_mode":1}],"allow_send_to_uninited":true},"initial_account_state":{"@type":"wallet.v3.initialAccountState","public_key":"PuZ...pU9","wallet_id":698983191}}</value>
+  </data>
   <data name="DeleteAllKeys" xml:space="preserve">
     <value>{"@type":"deleteAllKeys"}</value>
   </data>
@@ -189,6 +192,9 @@
   </data>
   <data name="ExportUnencryptedKey" xml:space="preserve">
     <value>{"@type":"exportUnencryptedKey","input_key":{"@type":"inputKeyRegular","key":{"@type":"key","public_key":"PuYJ...gEIP","secret":"B6Ya...Aorg="},"local_password":"AQIDBAU="}}</value>
+  </data>
+  <data name="Fees" xml:space="preserve">
+    <value>{"@type":"fees","in_fwd_fee":2048000,"storage_fee":1575,"gas_fee":2994000,"fwd_fee":1228000}</value>
   </data>
   <data name="FullAccountState" xml:space="preserve">
     <value>{"@type":"fullAccountState","address":{"@type":"accountAddress","account_address":"EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh"},"balance":"136217239329079","last_transaction_id":{"@type":"internal.transactionId","lt":"34942442000005","hash":"vhl79O/OZ4LCC7cdkKj22uNv5diIrIltOLujpFOLwTk="},"block_id":{"@type":"ton.blockIdExt","workchain":-1,"shard":"-9223372036854775808","seqno":27011756,"root_hash":"AhS55h8lmOyxtw29gWux0XZzXgiAbE69UsP44xIWdXM=","file_hash":"TwDj86Fbvgvxte2UXpYtm2CpMSC/wIyxZph6mPDn99A="},"sync_utime":1675249913,"account_state":{"@type":"wallet.v3.accountState","wallet_id":"698983191","seqno":35},"revision":2}</value>
@@ -252,6 +258,24 @@
   </data>
   <data name="PackAccountAddress" xml:space="preserve">
     <value>{"@type":"packAccountAddress","account_address":{"@type":"unpackedAccountAddress","workchain_id":0,"bounceable":true,"testnet":false,"addr":"iU5IXdVtsM7ZFTaf3bCgab9kiKFFqCMsyO5kK20q4/w="}}</value>
+  </data>
+  <data name="Query_EstimateFees" xml:space="preserve">
+    <value>{"@type":"query.estimateFees","id":1,"ignore_chksig":true}</value>
+  </data>
+  <data name="Query_Fees" xml:space="preserve">
+    <value>{"@type":"query.fees","source_fees":{"@type":"fees","in_fwd_fee":2048000,"storage_fee":1575,"gas_fee":2994000,"fwd_fee":1228000},"destination_fees":[{"@type":"fees","in_fwd_fee":0,"storage_fee":1575,"gas_fee":100000,"fwd_fee":0}]}</value>
+  </data>
+  <data name="Query_Forget" xml:space="preserve">
+    <value>{"@type":"query.forget","id":1}</value>
+  </data>
+  <data name="Query_GetInfo" xml:space="preserve">
+    <value>{"@type":"query.getInfo","id":1}</value>
+  </data>
+  <data name="Query_Info" xml:space="preserve">
+    <value>{"@type":"query.info","id":1,"valid_until":1678173619,"body_hash":"XWY...NdE=","body":"te6...BL1U=","init_state":"???"}</value>
+  </data>
+  <data name="Query_Send" xml:space="preserve">
+    <value>{"@type":"query.send","id":1}</value>
   </data>
   <data name="Raw_FullAccountState" xml:space="preserve">
     <value>{"@type":"raw.fullAccountState","balance":"136219372128177","code":"te6cckEBAQEAcQAA3v8AIN0gggFMl7ohggEznLqxn3Gw7UTQ0x/THzHXC//jBOCk8mCDCNcYINMf0x/TH/gjE7vyY+1E0NMf0x/T/9FRMrryoVFEuvKiBPkBVBBV+RDyo/gAkyDXSpbTB9QC+wDo0QGkyMsfyx/L/8ntVBC9ba0=","data":"te6cckEBAQEAKgAAUAAAACMpqaMXb7DhKt9TV4heY445fd1j4cnc24PkHSaiiBxRdV3sZK6FBhF3","last_transaction_id":{"@type":"internal.transactionId","lt":"34948872000007","hash":"j2fRsAIg2Abex+P+GCRu9dNcmGs36Wd9U0gedEGX8oA="},"block_id":{"@type":"ton.blockIdExt","workchain":-1,"shard":"-9223372036854775808","seqno":27016796,"root_hash":"ld4MbnHygFd/z7oG3LCnBZtH+2iIDu5N7tRnjeSGwJE=","file_hash":"N6CepThwpP7E0EIxEWCHks/VLuUT+ZuEwLHZpWyfO54="},"frozen_hash":"---","sync_utime":1675267268}</value>
