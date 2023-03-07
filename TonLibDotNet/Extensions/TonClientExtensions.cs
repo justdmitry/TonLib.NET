@@ -9,7 +9,10 @@ namespace TonLibDotNet
         /// Calculate the address of a new wallet smart contract.
         /// </summary>
         /// <param name="client">ITonClient instance.</param>
-        /// <param name="initialAccountState">Desired wallet type: <see cref="Types.Wallet.V3InitialAccountState"/> or <see cref="Types.Wallet.HighloadV1InitialAccountState"/> or <see cref="Types.Wallet.HighloadV2InitialAccountState"/>.</param>
+        /// <param name="initialAccountState">
+        /// Desired wallet type: <see cref="Types.Wallet.V3InitialAccountState"/> or <see cref="Types.Wallet.HighloadV1InitialAccountState"/> or <see cref="Types.Wallet.HighloadV2InitialAccountState"/>.
+        /// For <b>WalletId</b> use <see cref="ITonClient.OptionsInfo.ConfigInfo.DefaultWalletId"/> + workchainId.
+        /// </param>
         /// <param name="revision">Use <b>0</b> for default (latest) revision, positive value for specific revision, or <b>-1</b> for experimental (newest) revision (only for debug purpose).</param>
         /// <param name="workchainId">Use <b>-1</b> for masterchain, <b>0</b> for basechain.</param>
         /// <remarks>Executes as static (without LiteServer call).</remarks>
