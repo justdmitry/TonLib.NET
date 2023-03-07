@@ -262,6 +262,15 @@ namespace TonLibDotNet {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;getAccountAddress&quot;,&quot;initial_account_state&quot;:{&quot;@type&quot;:&quot;wallet.v3.initialAccountState&quot;,&quot;public_key&quot;:&quot;PuZ....mpU9&quot;,&quot;wallet_id&quot;:698983191},&quot;revision&quot;:3,&quot;workchain_id&quot;:-1}.
+        /// </summary>
+        public static string GetAccountAddress {
+            get {
+                return ResourceManager.GetString("GetAccountAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;getAccountState&quot;,&quot;account_address&quot;:{&quot;@type&quot;:&quot;accountAddress&quot;,&quot;account_address&quot;:&quot;EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh&quot;}}.
         /// </summary>
         public static string GetAccountState {

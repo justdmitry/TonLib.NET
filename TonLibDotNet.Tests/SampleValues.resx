@@ -193,6 +193,9 @@
   <data name="FullAccountState" xml:space="preserve">
     <value>{"@type":"fullAccountState","address":{"@type":"accountAddress","account_address":"EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh"},"balance":"136217239329079","last_transaction_id":{"@type":"internal.transactionId","lt":"34942442000005","hash":"vhl79O/OZ4LCC7cdkKj22uNv5diIrIltOLujpFOLwTk="},"block_id":{"@type":"ton.blockIdExt","workchain":-1,"shard":"-9223372036854775808","seqno":27011756,"root_hash":"AhS55h8lmOyxtw29gWux0XZzXgiAbE69UsP44xIWdXM=","file_hash":"TwDj86Fbvgvxte2UXpYtm2CpMSC/wIyxZph6mPDn99A="},"sync_utime":1675249913,"account_state":{"@type":"wallet.v3.accountState","wallet_id":"698983191","seqno":35},"revision":2}</value>
   </data>
+  <data name="GetAccountAddress" xml:space="preserve">
+    <value>{"@type":"getAccountAddress","initial_account_state":{"@type":"wallet.v3.initialAccountState","public_key":"PuZ....mpU9","wallet_id":698983191},"revision":3,"workchain_id":-1}</value>
+  </data>
   <data name="GetAccountState" xml:space="preserve">
     <value>{"@type":"getAccountState","account_address":{"@type":"accountAddress","account_address":"EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh"}}</value>
   </data>

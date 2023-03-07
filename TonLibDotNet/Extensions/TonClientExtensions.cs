@@ -6,6 +6,23 @@ namespace TonLibDotNet
     public static class TonClientExtensions
     {
         /// <summary>
+        /// Calculate the address of a new wallet smart contract.
+        /// </summary>
+        /// <param name="client">ITonClient instance.</param>
+        /// <param name="initialAccountState">Desired wallet type: <see cref="Types.Wallet.V3InitialAccountState"/> or <see cref="Types.Wallet.HighloadV1InitialAccountState"/> or <see cref="Types.Wallet.HighloadV2InitialAccountState"/>.</param>
+        /// <param name="revision">Use <b>0</b> for default (latest) revision, positive value for specific revision, or <b>-1</b> for experimental (newest) revision (only for debug purpose).</param>
+        /// <param name="workchainId">Use <b>-1</b> for masterchain, <b>0</b> for basechain.</param>
+        /// <remarks>Executes as static (without LiteServer call).</remarks>
+        /// <seealso href="https://ton.org/docs/develop/dapps/asset-processing/#deploying-wallet"/>
+        /// <seealso href="https://github.com/ton-blockchain/ton/blob/v2023.01/tonlib/tonlib/TonlibClient.cpp#L2869" />
+        public static Task<AccountAddress> GetAccountAddress(this ITonClient client, InitialAccountState initialAccountState, int revision = 0, int workchainId = 0)
+        {
+            ArgumentNullException.ThrowIfNull(initialAccountState);
+
+            return client.Execute(new GetAccountAddress(initialAccountState) { Revision = revision, WorkchainId = workchainId });
+        }
+
+        /// <summary>
         /// Returns <see cref="FullAccountState"/> for specified account address.
         /// </summary>
         /// <param name="client">ITonClient instance.</param>
