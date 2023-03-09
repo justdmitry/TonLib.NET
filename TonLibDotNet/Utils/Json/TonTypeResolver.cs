@@ -8,6 +8,8 @@ namespace TonLibDotNet.Utils.Json
     // Based on https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/polymorphism?pivots=dotnet-7-0#configure-polymorphism-with-the-contract-model
     public class TonTypeResolver : DefaultJsonTypeInfoResolver
     {
+        public static List<Assembly> AdditionalAsseblies { get; } = new List<Assembly>();
+
         public override JsonTypeInfo GetTypeInfo(Type type, JsonSerializerOptions options)
         {
             var jsonTypeInfo = base.GetTypeInfo(type, options);
@@ -29,13 +31,14 @@ namespace TonLibDotNet.Utils.Json
 
         protected void AppendTypes(Type type, IList<JsonDerivedType> list)
         {
-            var types = GetType().Assembly.GetExportedTypes()
-                .Where(x => x.IsAssignableTo(type) && !x.IsAbstract)
-                .Select(x => new
-                {
-                    type = x,
-                    schema = x.GetCustomAttribute<TLSchemaAttribute>(false),
-                });
+            var types = AdditionalAsseblies.Append(GetType().Assembly)
+                .SelectMany(a => a.GetExportedTypes()
+                    .Where(x => x.IsAssignableTo(type) && !x.IsAbstract)
+                    .Select(x => new
+                    {
+                        type = x,
+                        schema = x.GetCustomAttribute<TLSchemaAttribute>(false),
+                    }));
 
             foreach (var item in types.Where(x => x.schema != null))
             {

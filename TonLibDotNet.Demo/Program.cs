@@ -36,6 +36,9 @@ namespace TonLibDotNet
                 services.AddSingleton<ITonClient, TonClient>();
             });
 
+            /// Add types from current assembly (see <see cref="ExtensibilityDemoRequest"/> class and <see cref="RunExtensibilityDemo(ITonClient)" below />).
+            TonClient.RegisterAssembly(typeof(Program).Assembly);
+
             var app = builder.Build();
 
             var logger = app.Services.GetRequiredService<ILoggerFactory>().CreateLogger(nameof(Program));
@@ -58,6 +61,8 @@ namespace TonLibDotNet
             {
                 await RunSendDemo(tonClient, logger, TestnetAccountToSendFromAddress, TestnetAccountToSendFromMnemonic);
             }
+
+            await RunExtensibilityDemo(tonClient, logger);
 
             // Loggers need some time to flush data to screen/console.
             await Task.Delay(TimeSpan.FromSeconds(1));
@@ -169,6 +174,22 @@ namespace TonLibDotNet
 
             // Send it to network. You dont have TX id or something in respnse - just poll getTransactions() for your account and wait for new TX.
             _ = await tonClient.QuerySend(query.Id);
+        }
+
+        private static async Task RunExtensibilityDemo(ITonClient tonClient, ILogger logger)
+        {
+            // This will fail because TonLib does not have this method.
+            // This is just a demo how you can add new types/requests without waiting for new package release.
+            // To make this happen in your app - call TonClient.RegisterAssembly() early
+            try
+            {
+                await tonClient.Execute(new ExtensibilityDemoRequest() { Continent = "Antarctica" });
+            }
+            catch (TonClientException ex)
+            {
+                logger.LogWarning(ex, "Exception ignored");
+                // Ignore
+            }
         }
     }
 }

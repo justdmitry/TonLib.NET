@@ -16,8 +16,8 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>ton, tonlib, libtonlibjson</PackageTags>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <Version>0.8.0</Version>
-    <PackageReleaseNotes>Added methods sending TON.</PackageReleaseNotes>
+    <Version>0.9.0</Version>
+    <PackageReleaseNotes>Extensibility: register new types/requests from other assemblies.</PackageReleaseNotes>
     <Description>TonLib (libtonlibjson) wrapper for accessing Telegram Open Network lite servers (nodes) via ADNL protocol.</Description>
   </PropertyGroup>
 

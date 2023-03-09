@@ -50,6 +50,15 @@ namespace TonLibDotNet
 
         public OptionsInfo OptionsInfo { get; private set; }
 
+        /// <summary>
+        /// Add assembly with additional <see cref="TypeBase"/> classes for LiteServer interaction.
+        /// </summary>
+        /// <param name="assembly">Assembly to add</param>
+        public static void RegisterAssembly(System.Reflection.Assembly assembly)
+        {
+            TonLibDotNet.Utils.Json.TonTypeResolver.AdditionalAsseblies.Add(assembly);
+        }
+
         public async Task<OptionsInfo?> InitIfNeeded()
         {
             if (needReinit)
