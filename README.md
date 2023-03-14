@@ -5,10 +5,9 @@ Wrapper around `libtonlibjson` library for accessing [Telegram Open Network](htt
 
 **Important!** You need to obtain compiled `tonlibjson.dll` (or appropriate for your OS) and its dependencies (e.g. `libcrypto-1_1-x64.dll`) yourself. See below for details.
 
-[![NuGet](https://img.shields.io/nuget/v/TonLib.Net.svg?maxAge=86400&style=flat)](https://www.nuget.org/packages/TonLib.Net/) 
+[![NuGet](https://img.shields.io/nuget/v/TonLib.Net.svg?color=blue)](https://www.nuget.org/packages/TonLib.Net/) ![NuGet downloads](https://img.shields.io/nuget/dt/TonLib.NET?color=blue) ![Framework](https://img.shields.io/badge/framework-net6.0-blue) ![GitHub License](https://img.shields.io/github/license/justdmitry/TonLib.NET?color=blue) 
 
-
-⚠ Uses `System.Text.Json` package **v7.0.1** (from `net7.0`) - it makes [de]serialization much simpler (because of [Polymorphic serialization](https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/polymorphism)). It only updates `System.text.Encodings.Web` (v6.0 -> v7.0) as a transitive dependency, which I think is acceptable.
+⚠ Uses `System.Text.Json` package **v7.0.1** (from `net7.0`) - it makes [de]serialization much simpler (because of [Polymorphic serialization](https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/polymorphism)). It only updates `System.Text.Encodings.Web` (v6.0 -> v7.0) as a transitive dependency, which I think is acceptable.
 
 ## Usage
 
