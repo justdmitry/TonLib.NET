@@ -120,11 +120,17 @@
   <data name="AccountAddress" xml:space="preserve">
     <value>{"@type":"accountAddress","account_address":"EQCJTkhd1W2wztkVNp_dsKBpv2SIoUWoIyzI7mQrbSrj_NSh"}</value>
   </data>
+  <data name="ActionDns" xml:space="preserve">
+    <value>{"@type":"actionDns","actions":[{"@type":"dns.actionDelete","name":"test.ton","category":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA="},{"@type":"dns.actionDeleteAll"}]}</value>
+  </data>
   <data name="ActionMsg" xml:space="preserve">
     <value>{"@type":"actionMsg","messages":[{"@type":"msg.message","destination":{"@type":"accountAddress","account_address":"...."},"public_key":".....","amount":10000000,"data":{"@type":"msg.dataText","text":"???"},"send_mode":1}],"allow_send_to_uninited":true}</value>
   </data>
   <data name="ActionNoop" xml:space="preserve">
     <value>{"@type":"actionNoop"}</value>
+  </data>
+  <data name="AdnlAddress" xml:space="preserve">
+    <value>{"@type":"adnlAddress","adnl_address":"xfupfrvndwrx7ryltn2zmrgqlwmcdcv2zuhifqgachk3a4xsvi2c4qh"}</value>
   </data>
   <data name="Bip39Hints" xml:space="preserve">
     <value>{"@type":"bip39Hints","words":["auction","audit","august","aunt","author","auto","autumn"]}</value>
@@ -165,6 +171,36 @@
   </data>
   <data name="DeleteKey" xml:space="preserve">
     <value>{"@type":"deleteKey","key":{"@type":"key","public_key":"Pub...HnG","secret":"gbV...bA="}}</value>
+  </data>
+  <data name="Dns_ActionDelete" xml:space="preserve">
+    <value>{"@type":"dns.actionDelete","name":"test.ton","category":"AAA...AAA="}</value>
+  </data>
+  <data name="Dns_ActionDeleteAll" xml:space="preserve">
+    <value>{"@type":"dns.actionDeleteAll"}</value>
+  </data>
+  <data name="Dns_ActionSet" xml:space="preserve">
+    <value>{"@type":"dns.actionSet","entry":{"@type":"dns.entry","name":"test2.ton","category":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=","entry":{"@type":"dns.entryDataAdnlAddress","adnl_address":{"@type":"adnlAddress","adnl_address":"xfupfrvndwrx7ryltn2zmrgqlwmcdcv2zuhifqgachk3a4xsvi2c4qh"}}}}</value>
+  </data>
+  <data name="Dns_Entry" xml:space="preserve">
+    <value>{"@type":"dns.entry","name":"toncenter.","category":"GfAkQe5Yj9sm7iSyVo3QNcPJIG4Rq5eb5i5VVYodF/8=","entry":{"@type":"dns.entryDataNextResolver","resolver":{"@type":"accountAddress","account_address":"EQAiIsvar4OYBn8BGBf9flfin6tl5poBx4MgJe4CQJYasy51"}}}</value>
+  </data>
+  <data name="Dns_EntryDataAdnlAddress" xml:space="preserve">
+    <value>{"@type":"dns.entryDataAdnlAddress","adnl_address":{"@type":"adnlAddress","adnl_address":"xfupfrvndwrx7ryltn2zmrgqlwmcdcv2zuhifqgachk3a4xsvi2c4qh"}}</value>
+  </data>
+  <data name="Dns_EntryDataNextResolver" xml:space="preserve">
+    <value>{"@type":"dns.entryDataNextResolver","resolver":{"@type":"accountAddress","account_address":"EQAiIsvar4OYBn8BGBf9flfin6tl5poBx4MgJe4CQJYasy51"}}</value>
+  </data>
+  <data name="Dns_EntryDataText" xml:space="preserve">
+    <value>{"@type":"dns.entryDataText","text":"Hello, World"}</value>
+  </data>
+  <data name="Dns_InitialAccountState" xml:space="preserve">
+    <value>{"@type":"dns.initialAccountState","public_key":"PuboprBeKvVkQVnCcT7lt3WkNMaHL9F4OM9oxnWOgQ-ZB9Nm","wallet_id":698983191}</value>
+  </data>
+  <data name="Dns_Resolve" xml:space="preserve">
+    <value>{"@type":"dns.resolve","name":"toncenter.","account_address":{"@type":"accountAddress","account_address":"EQC3dNlesgVD8YbAazcauIrXBPfiVhMMr5YYk2in0Mtsz0Bz"},"category":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=","ttl":777}</value>
+  </data>
+  <data name="Dns_Resolved" xml:space="preserve">
+    <value>{"@type":"dns.resolved","entries":[{"@type":"dns.entry","name":"toncenter.","category":"GfAkQe5Yj9sm7iSyVo3QNcPJIG4Rq5eb5i5VVYodF/8=","entry":{"@type":"dns.entryDataNextResolver","resolver":{"@type":"accountAddress","account_address":"EQAiIsvar4OYBn8BGBf9flfin6tl5poBx4MgJe4CQJYasy51"}}}]}</value>
   </data>
   <data name="Error" xml:space="preserve">
     <value>{"@type":"error","code":400,"message":"INVALID_ACCOUNT_ADDRESSFailed to parse account address"}</value>
@@ -276,6 +312,9 @@
   </data>
   <data name="Query_Send" xml:space="preserve">
     <value>{"@type":"query.send","id":1}</value>
+  </data>
+  <data name="Raw_AccountState" xml:space="preserve">
+    <value>{"@type":"raw.accountState","code":"te6...zJw==","data":"te6...CWaB","frozen_hash":"???"}</value>
   </data>
   <data name="Raw_FullAccountState" xml:space="preserve">
     <value>{"@type":"raw.fullAccountState","balance":"136219372128177","code":"te6cckEBAQEAcQAA3v8AIN0gggFMl7ohggEznLqxn3Gw7UTQ0x/THzHXC//jBOCk8mCDCNcYINMf0x/TH/gjE7vyY+1E0NMf0x/T/9FRMrryoVFEuvKiBPkBVBBV+RDyo/gAkyDXSpbTB9QC+wDo0QGkyMsfyx/L/8ntVBC9ba0=","data":"te6cckEBAQEAKgAAUAAAACMpqaMXb7DhKt9TV4heY445fd1j4cnc24PkHSaiiBxRdV3sZK6FBhF3","last_transaction_id":{"@type":"internal.transactionId","lt":"34948872000007","hash":"j2fRsAIg2Abex+P+GCRu9dNcmGs36Wd9U0gedEGX8oA="},"block_id":{"@type":"ton.blockIdExt","workchain":-1,"shard":"-9223372036854775808","seqno":27016796,"root_hash":"ld4MbnHygFd/z7oG3LCnBZtH+2iIDu5N7tRnjeSGwJE=","file_hash":"N6CepThwpP7E0EIxEWCHks/VLuUT+ZuEwLHZpWyfO54="},"frozen_hash":"---","sync_utime":1675267268}</value>

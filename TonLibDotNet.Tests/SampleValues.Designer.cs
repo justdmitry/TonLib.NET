@@ -70,6 +70,15 @@ namespace TonLibDotNet {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;actionDns&quot;,&quot;actions&quot;:[{&quot;@type&quot;:&quot;dns.actionDelete&quot;,&quot;name&quot;:&quot;test.ton&quot;,&quot;category&quot;:&quot;AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=&quot;},{&quot;@type&quot;:&quot;dns.actionDeleteAll&quot;}]}.
+        /// </summary>
+        public static string ActionDns {
+            get {
+                return ResourceManager.GetString("ActionDns", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;actionMsg&quot;,&quot;messages&quot;:[{&quot;@type&quot;:&quot;msg.message&quot;,&quot;destination&quot;:{&quot;@type&quot;:&quot;accountAddress&quot;,&quot;account_address&quot;:&quot;....&quot;},&quot;public_key&quot;:&quot;.....&quot;,&quot;amount&quot;:10000000,&quot;data&quot;:{&quot;@type&quot;:&quot;msg.dataText&quot;,&quot;text&quot;:&quot;???&quot;},&quot;send_mode&quot;:1}],&quot;allow_send_to_uninited&quot;:true}.
         /// </summary>
         public static string ActionMsg {
@@ -84,6 +93,15 @@ namespace TonLibDotNet {
         public static string ActionNoop {
             get {
                 return ResourceManager.GetString("ActionNoop", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;adnlAddress&quot;,&quot;adnl_address&quot;:&quot;xfupfrvndwrx7ryltn2zmrgqlwmcdcv2zuhifqgachk3a4xsvi2c4qh&quot;}.
+        /// </summary>
+        public static string AdnlAddress {
+            get {
+                return ResourceManager.GetString("AdnlAddress", resourceCulture);
             }
         }
         
@@ -177,6 +195,96 @@ namespace TonLibDotNet {
         public static string DeleteKey {
             get {
                 return ResourceManager.GetString("DeleteKey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;dns.actionDelete&quot;,&quot;name&quot;:&quot;test.ton&quot;,&quot;category&quot;:&quot;AAA...AAA=&quot;}.
+        /// </summary>
+        public static string Dns_ActionDelete {
+            get {
+                return ResourceManager.GetString("Dns_ActionDelete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;dns.actionDeleteAll&quot;}.
+        /// </summary>
+        public static string Dns_ActionDeleteAll {
+            get {
+                return ResourceManager.GetString("Dns_ActionDeleteAll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;dns.actionSet&quot;,&quot;entry&quot;:{&quot;@type&quot;:&quot;dns.entry&quot;,&quot;name&quot;:&quot;test2.ton&quot;,&quot;category&quot;:&quot;AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=&quot;,&quot;entry&quot;:{&quot;@type&quot;:&quot;dns.entryDataAdnlAddress&quot;,&quot;adnl_address&quot;:{&quot;@type&quot;:&quot;adnlAddress&quot;,&quot;adnl_address&quot;:&quot;xfupfrvndwrx7ryltn2zmrgqlwmcdcv2zuhifqgachk3a4xsvi2c4qh&quot;}}}}.
+        /// </summary>
+        public static string Dns_ActionSet {
+            get {
+                return ResourceManager.GetString("Dns_ActionSet", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;dns.entry&quot;,&quot;name&quot;:&quot;toncenter.&quot;,&quot;category&quot;:&quot;GfAkQe5Yj9sm7iSyVo3QNcPJIG4Rq5eb5i5VVYodF/8=&quot;,&quot;entry&quot;:{&quot;@type&quot;:&quot;dns.entryDataNextResolver&quot;,&quot;resolver&quot;:{&quot;@type&quot;:&quot;accountAddress&quot;,&quot;account_address&quot;:&quot;EQAiIsvar4OYBn8BGBf9flfin6tl5poBx4MgJe4CQJYasy51&quot;}}}.
+        /// </summary>
+        public static string Dns_Entry {
+            get {
+                return ResourceManager.GetString("Dns_Entry", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;dns.entryDataAdnlAddress&quot;,&quot;adnl_address&quot;:{&quot;@type&quot;:&quot;adnlAddress&quot;,&quot;adnl_address&quot;:&quot;xfupfrvndwrx7ryltn2zmrgqlwmcdcv2zuhifqgachk3a4xsvi2c4qh&quot;}}.
+        /// </summary>
+        public static string Dns_EntryDataAdnlAddress {
+            get {
+                return ResourceManager.GetString("Dns_EntryDataAdnlAddress", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;dns.entryDataNextResolver&quot;,&quot;resolver&quot;:{&quot;@type&quot;:&quot;accountAddress&quot;,&quot;account_address&quot;:&quot;EQAiIsvar4OYBn8BGBf9flfin6tl5poBx4MgJe4CQJYasy51&quot;}}.
+        /// </summary>
+        public static string Dns_EntryDataNextResolver {
+            get {
+                return ResourceManager.GetString("Dns_EntryDataNextResolver", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;dns.entryDataText&quot;,&quot;text&quot;:&quot;Hello, World&quot;}.
+        /// </summary>
+        public static string Dns_EntryDataText {
+            get {
+                return ResourceManager.GetString("Dns_EntryDataText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;dns.initialAccountState&quot;,&quot;public_key&quot;:&quot;PuboprBeKvVkQVnCcT7lt3WkNMaHL9F4OM9oxnWOgQ-ZB9Nm&quot;,&quot;wallet_id&quot;:698983191}.
+        /// </summary>
+        public static string Dns_InitialAccountState {
+            get {
+                return ResourceManager.GetString("Dns_InitialAccountState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;dns.resolve&quot;,&quot;name&quot;:&quot;toncenter.&quot;,&quot;account_address&quot;:{&quot;@type&quot;:&quot;accountAddress&quot;,&quot;account_address&quot;:&quot;EQC3dNlesgVD8YbAazcauIrXBPfiVhMMr5YYk2in0Mtsz0Bz&quot;},&quot;category&quot;:&quot;AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=&quot;,&quot;ttl&quot;:777}.
+        /// </summary>
+        public static string Dns_Resolve {
+            get {
+                return ResourceManager.GetString("Dns_Resolve", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;dns.resolved&quot;,&quot;entries&quot;:[{&quot;@type&quot;:&quot;dns.entry&quot;,&quot;name&quot;:&quot;toncenter.&quot;,&quot;category&quot;:&quot;GfAkQe5Yj9sm7iSyVo3QNcPJIG4Rq5eb5i5VVYodF/8=&quot;,&quot;entry&quot;:{&quot;@type&quot;:&quot;dns.entryDataNextResolver&quot;,&quot;resolver&quot;:{&quot;@type&quot;:&quot;accountAddress&quot;,&quot;account_address&quot;:&quot;EQAiIsvar4OYBn8BGBf9flfin6tl5poBx4MgJe4CQJYasy51&quot;}}}]}.
+        /// </summary>
+        public static string Dns_Resolved {
+            get {
+                return ResourceManager.GetString("Dns_Resolved", resourceCulture);
             }
         }
         
@@ -510,6 +618,15 @@ namespace TonLibDotNet {
         public static string Query_Send {
             get {
                 return ResourceManager.GetString("Query_Send", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;raw.accountState&quot;,&quot;code&quot;:&quot;te6...zJw==&quot;,&quot;data&quot;:&quot;te6...CWaB&quot;,&quot;frozen_hash&quot;:&quot;???&quot;}.
+        /// </summary>
+        public static string Raw_AccountState {
+            get {
+                return ResourceManager.GetString("Raw_AccountState", resourceCulture);
             }
         }
         
