@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using TonLibDotNet.Types;
+using TonLibDotNet.Types.Dns;
 using TonLibDotNet.Types.Wallet;
 
 namespace TonLibDotNet
@@ -12,6 +13,7 @@ namespace TonLibDotNet
 
         // You need mnemonic and address for actual account with some coins to test sending.
         // Double check that you are using testnet!!!
+        private const bool useMainnet = false; // also replace tonlibjson.dll !
         private const string TestnetAccountToSendFromAddress = "EQAkEWzRLi1sw9AlaGDDzPvk2_F20hjpTjlvsjQqYawVmdT0";
         private static readonly string[] TestnetAccountToSendFromMnemonic = new[]
         {
@@ -28,7 +30,7 @@ namespace TonLibDotNet
             {
                 services.Configure<TonOptions>(o =>
                 {
-                    o.UseMainnet = false; // also replace tonlibjson.dll !
+                    o.UseMainnet = useMainnet; // also replace tonlibjson.dll !
                     o.LogTextLimit = 500; // Set to 0 to see full requests/responses
                     o.VerbosityLevel = 0;
                     o.Options.KeystoreType = new KeyStoreTypeDirectory(DirectoryForKeys);
@@ -63,6 +65,13 @@ namespace TonLibDotNet
             }
 
             await RunExtensibilityDemo(tonClient, logger);
+
+            if (useMainnet)
+            {
+                // I failed to find DNS data in testnet :(
+                // Make sure you disabled RunSendDemo and then switch to mainnet
+                await RunDnsDemo(tonClient, logger);
+            }
 
             // Loggers need some time to flush data to screen/console.
             await Task.Delay(TimeSpan.FromSeconds(1));
@@ -190,6 +199,37 @@ namespace TonLibDotNet
                 logger.LogWarning(ex, "Exception ignored");
                 // Ignore
             }
+        }
+
+        private static async Task RunDnsDemo(ITonClient tonClient, ILogger logger)
+        {
+            // Option 1: use non-empty TTL
+            var res = await tonClient.DnsResolve("toncenter.ton", ttl: 9);
+            var adnl1 = (res.Entries[0].Value as EntryDataAdnlAddress)?.AdnlAddress.Value;
+
+            // Option 2: Use zero TTL and recurse yourself
+            res = await tonClient.DnsResolve("ton.", null, null, null);
+            // Now we have NFT Collection (EQC3dNlesgVD8YbAazcauIrXBPfiVhMMr5YYk2in0Mtsz0Bz) in 'NextResolver'
+            // Let's ask it for next part
+            res = await tonClient.DnsResolve("toncenter.", (res.Entries[0].Value as EntryDataNextResolver).Resolver, null, null);
+            // Now we have NFT itself (Contract Type = Domain, toncenter.ton, EQAiIsvar4OYBn8BGBf9flfin6tl5poBx4MgJe4CQJYasy51) in 'NextResolver'
+            // Let's ask it about actual ADNL of this domain
+            res = await tonClient.DnsResolve(".", (res.Entries[0].Value as EntryDataNextResolver).Resolver, null, null);
+            // And now we have ADNL address in answer
+            var adnl2 = (res.Entries[0].Value as EntryDataAdnlAddress)?.AdnlAddress.Value;
+
+            logger.LogInformation("Results:\r\nADNL1 {Val}\r\nADNL2 {Val}", adnl1, adnl2);
+
+            // Some experiments. Try TTL=1
+            res = await tonClient.DnsResolve("toncenter.ton", null, 1);
+            // We now have again 'EQAiIsvar4OYBn8BGBf9flfin6tl5poBx4MgJe4CQJYasy51' in 'NextResolver' !
+            // You see? TTL is a number of 'recursive iterations' to 'NextResolvers' that is performed by LiteServer (or tonlib?) itself.
+            // Checking with TTL=2, we should receive final ADNL record:
+            res = await tonClient.DnsResolve("toncenter.ton", null, 2);
+            var adnl3 = (res.Entries[0].Value as EntryDataAdnlAddress)?.AdnlAddress.Value; // Yes, we do!
+
+            // Unfortunately, asking for account state of NFT itself returns raw.AccountState, not Dns.AccountState, I don't know why :(
+            _ = await tonClient.GetAccountState("EQAiIsvar4OYBn8BGBf9flfin6tl5poBx4MgJe4CQJYasy51");
         }
     }
 }
