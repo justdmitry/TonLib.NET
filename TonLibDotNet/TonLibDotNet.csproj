@@ -14,10 +14,10 @@
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>git@github.com:justdmitry/TonLib.NET.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageTags>ton, tonlib, libtonlibjson</PackageTags>
+    <PackageTags>ton, toncoin, the-open-network, tonlib, libtonlibjson</PackageTags>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <Version>0.9.0</Version>
-    <PackageReleaseNotes>Extensibility: register new types/requests from other assemblies.</PackageReleaseNotes>
+    <Version>0.10.0</Version>
+    <PackageReleaseNotes>DNS classes added (check Demo project to learn how to resolve .ton names to ADNL addresses).</PackageReleaseNotes>
     <Description>TonLib (libtonlibjson) wrapper for accessing Telegram Open Network lite servers (nodes) via ADNL protocol.</Description>
   </PropertyGroup>
 
