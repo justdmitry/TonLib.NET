@@ -685,6 +685,105 @@ namespace TonLibDotNet {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;smc.forget&quot;,&quot;id&quot;:1}.
+        /// </summary>
+        public static string Smc_Forget {
+            get {
+                return ResourceManager.GetString("Smc_Forget", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;smc.getCode&quot;,&quot;id&quot;:1}.
+        /// </summary>
+        public static string Smc_GetCode {
+            get {
+                return ResourceManager.GetString("Smc_GetCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;smc.getData&quot;,&quot;id&quot;:1}.
+        /// </summary>
+        public static string Smc_GetData {
+            get {
+                return ResourceManager.GetString("Smc_GetData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;smc.getState&quot;,&quot;id&quot;:1}.
+        /// </summary>
+        public static string Smc_GetState {
+            get {
+                return ResourceManager.GetString("Smc_GetState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;smc.info&quot;,&quot;id&quot;:1}.
+        /// </summary>
+        public static string Smc_Info {
+            get {
+                return ResourceManager.GetString("Smc_Info", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;smc.load&quot;,&quot;account_address&quot;:{&quot;@type&quot;:&quot;accountAddress&quot;,&quot;account_address&quot;:&quot;EQBYLTm4nsvoqJRvs_L-IGNKwWs5RKe19HBK_lFadf19FUfb&quot;}}.
+        /// </summary>
+        public static string Smc_Load {
+            get {
+                return ResourceManager.GetString("Smc_Load", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;smc.loadByTransaction&quot;,&quot;account_address&quot;:{&quot;@type&quot;:&quot;accountAddress&quot;,&quot;account_address&quot;:&quot;EQBYLTm4nsvoqJRvs_L-IGNKwWs5RKe19HBK_lFadf19FUfb&quot;},&quot;transaction_id&quot;:{&quot;@type&quot;:&quot;internal.transactionId&quot;,&quot;lt&quot;:9984095000003,&quot;hash&quot;:&quot;Q54pwYEYuIj41\u002Bgcw0azQKVZT0hune9g45AYdWWzoUY=&quot;}}.
+        /// </summary>
+        public static string Smc_LoadByTransaction {
+            get {
+                return ResourceManager.GetString("Smc_LoadByTransaction", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;smc.methodIdName&quot;,&quot;name&quot;:&quot;counter&quot;}.
+        /// </summary>
+        public static string Smc_MethodIdName {
+            get {
+                return ResourceManager.GetString("Smc_MethodIdName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;smc.methodIdNumber&quot;,&quot;number&quot;:2}.
+        /// </summary>
+        public static string Smc_MethodIdNumber {
+            get {
+                return ResourceManager.GetString("Smc_MethodIdNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;smc.runGetMethod&quot;,&quot;id&quot;:1,&quot;method&quot;:{&quot;@type&quot;:&quot;smc.methodIdName&quot;,&quot;name&quot;:&quot;counter&quot;}}.
+        /// </summary>
+        public static string Smc_RunGetMethod {
+            get {
+                return ResourceManager.GetString("Smc_RunGetMethod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;smc.runResult&quot;,&quot;gas_used&quot;:479,&quot;stack&quot;:[{&quot;@type&quot;:&quot;tvm.stackEntryNumber&quot;,&quot;number&quot;:{&quot;@type&quot;:&quot;tvm.numberDecimal&quot;,&quot;number&quot;:&quot;1674271323360&quot;}}],&quot;exit_code&quot;:123}.
+        /// </summary>
+        public static string Smc_RunResult {
+            get {
+                return ResourceManager.GetString("Smc_RunResult", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;sync&quot;}.
         /// </summary>
         public static string Sync {

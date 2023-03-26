@@ -1,8 +1,10 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using TonLibDotNet.Requests.Smc;
 using TonLibDotNet.Types;
 using TonLibDotNet.Types.Dns;
+using TonLibDotNet.Types.Smc;
 using TonLibDotNet.Types.Wallet;
 
 namespace TonLibDotNet
@@ -71,6 +73,11 @@ namespace TonLibDotNet
                 // I failed to find DNS data in testnet :(
                 // Make sure you disabled RunSendDemo and then switch to mainnet
                 await RunDnsDemo(tonClient, logger);
+            }
+
+            if (!useMainnet)
+            {
+                await RunSmcDemo(tonClient, logger);
             }
 
             // Loggers need some time to flush data to screen/console.
@@ -213,8 +220,9 @@ namespace TonLibDotNet
             // Let's ask it for next part
             res = await tonClient.DnsResolve("toncenter.", (res.Entries[0].Value as EntryDataNextResolver).Resolver, null, null);
             // Now we have NFT itself (Contract Type = Domain, toncenter.ton, EQAiIsvar4OYBn8BGBf9flfin6tl5poBx4MgJe4CQJYasy51) in 'NextResolver'
+            var nftAccountAddress = (res.Entries[0].Value as EntryDataNextResolver).Resolver;
             // Let's ask it about actual ADNL of this domain
-            res = await tonClient.DnsResolve(".", (res.Entries[0].Value as EntryDataNextResolver).Resolver, null, null);
+            res = await tonClient.DnsResolve(".", nftAccountAddress, null, null);
             // And now we have ADNL address in answer
             var adnl2 = (res.Entries[0].Value as EntryDataAdnlAddress)?.AdnlAddress.Value;
 
@@ -230,6 +238,30 @@ namespace TonLibDotNet
 
             // Unfortunately, asking for account state of NFT itself returns raw.AccountState, not Dns.AccountState, I don't know why :(
             _ = await tonClient.GetAccountState("EQAiIsvar4OYBn8BGBf9flfin6tl5poBx4MgJe4CQJYasy51");
+
+            // But we can get owner!
+            var info = await tonClient.SmcLoad(nftAccountAddress);
+            _ = await tonClient.SmcRunGetMethod(info.Id, new MethodIdName("get_domain"));
+            _ = await tonClient.SmcRunGetMethod(info.Id, new MethodIdName("get_editor"));
+            _ = await tonClient.SmcRunGetMethod(info.Id, new MethodIdName("get_nft_data"));
+        }
+
+        private static async Task RunSmcDemo(ITonClient tonClient, ILogger logger)
+        {
+            // https://ton-community.github.io/tutorials/02-contract/
+            const string adr = "EQBYLTm4nsvoqJRvs_L-IGNKwWs5RKe19HBK_lFadf19FUfb";
+
+            var raw = await tonClient.RawGetAccountState(adr);
+
+            var info = await tonClient.SmcLoad(new AccountAddress(adr));
+            var code = await tonClient.SmcGetCode(info.Id);
+            var state = await tonClient.SmcGetState(info.Id);
+            var data = await tonClient.SmcGetData(info.Id);
+            var rm = await tonClient.SmcRunGetMethod(info.Id, new MethodIdName("counter"));
+
+            // var libs = await tonClient.Execute(new GetLibraries("1234567890"));
+
+            _ = await tonClient.SmcForget(info.Id);
         }
     }
 }
