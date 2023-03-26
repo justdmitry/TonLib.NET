@@ -16,8 +16,8 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>ton, toncoin, the-open-network, tonlib, libtonlibjson</PackageTags>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <Version>0.10.0</Version>
-    <PackageReleaseNotes>DNS classes added (check Demo project to learn how to resolve .ton names to ADNL addresses).</PackageReleaseNotes>
+    <Version>0.11.0</Version>
+    <PackageReleaseNotes>TVM.* and SMC.* classes added (now you can call get-methods on smartcontracts, check Demo project for details).</PackageReleaseNotes>
     <Description>TonLib (libtonlibjson) wrapper for accessing Telegram Open Network lite servers (nodes) via ADNL protocol.</Description>
   </PropertyGroup>
 
