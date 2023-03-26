@@ -345,6 +345,18 @@
           "root_hash":"k1nEMD+7m+DZAEyktBfy99GTAl/YvFVRBgw3tXr5Xt8=",
           "file_hash":"BKPbMdegxyBMEdeWTNY0RG4SI8Cw7tlqCOQkahlj0cM="}</value>
   </data>
+  <data name="Tvm_Cell" xml:space="preserve">
+    <value>{"@type":"tvm.cell","bytes":"te6cckEBAQEACgAAEAAAAYXSWPTgZcbsLw=="}</value>
+  </data>
+  <data name="Tvm_NumberDecimal" xml:space="preserve">
+    <value>{"@type":"tvm.numberDecimal","number":"1674271323360"}</value>
+  </data>
+  <data name="Tvm_StackEntryCell" xml:space="preserve">
+    <value>{"@type":"tvm.stackEntryCell","cell":{"@type":"tvm.cell","bytes":"te6cckEBAQEAJAAAQ4AW7psr1kCofjDYDWbjVxFa4J78SsJhlfLDEm0U+hltmfDtDcL7"}}</value>
+  </data>
+  <data name="Tvm_StackEntryNumber" xml:space="preserve">
+    <value>{"@type":"tvm.stackEntryNumber","number":{"@type":"tvm.numberDecimal","number":"1674271323360"}}</value>
+  </data>
   <data name="Uninited_AccountState" xml:space="preserve">
     <value>{"@type":"uninited.accountState","frozen_hash":"---"}</value>
   </data>

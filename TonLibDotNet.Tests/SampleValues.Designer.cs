@@ -708,6 +708,42 @@ namespace TonLibDotNet {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;tvm.cell&quot;,&quot;bytes&quot;:&quot;te6cckEBAQEACgAAEAAAAYXSWPTgZcbsLw==&quot;}.
+        /// </summary>
+        public static string Tvm_Cell {
+            get {
+                return ResourceManager.GetString("Tvm_Cell", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;tvm.numberDecimal&quot;,&quot;number&quot;:&quot;1674271323360&quot;}.
+        /// </summary>
+        public static string Tvm_NumberDecimal {
+            get {
+                return ResourceManager.GetString("Tvm_NumberDecimal", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;tvm.stackEntryCell&quot;,&quot;cell&quot;:{&quot;@type&quot;:&quot;tvm.cell&quot;,&quot;bytes&quot;:&quot;te6cckEBAQEAJAAAQ4AW7psr1kCofjDYDWbjVxFa4J78SsJhlfLDEm0U+hltmfDtDcL7&quot;}}.
+        /// </summary>
+        public static string Tvm_StackEntryCell {
+            get {
+                return ResourceManager.GetString("Tvm_StackEntryCell", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;tvm.stackEntryNumber&quot;,&quot;number&quot;:{&quot;@type&quot;:&quot;tvm.numberDecimal&quot;,&quot;number&quot;:&quot;1674271323360&quot;}}.
+        /// </summary>
+        public static string Tvm_StackEntryNumber {
+            get {
+                return ResourceManager.GetString("Tvm_StackEntryNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {&quot;@type&quot;:&quot;uninited.accountState&quot;,&quot;frozen_hash&quot;:&quot;---&quot;}.
         /// </summary>
         public static string Uninited_AccountState {
