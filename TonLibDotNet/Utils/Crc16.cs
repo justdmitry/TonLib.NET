@@ -1,6 +1,4 @@
-﻿using System.Buffers.Binary;
-
-namespace TonLibDotNet.Utils
+﻿namespace TonLibDotNet.Utils
 {
     /// <summary>
     /// Based on http://sanity-free.org/133/crc_16_ccitt_in_csharp.html
