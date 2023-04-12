@@ -4,16 +4,32 @@ using System.Text;
 
 namespace TonLibDotNet.Data
 {
-    /// <seealso href="https://docs.ton.org/develop/data-formats/cell-boc#packing-a-bag-of-cells">Cell & Bag of Cells(BoC)</seealso>
-    /// <seealso href="https://docs.ton.org/ton.pdf">First useful document</seealso>
-    /// <seealso href="https://docs.ton.org/tblkch.pdf">Second useful document</seealso>
     /// <seealso href="https://github.com/ton-community/ton-docs/tree/main/static">Other PDFs</seealso>
+    /*
+     tblchk.pdf
+     5.3.9. TL-B scheme for serializing bags of cells
+        serialized_boc#b5ee9c72 has_idx:(## 1) has_crc32c:(## 1)
+            has_cache_bits:(## 1) flags:(## 2) { flags = 0 }
+            size:(## 3) { size <= 4 }
+            off_bytes:(## 8) { off_bytes <= 8 }
+            cells:(##(size * 8))
+            roots:(##(size * 8)) { roots >= 1 }
+            absent:(##(size * 8)) { roots + absent <= cells }
+            tot_cells_size:(##(off_bytes * 8))
+            root_list:(roots * ##(size * 8))
+            index:has_idx?(cells * ##(off_bytes * 8))
+            cell_data:(tot_cells_size * [ uint8 ])
+            crc32c:has_crc32c?uint32
+            = BagOfCells
+     */
     public class Boc
     {
         protected const byte HeaderByte1 = 0xb5;
         protected const byte HeaderByte2 = 0xee;
         protected const byte HeaderByte3 = 0x9c;
         protected const byte HeaderByte4 = 0x72;
+
+        protected const byte HasCrc = 0b0_1_0_00_000;
 
         public IReadOnlyList<Cell> RootCells { get; init; }
 
@@ -61,45 +77,30 @@ namespace TonLibDotNet.Data
 
             var flagAndSize = bytes[pos++];
 
-            // number of bytes needed to store the number of cells
-            var hasChecksum = (flagAndSize & 0x40) != 0;
-            var bytesForNumberOfCells = flagAndSize & 0b111;
-            if (bytesForNumberOfCells != 1)
-            {
-                // Raise an issue with details how to handle cell-refs in this case (because cell-ref is 1 byte only).
-                throw new NotImplementedException("Can't handle more than 255 cells");
-            }
+            var hasChecksum = (flagAndSize & HasCrc) != 0;
+            var bytesForNumberOfCells = (byte)(flagAndSize & 0b111);
 
             // number of bytes to store the size of the serialized cells
             var bytesForSizeOfCells = bytes[pos++];
 
             // number of cells (read only 1 byte, due to NotImplementedException() earlier)
-            var numberOfCells = bytes[pos++];
+            var numberOfCells = ReadValue(bytes, ref pos, bytesForNumberOfCells);
 
             // number of root cells
-            var numberOfRootCells = bytes[pos++];
-            if (numberOfRootCells != 1)
-            {
-                // Raise an issue with details how multi-root BOCs are stored.
-                throw new NotImplementedException("Can't work with non-single root cell");
-            }
+            var numberOfRootCells = ReadValue(bytes, ref pos, bytesForNumberOfCells);
 
             // absent, always 0 (in current implementations)
-            //// var absent = bytes[pos++];
-            pos++;
+            _ = ReadValue(bytes, ref pos, bytesForNumberOfCells);
 
             // size of serialized cells
-            var sizeOfCells = bytesForSizeOfCells switch
-            {
-                1 => bytes[pos++],
-                2 => bytes[pos++] << 8 | bytes[pos++],
-                3 => bytes[pos++] << 16 | bytes[pos++] << 8 | bytes[pos++],
-                4 => bytes[pos++] << 24 | bytes[pos++] << 16 | bytes[pos++] << 8 | bytes[pos++],
-                _ => throw new NotImplementedException("Please add tests for such huge amount of data"),
-            };
+            var sizeOfCells = ReadValue(bytes, ref pos, bytesForSizeOfCells);
 
             // root cell index
-            var rootCellIndex = bytes[pos++];
+            var rootCellIndexes = new int[numberOfRootCells];
+            for (var i = 0; i < numberOfRootCells; i++)
+            {
+                rootCellIndexes[i] = ReadValue(bytes, ref pos, bytesForNumberOfCells);
+            }
 
             var requiredLength = pos + sizeOfCells + (hasChecksum ? 4 : 0);
             if (bytes.Length != requiredLength)
@@ -119,7 +120,7 @@ namespace TonLibDotNet.Data
                 }
             }
 
-            var data = new (bool isOrdinary, int start, int length, bool isAugmented, byte[] links)[numberOfCells];
+            var data = new (bool isOrdinary, int start, int length, bool isAugmented, int[] links)[numberOfCells];
             for (var i = 0; i < numberOfCells; i++)
             {
                 var d1 = bytes[pos++];
@@ -130,8 +131,12 @@ namespace TonLibDotNet.Data
                 var bytesOfData = d2 / 2 + (isAugmented ? 1 : 0);
                 var dataStart = pos;
                 pos += bytesOfData;
-                var refs = numberOfLinks == 0 ? Array.Empty<byte>() : bytes.Slice(pos, numberOfLinks).ToArray();
-                pos += numberOfLinks;
+
+                var refs = new int[numberOfLinks];
+                for (var j = 0; j < numberOfLinks; j++)
+                {
+                    refs[j] = ReadValue(bytes, ref pos, bytesForNumberOfCells);
+                }
 
                 data[i] = (isOrdinary, dataStart, bytesOfData, isAugmented, refs);
             }
@@ -150,18 +155,13 @@ namespace TonLibDotNet.Data
                 cells[i] = new Cell(content, item.isAugmented, refs);
             }
 
-            boc = new Boc(cells[rootCellIndex]);
+            var rootCells = rootCellIndexes.Select(x => cells[x]).ToArray();
+            boc = new Boc(rootCells);
             return true;
         }
 
         public MemoryStream Serialize(bool withCrc)
         {
-            if (RootCells.Count != 1)
-            {
-                // Raise an issue with details how multi-root BOCs are stored.
-                throw new NotImplementedException("Can't work with non-single root cell");
-            }
-
             static void AppendRefs(Cell cell, List<Cell> list)
             {
                 foreach(var r in cell.Refs)
@@ -180,24 +180,20 @@ namespace TonLibDotNet.Data
                 }
             }
 
-            var list = new List<Cell>
+            var list = new List<Cell>(RootCells);
+            foreach (var rc in RootCells)
             {
-                RootCells[0]
-            };
-            AppendRefs(RootCells[0], list);
-
-            if (list.Count > 255)
-            {
-                // Raise an issue with details how to handle cell-refs in this case (because cell-ref is 1 byte only).
-                throw new NotImplementedException("Can't handle more than 255 cells");
+                AppendRefs(rc, list);
             }
+
+            var bytesForCellIndexes = GetBytesToStore(list.Count);
 
             var totalLength = 0;
             foreach(var c in list)
             {
                 totalLength += 2;
                 totalLength += c.Content.Length;
-                totalLength += c.Refs.Count;
+                totalLength += bytesForCellIndexes * c.Refs.Count;
             }
 
             var ms = new MemoryStream();
@@ -206,31 +202,35 @@ namespace TonLibDotNet.Data
             ms.WriteByte(HeaderByte3);
             ms.WriteByte(HeaderByte4);
 
-            byte flagAndSize = 0x01; // 0 flags, 1 byte for cell count
+            byte flagAndSize = bytesForCellIndexes;
             if (withCrc)
             {
-                flagAndSize |= 0x40;
+                flagAndSize |= HasCrc;
             }
 
             ms.WriteByte(flagAndSize);
 
-            var totalLengthBytes = BitConverter.GetBytes(totalLength);
-            var bytesForSizeOfCells = totalLengthBytes.Reverse().SkipWhile(x => x == 0).Count();
-            ms.WriteByte((byte)bytesForSizeOfCells);
+            // off_bytes
+            var bytesForSizeOfCells = GetBytesToStore(totalLength);
+            ms.WriteByte(bytesForSizeOfCells);
 
-            var numberOfCells = (byte)list.Count;
-            ms.WriteByte(numberOfCells);
+            // cells
+            WriteValue(ms, list.Count, bytesForCellIndexes);
 
-            ms.WriteByte((byte)RootCells.Count);
+            // roots
+            WriteValue(ms, RootCells.Count, bytesForCellIndexes);
 
-            ms.WriteByte(0); // absent, always 0
+            // absent
+            WriteValue(ms, 0, bytesForCellIndexes);
 
-            foreach(var b in totalLengthBytes.Take(bytesForSizeOfCells))
+            // tot_cells_size
+            WriteValue(ms, totalLength, bytesForSizeOfCells);
+
+            foreach(var rc in RootCells)
             {
-                ms.WriteByte(b);
+                var idx = list.IndexOf(rc);
+                WriteValue(ms, idx, bytesForCellIndexes);
             }
-
-            ms.WriteByte(0); // root cell index
 
             foreach(var cell in list)
             {
@@ -240,7 +240,7 @@ namespace TonLibDotNet.Data
                 foreach(var r in cell.Refs)
                 {
                     var index = (byte)list.IndexOf(r);
-                    ms.WriteByte(index);
+                    WriteValue(ms, index, bytesForCellIndexes);
                 }
             }
 
@@ -303,6 +303,53 @@ namespace TonLibDotNet.Data
             }
 
             return false;
+        }
+
+        private static byte GetBytesToStore(int value)
+        {
+            if (value < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(value));
+            }
+
+            if (value <= 0xFF)
+            {
+                return 1;
+            }
+
+            if (value <= 0xFFFF)
+            {
+                return 2;
+            }
+
+            if (value <= 0xFFFFFF)
+            {
+                return 3;
+            }
+
+            return 4;
+        }
+
+        private static void WriteValue(MemoryStream ms, int value, byte len)
+        {
+            Span<byte> bytes = stackalloc byte[4];
+            BinaryPrimitives.WriteInt32BigEndian(bytes, value);
+            ms.Write(bytes[^len..]);
+        }
+
+        private static int ReadValue(ReadOnlySpan<byte> bytes, ref int pos, byte len)
+        {
+            if (len <= 0 || len > 4)
+            {
+                throw new ArgumentOutOfRangeException(nameof(len));
+            }
+
+            Span<byte> buf = stackalloc byte[4];
+            bytes.Slice(pos, len).CopyTo(buf[(4-len)..]);
+
+            pos += len;
+
+            return BinaryPrimitives.ReadInt32BigEndian(buf);
         }
     }
 }

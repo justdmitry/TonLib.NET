@@ -225,7 +225,7 @@ namespace TonLibDotNet
 
             if (tonOptions.LogTextLimit > 0 && reqText.Length > tonOptions.LogTextLimit)
             {
-                logger.LogDebug("Sending (trimmed):  {Text}...", reqText[..tonOptions.LogTextLimit]);
+                logger.LogDebug("Sending (trimmed from {Length} chars):  {Text}...", reqText.Length, reqText[..tonOptions.LogTextLimit]);
             }
             else
             {
@@ -248,7 +248,7 @@ namespace TonLibDotNet
 
                 if (tonOptions.LogTextLimit > 0 && respText.Length > tonOptions.LogTextLimit)
                 {
-                    logger.LogDebug("Received (trimmed): {Text}...", respText[..tonOptions.LogTextLimit]);
+                    logger.LogDebug("Received (trimmed from {Length} chars): {Text}...", respText.Length, respText[..tonOptions.LogTextLimit]);
                 }
                 else
                 {
@@ -319,7 +319,7 @@ namespace TonLibDotNet
 
             if (tonOptions.LogTextLimit > 0 && reqText.Length > tonOptions.LogTextLimit)
             {
-                logger.LogDebug("Sending static (trimmed):  {Text}...", reqText[..tonOptions.LogTextLimit]);
+                logger.LogDebug("Sending static (trimmed from {Length} chars):  {Text}...", reqText.Length, reqText[..tonOptions.LogTextLimit]);
             }
             else
             {
@@ -336,7 +336,7 @@ namespace TonLibDotNet
 
             if (tonOptions.LogTextLimit > 0 && respText.Length > tonOptions.LogTextLimit)
             {
-                logger.LogDebug("Received static (trimmed): {Text}...", respText[..tonOptions.LogTextLimit]);
+                logger.LogDebug("Received static (trimmed from {Length} chars): {Text}...", respText.Length, respText[..tonOptions.LogTextLimit]);
             }
             else
             {
