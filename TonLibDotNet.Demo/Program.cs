@@ -1,10 +1,12 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Text;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using TonLibDotNet.Requests.Smc;
+using TonLibDotNet.Cells;
 using TonLibDotNet.Types;
 using TonLibDotNet.Types.Dns;
 using TonLibDotNet.Types.Smc;
+using TonLibDotNet.Types.Tvm;
 using TonLibDotNet.Types.Wallet;
 
 namespace TonLibDotNet
@@ -15,7 +17,7 @@ namespace TonLibDotNet
 
         // You need mnemonic and address for actual account with some coins to test sending.
         // Double check that you are using testnet!!!
-        private const bool useMainnet = false; // also replace tonlibjson.dll !
+        private const bool useMainnet = true; // also replace tonlibjson.dll !
         private const string TestnetAccountToSendFromAddress = "EQAkEWzRLi1sw9AlaGDDzPvk2_F20hjpTjlvsjQqYawVmdT0";
         private static readonly string[] TestnetAccountToSendFromMnemonic = new[]
         {
@@ -70,14 +72,21 @@ namespace TonLibDotNet
 
             if (useMainnet)
             {
-                // I failed to find DNS data in testnet :(
-                // Make sure you disabled RunSendDemo and then switch to mainnet
                 await RunDnsDemo(tonClient, logger);
             }
 
-            if (!useMainnet)
+            if (useMainnet)
             {
-                await RunSmcDemo(tonClient, logger);
+                await RunMainnetSmcDemo(tonClient, logger);
+            }
+            else
+            {
+                await RunTestnetSmcDemo(tonClient);
+            }
+
+            if (useMainnet)
+            {
+                await RunCellsDemo(tonClient, logger);
             }
 
             // Loggers need some time to flush data to screen/console.
@@ -238,30 +247,83 @@ namespace TonLibDotNet
 
             // Unfortunately, asking for account state of NFT itself returns raw.AccountState, not Dns.AccountState, I don't know why :(
             _ = await tonClient.GetAccountState("EQAiIsvar4OYBn8BGBf9flfin6tl5poBx4MgJe4CQJYasy51");
-
-            // But we can get owner!
-            var info = await tonClient.SmcLoad(nftAccountAddress);
-            _ = await tonClient.SmcRunGetMethod(info.Id, new MethodIdName("get_domain"));
-            _ = await tonClient.SmcRunGetMethod(info.Id, new MethodIdName("get_editor"));
-            _ = await tonClient.SmcRunGetMethod(info.Id, new MethodIdName("get_nft_data"));
+            // But check RunMainnetSmcDemo() to know how to get owner of this NFT!
         }
 
-        private static async Task RunSmcDemo(ITonClient tonClient, ILogger logger)
+        private static async Task RunTestnetSmcDemo(ITonClient tonClient)
         {
             // https://ton-community.github.io/tutorials/02-contract/
-            const string adr = "EQBYLTm4nsvoqJRvs_L-IGNKwWs5RKe19HBK_lFadf19FUfb";
-
-            var raw = await tonClient.RawGetAccountState(adr);
+            const string adr = "EQAHI1vGuw7d4WG-CtfDrWqEPNtmUuKjKFEFeJmZaqqfWTvW";
 
             var info = await tonClient.SmcLoad(new AccountAddress(adr));
-            var code = await tonClient.SmcGetCode(info.Id);
-            var state = await tonClient.SmcGetState(info.Id);
-            var data = await tonClient.SmcGetData(info.Id);
-            var rm = await tonClient.SmcRunGetMethod(info.Id, new MethodIdName("counter"));
+            _ = await tonClient.SmcGetCode(info.Id);
+            _ = await tonClient.SmcGetState(info.Id);
+            _ = await tonClient.SmcGetData(info.Id);
+            _ = await tonClient.SmcRunGetMethod(info.Id, new MethodIdName("counter"));
 
             // var libs = await tonClient.Execute(new GetLibraries("1234567890"));
 
             _ = await tonClient.SmcForget(info.Id);
+        }
+
+        private static async Task RunMainnetSmcDemo(ITonClient tonClient, ILogger logger)
+        {
+            // https://tonapi.io/account/EQDendoireMDFMufOUzkqNpFIay83GnjV2tgGMbA64wA3siV
+            const string adr = "EQDendoireMDFMufOUzkqNpFIay83GnjV2tgGMbA64wA3siV"; // tonapi.ton domain NFT
+
+            var info = await tonClient.SmcLoad(adr);
+
+            var rr = await tonClient.SmcRunGetMethod(info.Id, new MethodIdName("get_domain"));
+            if (Boc.TryParseFromBase64(((StackEntryCell)rr.Stack[0]).Cell.Bytes, out var boc))
+            {
+                logger.LogInformation("Domain (expecting 'tonapi'): {Value}", Encoding.ASCII.GetString(boc.RootCells[0].Content));
+            }
+
+            rr = await tonClient.SmcRunGetMethod(info.Id, new MethodIdName("get_nft_data"));
+            if (Boc.TryParseFromBase64(((StackEntryCell)rr.Stack[3]).Cell.Bytes, out boc))
+            {
+                var slice = boc.RootCells[0].BeginRead();
+                var ads = slice.LoadAddressIntStd();
+                slice.EndRead();
+
+                logger.LogInformation("Owner (expecting 'EQCNdbNc28ZrcE3AKGDqK18-NFbcSzhTGaRPeEqnMIJiQsl_'): {Value}", ads);
+            }
+
+            _ = await tonClient.SmcForget(info.Id);
+        }
+
+        private static async Task RunCellsDemo(ITonClient tonClient, ILogger logger)
+        {
+            // If you know storage layout for some smartcontract,
+            //    Than you can parse it "manually", without calling get-methods
+
+            // https://tonapi.io/account/EQDendoireMDFMufOUzkqNpFIay83GnjV2tgGMbA64wA3siV
+            const string adr = "EQDendoireMDFMufOUzkqNpFIay83GnjV2tgGMbA64wA3siV"; // tonapi.ton domain NFT
+
+            var info = await tonClient.SmcLoad(adr);
+            var data = await tonClient.SmcGetData(info.Id);
+            var boc = Boc.ParseFromBase64(data.Bytes);
+            logger.LogInformation("BOC:\r\n{Text}", boc.DumpCells());
+
+            var domain = Encoding.ASCII.GetString(boc.RootCells[0].Refs[1].Content);
+            logger.LogInformation("Domain (expecting 'tonapi'): {Value}", domain);
+
+            // Storage
+            //
+            // uint256 index
+            // MsgAddressInt collection_address
+            // MsgAddressInt owner_address
+            // cell content
+            // cell domain -e.g contains "alice"(without ending \0) for "alice.ton" domain
+            // cell auction - auction info
+            // int last_fill_up_time
+            var rootSlice = boc.RootCells[0].BeginRead();
+            rootSlice.SkipBits(256);
+            var collectionAddress = rootSlice.LoadAddressIntStd();
+            logger.LogInformation("Collection (expecting 'EQC3dNlesgVD8YbAazcauIrXBPfiVhMMr5YYk2in0Mtsz0Bz'): {Value}", collectionAddress);
+
+            var ownerAddress = rootSlice.LoadAddressIntStd();
+            logger.LogInformation("Owner (expecting 'EQCNdbNc28ZrcE3AKGDqK18-NFbcSzhTGaRPeEqnMIJiQsl_'): {Value}", ownerAddress);
         }
     }
 }

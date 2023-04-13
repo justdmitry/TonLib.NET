@@ -1,4 +1,4 @@
-﻿namespace TonLibDotNet.Data
+﻿namespace TonLibDotNet.Cells
 {
     public class Cell
     {
@@ -55,5 +55,17 @@
         public IReadOnlyList<Cell> Refs { get; protected set; }
 
         public int BitsCount { get; protected set; }
+
+        public Slice BeginRead()
+        {
+            var bits = new bool[BitsCount];
+
+            for(var i = 0; i < BitsCount; i++)
+            {
+                bits[i] = (Content[i / 8] & (0b1000_0000 >> (i & 0b111))) != 0;
+            }
+
+            return new Slice(new ArraySegment<bool>(bits, 0, BitsCount));
+        }
     }
 }

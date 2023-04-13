@@ -12,16 +12,14 @@ namespace TonLibDotNet.Utils
         public const byte BasechainId = 0x00;
         public const byte MasterchainId = 0xFF;
 
-        public static string MakeAddress(byte workchainId, byte[] accountId, bool bounceable = true, bool testnetOnly = false, bool urlSafe = true)
+        public static string MakeAddress(byte workchainId, ReadOnlySpan<byte> accountId, bool bounceable = true, bool testnetOnly = false, bool urlSafe = true)
         {
-            ArgumentNullException.ThrowIfNull(accountId);
-
             if (accountId.Length != 32)
             {
                 throw new ArgumentException("Must be 32 bytes", nameof(accountId));
             }
 
-            var bytes = new byte[36];
+            Span<byte> bytes = stackalloc byte[36];
 
             bytes[0] = bounceable ? FlagBounceable : FlagNonBounceable;
 
@@ -32,11 +30,10 @@ namespace TonLibDotNet.Utils
 
             bytes[1] = workchainId;
 
-            accountId.CopyTo(bytes, 2);
+            accountId.CopyTo(bytes[2..]);
 
-            var span = bytes.AsSpan();
-            var crc = Crc16.Ccitt.ComputeChecksum(span[..^2]);
-            System.Buffers.Binary.BinaryPrimitives.WriteUInt16BigEndian(span[^2..], crc);
+            var crc = Crc16.Ccitt.ComputeChecksum(bytes[..^2]);
+            System.Buffers.Binary.BinaryPrimitives.WriteUInt16BigEndian(bytes[^2..], crc);
 
             var address = Convert.ToBase64String(bytes);
 

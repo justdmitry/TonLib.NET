@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
 
-namespace TonLibDotNet.Data
+namespace TonLibDotNet.Cells
 {
     /// <seealso href="https://github.com/ton-community/ton-docs/tree/main/static">Other PDFs</seealso>
     /*
@@ -58,106 +58,25 @@ namespace TonLibDotNet.Data
 
         public static bool TryParseFromBytes(ReadOnlySpan<byte> bytes, [NotNullWhen(true)] out Boc? boc)
         {
-            boc = null;
+            (boc, _) = TryParseImpl(bytes);
+            return (boc != null);
+        }
 
-            int pos = 0;
+        public static Boc ParseFromBase64(string base64data)
+        {
+            return ParseFromBytes(Convert.FromBase64String(base64data));
+        }
 
-            if (bytes.Length < 11)
+        public static Boc ParseFromBytes(ReadOnlySpan<byte> bytes)
+        {
+            var (boc, err) = TryParseImpl(bytes);
+
+            if (boc == null)
             {
-                throw new ArgumentOutOfRangeException(nameof(bytes), "Too little data: need at least 11 for correct header.");
+                throw new BocParseException(err);
             }
 
-            if (bytes[pos++] != HeaderByte1
-                || bytes[pos++] != HeaderByte2
-                || bytes[pos++] != HeaderByte3
-                || bytes[pos++] != HeaderByte4)
-            {
-                return false;
-            }
-
-            var flagAndSize = bytes[pos++];
-
-            var hasChecksum = (flagAndSize & HasCrc) != 0;
-            var bytesForNumberOfCells = (byte)(flagAndSize & 0b111);
-
-            // number of bytes to store the size of the serialized cells
-            var bytesForSizeOfCells = bytes[pos++];
-
-            // number of cells (read only 1 byte, due to NotImplementedException() earlier)
-            var numberOfCells = ReadValue(bytes, ref pos, bytesForNumberOfCells);
-
-            // number of root cells
-            var numberOfRootCells = ReadValue(bytes, ref pos, bytesForNumberOfCells);
-
-            // absent, always 0 (in current implementations)
-            _ = ReadValue(bytes, ref pos, bytesForNumberOfCells);
-
-            // size of serialized cells
-            var sizeOfCells = ReadValue(bytes, ref pos, bytesForSizeOfCells);
-
-            // root cell index
-            var rootCellIndexes = new int[numberOfRootCells];
-            for (var i = 0; i < numberOfRootCells; i++)
-            {
-                rootCellIndexes[i] = ReadValue(bytes, ref pos, bytesForNumberOfCells);
-            }
-
-            var requiredLength = pos + sizeOfCells + (hasChecksum ? 4 : 0);
-            if (bytes.Length != requiredLength)
-            {
-                throw new ArgumentOutOfRangeException(nameof(bytes), $"Invalid data length: expected {requiredLength} bytes, found only {bytes.Length}.");
-            }
-
-            if (hasChecksum)
-            {
-                var actualCrc = Crc32C.ComputeChecksum(bytes[..^4]);
-                Span<byte> actualCrcBytes = stackalloc byte[4];
-                BinaryPrimitives.WriteUInt32LittleEndian(actualCrcBytes, actualCrc);
-                var expectedCrc = bytes[^4..];
-                if (!expectedCrc.SequenceEqual(actualCrcBytes))
-                {
-                    throw new ArgumentOutOfRangeException(nameof(bytes), $"CRC does not match: expected {Convert.ToHexString(expectedCrc)}, found {Convert.ToHexString(actualCrcBytes)}.");
-                }
-            }
-
-            var data = new (bool isOrdinary, int start, int length, bool isAugmented, int[] links)[numberOfCells];
-            for (var i = 0; i < numberOfCells; i++)
-            {
-                var d1 = bytes[pos++];
-                var numberOfLinks = d1 & 0b111;
-                var isOrdinary = (d1 & 0b1000) == 0;
-                var d2 = bytes[pos++];
-                var isAugmented = (d2 % 2) != 0;
-                var bytesOfData = d2 / 2 + (isAugmented ? 1 : 0);
-                var dataStart = pos;
-                pos += bytesOfData;
-
-                var refs = new int[numberOfLinks];
-                for (var j = 0; j < numberOfLinks; j++)
-                {
-                    refs[j] = ReadValue(bytes, ref pos, bytesForNumberOfCells);
-                }
-
-                data[i] = (isOrdinary, dataStart, bytesOfData, isAugmented, refs);
-            }
-
-            var cells = new Cell[numberOfCells];
-            for (var i = numberOfCells - 1; i >= 0; i--)
-            {
-                var item = data[i];
-                if (!item.isOrdinary)
-                {
-                    continue;
-                }
-
-                var content = bytes.Slice(item.start, item.length);
-                var refs = item.links.Select(x => cells[x]).ToArray();
-                cells[i] = new Cell(content, item.isAugmented, refs);
-            }
-
-            var rootCells = rootCellIndexes.Select(x => cells[x]).ToArray();
-            boc = new Boc(rootCells);
-            return true;
+            return boc;
         }
 
         public MemoryStream Serialize(bool withCrc)
@@ -281,6 +200,107 @@ namespace TonLibDotNet.Data
             }
 
             return sb.ToString();
+        }
+
+        protected static (Boc?, string? error) TryParseImpl(ReadOnlySpan<byte> bytes)
+        {
+            int pos = 0;
+
+            if (bytes.Length < 11)
+            {
+                return (null, "Too little data: need at least 11 for correct header.");
+            }
+
+            if (bytes[pos++] != HeaderByte1
+                || bytes[pos++] != HeaderByte2
+                || bytes[pos++] != HeaderByte3
+                || bytes[pos++] != HeaderByte4)
+            {
+                return (null, "Not a BOC (invalid header bytes).");
+            }
+
+            var flagAndSize = bytes[pos++];
+
+            var hasChecksum = (flagAndSize & HasCrc) != 0;
+            var bytesForNumberOfCells = (byte)(flagAndSize & 0b111);
+
+            // number of bytes to store the size of the serialized cells
+            var bytesForSizeOfCells = bytes[pos++];
+
+            // number of cells (read only 1 byte, due to NotImplementedException() earlier)
+            var numberOfCells = ReadValue(bytes, ref pos, bytesForNumberOfCells);
+
+            // number of root cells
+            var numberOfRootCells = ReadValue(bytes, ref pos, bytesForNumberOfCells);
+
+            // absent, always 0 (in current implementations)
+            _ = ReadValue(bytes, ref pos, bytesForNumberOfCells);
+
+            // size of serialized cells
+            var sizeOfCells = ReadValue(bytes, ref pos, bytesForSizeOfCells);
+
+            // root cell index
+            var rootCellIndexes = new int[numberOfRootCells];
+            for (var i = 0; i < numberOfRootCells; i++)
+            {
+                rootCellIndexes[i] = ReadValue(bytes, ref pos, bytesForNumberOfCells);
+            }
+
+            var requiredLength = pos + sizeOfCells + (hasChecksum ? 4 : 0);
+            if (bytes.Length != requiredLength)
+            {
+                return (null, $"Invalid data length: expected {requiredLength} bytes, found only {bytes.Length}.");
+            }
+
+            if (hasChecksum)
+            {
+                var actualCrc = Crc32C.ComputeChecksum(bytes[..^4]);
+                Span<byte> actualCrcBytes = stackalloc byte[4];
+                BinaryPrimitives.WriteUInt32LittleEndian(actualCrcBytes, actualCrc);
+                var expectedCrc = bytes[^4..];
+                if (!expectedCrc.SequenceEqual(actualCrcBytes))
+                {
+                    return (null, $"CRC does not match: expected {Convert.ToHexString(expectedCrc)}, found {Convert.ToHexString(actualCrcBytes)}.");
+                }
+            }
+
+            var data = new (bool isOrdinary, int start, int length, bool isAugmented, int[] links)[numberOfCells];
+            for (var i = 0; i < numberOfCells; i++)
+            {
+                var d1 = bytes[pos++];
+                var numberOfLinks = d1 & 0b111;
+                var isOrdinary = (d1 & 0b1000) == 0;
+                var d2 = bytes[pos++];
+                var isAugmented = (d2 % 2) != 0;
+                var bytesOfData = d2 / 2 + (isAugmented ? 1 : 0);
+                var dataStart = pos;
+                pos += bytesOfData;
+
+                var refs = new int[numberOfLinks];
+                for (var j = 0; j < numberOfLinks; j++)
+                {
+                    refs[j] = ReadValue(bytes, ref pos, bytesForNumberOfCells);
+                }
+
+                data[i] = (isOrdinary, dataStart, bytesOfData, isAugmented, refs);
+            }
+
+            var cells = new Cell[numberOfCells];
+            for (var i = numberOfCells - 1; i >= 0; i--)
+            {
+                var item = data[i];
+                if (!item.isOrdinary)
+                {
+                    continue;
+                }
+
+                var content = bytes.Slice(item.start, item.length);
+                var refs = item.links.Select(x => cells[x]).ToArray();
+                cells[i] = new Cell(content, item.isAugmented, refs);
+            }
+
+            var rootCells = rootCellIndexes.Select(x => cells[x]).ToArray();
+            return (new Boc(rootCells), null);
         }
 
         protected bool HasCycles(Cell cell, Cell[] visited)

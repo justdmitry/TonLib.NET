@@ -1,4 +1,4 @@
-﻿namespace TonLibDotNet.Data
+﻿namespace TonLibDotNet.Cells
 {
     public class BocManyCellsTests
     {
