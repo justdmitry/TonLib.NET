@@ -26,6 +26,12 @@ namespace TonLibDotNet
                 return;
             }
 
+            if (Program.TestnetAccountToSendFromMnemonic[0] == "word1")
+            {
+                logger.LogWarning("Sample mnemonic is not set. Sending TON demo is skipped.");
+                return;
+            }
+
             await tonClient.InitIfNeeded();
 
             /*
