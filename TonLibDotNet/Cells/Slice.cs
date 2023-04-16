@@ -132,11 +132,11 @@
             var extraBits = totalBits - bitCount;
             var currentByte = 0;
             var byteIndex = extraBits >> 3;
-            for (var j = extraBits; j < totalBits; j++)
+            for (var i = extraBits; i < totalBits; i++)
             {
                 currentByte = (currentByte << 1) | (data[index++] ? 1 : 0);
 
-                if ((j & 0b111) == 0b111)
+                if ((i & 0b111) == 0b111)
                 {
                     buffer[byteIndex++] = (byte)(currentByte & 0xFF);
                     currentByte = 0;

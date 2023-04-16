@@ -2,7 +2,7 @@
 
 namespace TonLibDotNet
 {
-    public static class TonClientSliceAddressExtensions
+    public static class TonClientCellsAddressExtensions
     {
         /*
          tblchk.pdf
@@ -34,6 +34,24 @@ namespace TonLibDotNet
             slice.LoadBytesTo(accountId);
 
             return AddressValidator.MakeAddress(workchainId, accountId, bounceable, testnetOnly, urlSafe);
+        }
+
+        public static CellBuilder StoreAddressIntStd(this CellBuilder builder, string address)
+        {
+            if (!AddressValidator.TryParseAddress(address, out var workchainId, out var accountId, out _, out _, out _))
+            {
+                throw new ArgumentException("Not a valid address", nameof(address));
+            }
+
+            builder.EnsureCanStore(3 + 8 + 256);
+
+            builder.StoreBit(true);
+            builder.StoreBit(false);
+            builder.StoreBit(false); // anycast
+            builder.StoreByte(workchainId);
+            builder.StoreBytes(accountId);
+
+            return builder;
         }
     }
 }
