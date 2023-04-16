@@ -11,10 +11,6 @@ namespace TonLibDotNet
     {
         public const string DllNamePlaceholder = "ton-lib-name-here";
 
-        private const string DllNameWindows = "tonlibjson.dll";
-        private const string DllNameLinux = "libtonlibjson.so.0.5";
-        private const string DllNameOSX = "libtonlibjson.0.5.dylib";
-
         public static void Register(Assembly assembly)
         {
             NativeLibrary.SetDllImportResolver(assembly, MapAndLoad);
@@ -26,15 +22,15 @@ namespace TonLibDotNet
             {
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
-                    libraryName = DllNameWindows;
+                    libraryName = "tonlibjson.dll";
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
                 {
-                    libraryName = DllNameLinux;
+                    libraryName = RuntimeInformation.ProcessArchitecture == Architecture.Arm64 ? "tonlibjson-linux-arm64.so" : "tonlibjson-linux-x86_64.so";
                 }
                 else if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
                 {
-                    libraryName = DllNameOSX;
+                    libraryName = RuntimeInformation.ProcessArchitecture == Architecture.Arm64 ? "tonlibjson-mac-arm64.dylib" : "tonlibjson-mac-x86-64.dylib";
                 }
             }
 
