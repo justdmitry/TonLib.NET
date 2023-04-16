@@ -1,13 +1,28 @@
 TonLib.NET
 ===========
 
-Wrapper around `libtonlibjson` library for accessing [Telegram Open Network](https://ton.org/) lite servers (nodes) via ADNL protocol.
-
-**Important!** You need to obtain compiled `tonlibjson.dll` (or appropriate for your OS) and its dependencies (e.g. `libcrypto-1_1-x64.dll`) yourself. See below for details.
+Wrapper around `tonlibjson` library for accessing [Telegram Open Network](https://ton.org/) lite servers (nodes) via ADNL protocol.
 
 [![NuGet](https://img.shields.io/nuget/v/TonLib.Net.svg?color=blue)](https://www.nuget.org/packages/TonLib.Net/) ![NuGet downloads](https://img.shields.io/nuget/dt/TonLib.NET?color=blue) ![Framework](https://img.shields.io/badge/framework-net6.0-blue) ![GitHub License](https://img.shields.io/github/license/justdmitry/TonLib.NET?color=blue) 
 
 ⚠ Uses `System.Text.Json` package **v7.0.1** (from `net7.0`) - it makes [de]serialization much simpler (because of [Polymorphic serialization](https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/polymorphism)). It only updates `System.Text.Encodings.Web` (v6.0 -> v7.0) as a transitive dependency, which I think is acceptable.
+
+## Features
+
+* Read account balance and transaction history;
+* Operate with keys and mnemonics;
+* Send TON to different account;
+* Send arbitrary message to account;
+* Read and parse smartcontract data, call get-methods;
+* Read DNS data (resolve to ADNL);
+* Work with BOCs and Cells (read and parse using Slices, compose using CellBuilder);
+
+And more:
+
+* Easy-to-extend: describe and call new TonLib 
+* Connects to random LiteServer or choosen by you;
+* Reconnects to different LiteServer if previous one fails (but you need to handle exceptions and implement retry logic yourself, for example with [Polly](http://www.thepollyproject.org/));
+* No 3rd-party packages;
 
 ## Usage
 
@@ -42,30 +57,12 @@ And the result is:
 
 ![Sample](https://raw.githubusercontent.com/justdmitry/TonLib.NET/master/README_sample.png)
 
-⚠ `Execute` requests are not truly asynchronous now - calls to tonlib are synchronous, and only waiting between them is a reason for 'async'. Help is wanted to make `Execute` really asynchronous.
-
 
 ## Installing dependencies and running a demo
 
 This library is a wrapper around `tonlibjson` library. You need to obtain complied copy of it (and its dependencies) yourself.
 
-### 1. Obtaining `tonlibjson` library
-
-#### Option 1: Build it yourself
-
-1. Checkout https://github.com/ton-blockchain/ton
-2. Follow manual at https://ton.org/docs/develop/howto/compile and build `tonlib` target.
-
-#### Option 2: Get compiled one from GitHub Actions
-
-1. Open https://github.com/ton-blockchain/ton/actions
-2. Choose your OS (one that matches better) in left "Actions" (Workflows) menu
-3. Look for run with tag named like `v2023.01` (or newer) and open that build/run.
-4. Scroll down to "Artifacts" section, you'll find something like `ton-win-binaries` file about 70MB in size. Download it.
-5. Open downloaded archive and extract `tonlibjson.dll` (or similair for your OS).
-6. Make sure this file will be available for your running program (for example, add it to your project and set "Copy to Output Directory" to "Copy if newer").
-
-### 2. Obtaining dependencies
+Go to https://github.com/ton-blockchain/ton/releases, open latest release, scroll to "Assets" and download `tonlibjson.*` for your OS. Make sure this file will be available for your running program (for example, add it to your project and set "Copy to Output Directory" to "Copy if newer").
 
 The number of additional dependencies you need depends of what you already have on your machine.
 
@@ -73,6 +70,9 @@ When something is missed, Demo app will fail with "Unable to load DLL 'tonlibjso
 
 On my Win machine I needed `libcrypto-1_1-x64.dll` from OpenSSL.
 
+## Donate
+
+EQBM3AOINk8wrQ8oBSiA8L9RWCnkscAe0PYX0Nznxy7YugPM
 
 ## Useful links
 
