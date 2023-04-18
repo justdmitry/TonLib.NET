@@ -51,20 +51,17 @@ namespace TonLibDotNet
             var info = await tonClient.SmcLoad(adr);
 
             var rr = await tonClient.SmcRunGetMethod(info.Id, new MethodIdName("get_domain"));
-            if (Boc.TryParseFromBase64(((StackEntryCell)rr.Stack[0]).Cell.Bytes, out var boc))
-            {
-                logger.LogInformation("Domain (expecting 'tonapi'): {Value}", Encoding.ASCII.GetString(boc.RootCells[0].Content));
-            }
+            var boc = rr.Stack[0].ToTvmCell().ToBoc();
+            logger.LogInformation("Domain (expecting 'tonapi'): {Value}", Encoding.ASCII.GetString(boc.RootCells[0].Content));
 
             rr = await tonClient.SmcRunGetMethod(info.Id, new MethodIdName("get_nft_data"));
-            if (Boc.TryParseFromBase64(((StackEntryCell)rr.Stack[3]).Cell.Bytes, out boc))
-            {
-                var slice = boc.RootCells[0].BeginRead();
-                var ads = slice.LoadAddressIntStd();
-                slice.EndRead();
+            boc = rr.Stack[3].ToTvmCell().ToBoc();
 
-                logger.LogInformation("Owner (expecting 'EQCNdbNc28ZrcE3AKGDqK18-NFbcSzhTGaRPeEqnMIJiQsl_'): {Value}", ads);
-            }
+            var slice = boc.RootCells[0].BeginRead();
+            var ads = slice.LoadAddressIntStd();
+            slice.EndRead();
+
+            logger.LogInformation("Owner (expecting 'EQCNdbNc28ZrcE3AKGDqK18-NFbcSzhTGaRPeEqnMIJiQsl_'): {Value}", ads);
 
             _ = await tonClient.SmcForget(info.Id);
         }
