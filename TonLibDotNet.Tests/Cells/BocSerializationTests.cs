@@ -8,7 +8,7 @@
             var cell = new CellBuilder()
                 .StoreUInt(1)
                 .StoreLong(12345)
-                .StoreGrams(67890123)
+                .StoreCoins(67890123)
                 .Build();
             var boc = new Boc(cell);
 
@@ -24,7 +24,7 @@
             var cell = new CellBuilder()
                 .StoreUInt(1)
                 .StoreLong(12345)
-                .StoreGrams(67890123)
+                .StoreCoins(67890123)
                 .Build();
             var boc = new Boc(cell);
 

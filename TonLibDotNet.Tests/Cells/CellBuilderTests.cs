@@ -1,4 +1,6 @@
-﻿namespace TonLibDotNet.Cells
+﻿using System.Numerics;
+
+namespace TonLibDotNet.Cells
 {
     public class CellBuilderTests
     {
@@ -39,6 +41,7 @@
             Assert.Equal(77, slice.LoadUShort());
             Assert.Equal(77, slice.LoadUShort(10));
             Assert.Equal(0x7F0F, slice.LoadShort());
+            slice.EndRead();
         }
 
         [Fact]
@@ -50,21 +53,66 @@
 
             var slice = cell.BeginRead();
             Assert.Equal("EQCQDn3i2nlXFZhQ5EG_QdONTdHdtNxhHjPYb3lR1eG9xTTb", slice.LoadAddressIntStd());
+            slice.EndRead();
         }
 
         [Fact]
-        public void WritesGramsOk()
+        public void WritesCoinsOk()
         {
-            var cell = new CellBuilder()
-                .StoreGrams(123456789)
-                .StoreGrams(0)
-                .StoreGrams(1_000_000_000__000_000_000) // 1 G TON
-                .Build();
+            var builder = new CellBuilder()
+                .StoreCoins(123456789)
+                .StoreCoins(BigInteger.Zero)
+                .StoreCoins(1_000_000_000__000_000_000) // 1 G TON
+                .StoreCoins(1_000_000_001)
+                .StoreCoins(1_000_000_002)
+                .StoreCoins(new BigInteger(1_000_000_003))
+                ;
 
-            var slice = cell.BeginRead();
-            Assert.Equal(123456789, (long)slice.LoadGrams());
-            Assert.Equal(0, (long)slice.LoadGrams());
-            Assert.Equal(1_000_000_000__000_000_000, (long)slice.LoadGrams());
+            var slice = builder.Build().BeginRead();
+
+            Assert.Equal(123456789, slice.LoadCoins());
+            Assert.Equal(0, slice.LoadCoins());
+            Assert.Equal(1_000_000_000__000_000_000, slice.LoadCoins());
+
+            // read long as ulong
+            Assert.Equal((ulong)1_000_000_001, slice.LoadCoinsToULong());
+
+            // read long ad bigint
+            Assert.Equal(new BigInteger(1_000_000_002), slice.LoadCoinsToBigInt());
+
+            // read bigint as long
+            Assert.Equal(1_000_000_003, slice.LoadCoins());
+
+            slice.EndRead();
+        }
+
+        [Fact]
+        public void WritesCoins2Ok()
+        {
+            var builder = new CellBuilder();
+
+            // negative values are not allowed
+            Assert.Throws<ArgumentOutOfRangeException>(() => builder.StoreCoins(-1));
+            Assert.Throws<ArgumentOutOfRangeException>(() => builder.StoreCoins(BigInteger.MinusOne));
+
+            // more than 120 bits are not allowed
+            Assert.Throws<ArgumentOutOfRangeException>(() => builder.StoreCoins(BigInteger.Pow(2, 121)));
+
+
+            // greather than long
+            var veryBig = new BigInteger(long.MaxValue) * 19;
+            builder.StoreCoins(veryBig);
+
+            var slice = builder.Build().BeginRead();
+
+            // can't load to long
+            Assert.Throws<InvalidOperationException>(() => slice.LoadCoins());
+
+            // but can load to bigint
+            var veryBig2 = slice.LoadCoinsToBigInt();
+            Assert.Equal(veryBig, veryBig2);
+
+            slice.EndRead();
         }
     }
 }
