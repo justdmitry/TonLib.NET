@@ -29,7 +29,8 @@ namespace TonLibDotNet.Cells
         protected const byte HeaderByte3 = 0x9c;
         protected const byte HeaderByte4 = 0x72;
 
-        protected const byte HasCrc = 0b0_1_0_00_000;
+        protected const byte FlagHasIndex = 0b1_0_0_00_000;
+        protected const byte FlagHasCrc = 0b0_1_0_00_000;
 
         public IReadOnlyList<Cell> RootCells { get; init; }
 
@@ -124,7 +125,7 @@ namespace TonLibDotNet.Cells
             byte flagAndSize = bytesForCellIndexes;
             if (withCrc)
             {
-                flagAndSize |= HasCrc;
+                flagAndSize |= FlagHasCrc;
             }
 
             ms.WriteByte(flagAndSize);
@@ -221,7 +222,8 @@ namespace TonLibDotNet.Cells
 
             var flagAndSize = bytes[pos++];
 
-            var hasChecksum = (flagAndSize & HasCrc) != 0;
+            var hasIndex = (flagAndSize & FlagHasIndex) != 0;
+            var hasChecksum = (flagAndSize & FlagHasCrc) != 0;
             var bytesForNumberOfCells = (byte)(flagAndSize & 0b111);
 
             // number of bytes to store the size of the serialized cells
@@ -246,10 +248,15 @@ namespace TonLibDotNet.Cells
                 rootCellIndexes[i] = ReadValue(bytes, ref pos, bytesForNumberOfCells);
             }
 
+            if (hasIndex)
+            {
+                pos += numberOfCells * bytesForSizeOfCells;
+            }
+
             var requiredLength = pos + sizeOfCells + (hasChecksum ? 4 : 0);
             if (bytes.Length != requiredLength)
             {
-                return (null, $"Invalid data length: expected {requiredLength} bytes, found only {bytes.Length}.");
+                return (null, $"Invalid data length: expected {requiredLength} bytes, found {bytes.Length}.");
             }
 
             if (hasChecksum)
