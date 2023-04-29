@@ -65,7 +65,7 @@
                 bits[i] = (Content[i / 8] & (0b1000_0000 >> (i & 0b111))) != 0;
             }
 
-            return new Slice(new ArraySegment<bool>(bits, 0, BitsCount));
+            return new Slice(new ArraySegment<bool>(bits, 0, BitsCount), Refs);
         }
     }
 }

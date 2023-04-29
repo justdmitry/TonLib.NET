@@ -3,14 +3,18 @@
     public class Slice
     {
         private readonly ArraySegment<bool> data;
+        private readonly IReadOnlyList<Cell>? refs;
 
         private int index;
+        private int refIndex;
 
-        public Slice(ArraySegment<bool> data)
+        public Slice(ArraySegment<bool> data, IReadOnlyList<Cell>? refs = null)
         {
             this.data = data;
             this.index = 0;
             this.Length = data.Count;
+            this.refs = refs;
+            this.refIndex = 0;
         }
 
         public int Length { get; init; }
@@ -38,6 +42,19 @@
             if (!TryCanLoad(count))
             {
                 throw new InvalidOperationException("No enough data");
+            }
+        }
+
+        public bool TryCanLoadRef()
+        {
+            return refs != null && refIndex < refs.Count;
+        }
+
+        public void EnsureCanLoadRef()
+        {
+            if (!TryCanLoadRef())
+            {
+                throw new InvalidOperationException("No enough refs");
             }
         }
 
@@ -184,6 +201,18 @@
         public void PreloadBytesTo(Span<byte> bytes)
         {
             PreloadBitsToBytesTo(bytes.Length << 3, bytes);
+        }
+
+        public Cell LoadRef()
+        {
+            EnsureCanLoadRef();
+            return refs![refIndex++];
+        }
+
+        public Cell PreloadRef()
+        {
+            EnsureCanLoadRef();
+            return refs![refIndex];
         }
     }
 }
