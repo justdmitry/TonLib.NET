@@ -4,7 +4,7 @@ namespace TonLibDotNet
 {
     public static class TonClientCellsDictExtensions
     {
-        public static Dictionary<TKey, TValue> LoadDict<TKey, TValue>(this Slice slice, int bitsForKey, int bitsForValue, Func<Slice, TKey> keyReader, Func<Slice, TValue> valueReader)
+        public static Dictionary<TKey, TValue> LoadDict<TKey, TValue>(this Slice slice, int bitsForKey, Func<Slice, TKey> keyReader, Func<Slice, TValue> valueReader)
             where TKey : notnull
         {
             if (!slice.LoadBit())
@@ -27,6 +27,41 @@ namespace TonLibDotNet
                 x.value.EndRead();
                 return val;
             });
+        }
+
+        public static CellBuilder StoreDict<TKey, TValue>(this CellBuilder builder, Dictionary<TKey, TValue>? dict, Action<CellBuilder, TKey> keyWriter, Action<CellBuilder, TValue> valueWriter)
+            where TKey : notnull
+        {
+            if (dict == null || dict.Count == 0)
+            {
+                builder.StoreBit(false);
+            }
+            else
+            {
+                builder.StoreBit(true);
+                var keyLength = -1;
+                var list = dict.Select(x =>
+                    {
+                        var cbk = new CellBuilder();
+                        keyWriter(cbk, x.Key);
+
+                        if (keyLength == -1)
+                        {
+                            keyLength = cbk.Length;
+                        }
+                        else if (keyLength != cbk.Length)
+                        {
+                            throw new InvalidOperationException($"Key length mismatch on item '{x.Value}': {keyLength} expected, but {cbk.Length} found.");
+                        }
+
+                        return (cbk.GetAllBits(), x.Value);
+                    })
+                    .OrderBy(x => x.Item1, new ArraySegmentComparer())
+                    .ToArray();
+                builder.StoreRef(StoreDictImpl(new ArraySegment<(ArraySegment<bool> key, TValue value)>(list), list[0].Item1.Count, 0, valueWriter).Build());
+            }
+
+            return builder;
         }
 
         /*
@@ -106,6 +141,104 @@ namespace TonLibDotNet
 
                 key[^1] = true;
                 LoadDictImpl(source.LoadRef(), key, label_left - 1, items);
+            }
+        }
+
+        private static CellBuilder StoreDictImpl<TValue>(ArraySegment<(ArraySegment<bool> key, TValue value)> items, int keyLength, int keyPosition, Action<CellBuilder, TValue> valueWriter)
+        {
+            CellBuilder WriteLabel(CellBuilder cellBuilder, ArraySegment<bool> label, int lengthLeft)
+            {
+                if (label.Count == 0)
+                {
+                    // short with 0 length
+                    return cellBuilder.StoreBit(false).StoreBit(false);
+                }
+
+                var n = (int)Math.Ceiling(Math.Log2(lengthLeft + 1));
+                var ones = label.Count(x => x);
+                if (ones == 0 || ones == label.Count)
+                {
+                    // store as same
+                    return cellBuilder.StoreBit(true).StoreBit(true).StoreBit(label[0]).StoreInt(label.Count, n);
+                }
+
+                var longLength = 2 + n + label.Count;
+                var shortLength = 1 + label.Count + 1 + label.Count;
+                if (longLength < shortLength)
+                {
+                    // long
+                    return cellBuilder.StoreBit(true).StoreBit(false).StoreInt(label.Count, n).StoreBits(label);
+                }
+                else
+                {
+                    // short
+                    cellBuilder.StoreBit(false);
+                    for(var i = 0; i < label.Count; i++)
+                    {
+                        cellBuilder.StoreBit(true);
+                    }
+
+                    cellBuilder.StoreBit(false);
+                    return cellBuilder.StoreBits(label);
+                }
+            }
+
+            var cb = new CellBuilder();
+
+            if (items.Count == 1)
+            {
+                var label = items[0].key.Slice(keyPosition);
+                WriteLabel(cb, label, label.Count);
+                valueWriter(cb, items[0].value);
+                return cb;
+            }
+
+            var labelLength = 0;
+            var items0 = 0;
+            var items1 = 0;
+
+            do
+            {
+                items0 = items1 = 0;
+                foreach (var (key, _) in items)
+                {
+                    if (key[keyPosition + labelLength])
+                    {
+                        items1++;
+                    }
+                    else
+                    {
+                        items0++;
+                    }
+                }
+
+                labelLength++;
+            }
+            while (items0 == 0 || items1 == 0);
+
+            WriteLabel(cb, items[0].key.Slice(keyPosition, labelLength - 1), keyLength - keyPosition - labelLength);
+
+            cb.StoreRef(StoreDictImpl(items.Slice(0, items0), keyLength, keyPosition + labelLength, valueWriter));
+            cb.StoreRef(StoreDictImpl(items.Slice(items0), keyLength, keyPosition + labelLength, valueWriter));
+
+            return cb;
+        }
+
+        private sealed class ArraySegmentComparer : IComparer<ArraySegment<bool>>
+        {
+            public int Compare(ArraySegment<bool> x, ArraySegment<bool> y)
+            {
+                var minLength = Math.Min(x.Count, y.Count);
+                for (var i = 0; i < minLength; i++)
+                {
+                    var cmp = x[i].CompareTo(y[i]);
+                    if (cmp != 0)
+                    {
+                        return cmp;
+                    }
+                }
+
+                return x.Count.CompareTo(y.Count);
             }
         }
     }

@@ -153,5 +153,10 @@
 
             return new Cell(buffer, isAugmented, refs.Take(RefsCount).Select(x => x.Item1!).ToArray());
         }
+
+        public ArraySegment<bool> GetAllBits()
+        {
+            return new ArraySegment<bool>(data, 0, Length);
+        }
     }
 }
