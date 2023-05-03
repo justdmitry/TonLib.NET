@@ -102,14 +102,16 @@
         public CellBuilder StoreRef(Cell cell) {
             ArgumentNullException.ThrowIfNull(cell);
             EnsureCanStoreRef();
-            refs[RefsCount] = (cell, null);
+            refs.Add((cell, null));
+            RefsCount++;
             return this;
         }
 
         public CellBuilder StoreRef(CellBuilder builder) {
             ArgumentNullException.ThrowIfNull(builder);
             EnsureCanStoreRef();
-            refs[RefsCount] = (null, builder);
+            refs.Add((null, builder));
+            RefsCount++;
             return this;
         }
 
@@ -150,6 +152,11 @@
             }
 
             return new Cell(buffer, isAugmented, refs.Take(RefsCount).Select(x => x.Item1!).ToArray());
+        }
+
+        public ArraySegment<bool> GetAllBits()
+        {
+            return new ArraySegment<bool>(data, 0, Length);
         }
     }
 }
