@@ -35,6 +35,7 @@ namespace TonLibDotNet
                 services.AddTransient<ResolveDomains>();
                 services.AddTransient<ReadInfoFromSmartContracts>();
                 services.AddTransient<BocAndCells>();
+                services.AddTransient<DomainAuctionInfo>();
             });
 
             /// Add types from current assembly (see <see cref="LibraryExtensibility"/> class for more info).
@@ -53,6 +54,7 @@ namespace TonLibDotNet
             await app.Services.GetRequiredService<ResolveDomains>().Run(useMainnet);
             await app.Services.GetRequiredService<ReadInfoFromSmartContracts>().Run(useMainnet);
             await app.Services.GetRequiredService<BocAndCells>().Run(useMainnet);
+            await app.Services.GetRequiredService<DomainAuctionInfo>().Run(useMainnet);
 
             // Loggers need some time to flush data to screen/console.
             await Task.Delay(TimeSpan.FromSeconds(1));
