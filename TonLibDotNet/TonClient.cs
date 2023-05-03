@@ -159,7 +159,8 @@ namespace TonLibDotNet
 
         public decimal ConvertFromNanoTon(long nano)
         {
-            return nano * 0.000_000_001M;
+            // Last division - to get rid of trailing zeroes, see https://stackoverflow.com/questions/4525854/remove-trailing-zeros
+            return nano * 0.000_000_001M / 1.000000000000000000000000000000000m;
         }
 
         public long ConvertToNanoTon(decimal ton)
