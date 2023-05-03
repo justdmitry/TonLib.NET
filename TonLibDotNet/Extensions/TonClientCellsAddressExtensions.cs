@@ -36,6 +36,18 @@ namespace TonLibDotNet
             return AddressValidator.MakeAddress(workchainId, accountId, bounceable, testnetOnly, urlSafe);
         }
 
+        public static string? TryLoadAddressIntStd(this Slice slice, bool bounceable = true, bool testnetOnly = false, bool urlSafe = true)
+        {
+            var header = slice.PreloadBits(2);
+            if (!header[0] && !header[1])
+            {
+                slice.SkipBits(2); // skip checked bits
+                return null;
+            }
+
+            return LoadAddressIntStd(slice, bounceable, testnetOnly, urlSafe);
+        }
+
         public static CellBuilder StoreAddressIntStd(this CellBuilder builder, string address)
         {
             if (!AddressValidator.TryParseAddress(address, out var workchainId, out var accountId, out _, out _, out _))
