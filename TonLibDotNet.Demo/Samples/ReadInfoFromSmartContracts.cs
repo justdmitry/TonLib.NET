@@ -2,17 +2,15 @@
 using Microsoft.Extensions.Logging;
 using TonLibDotNet.Types.Smc;
 using TonLibDotNet.Types;
-using TonLibDotNet.Cells;
-using TonLibDotNet.Types.Tvm;
 
-namespace TonLibDotNet
+namespace TonLibDotNet.Samples
 {
-    public class SmartContracts
+    public class ReadInfoFromSmartContracts
     {
         private readonly ITonClient tonClient;
         private readonly ILogger logger;
 
-        public SmartContracts(ITonClient tonClient, ILogger<SmartContracts> logger)
+        public ReadInfoFromSmartContracts(ITonClient tonClient, ILogger<ReadInfoFromSmartContracts> logger)
         {
             this.tonClient = tonClient ?? throw new ArgumentNullException(nameof(tonClient));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -36,8 +34,6 @@ namespace TonLibDotNet
             _ = await tonClient.SmcGetData(info.Id);
             _ = await tonClient.SmcRunGetMethod(info.Id, new MethodIdName("counter"));
 
-            // var libs = await tonClient.Execute(new GetLibraries("1234567890"));
-
             _ = await tonClient.SmcForget(info.Id);
         }
 
@@ -54,6 +50,7 @@ namespace TonLibDotNet
             var boc = rr.Stack[0].ToTvmCell().ToBoc();
             logger.LogInformation("Domain (expecting 'tonapi'): {Value}", Encoding.ASCII.GetString(boc.RootCells[0].Content));
 
+            // Check contract source code in expolorer to understand what get_nft_data() returns
             rr = await tonClient.SmcRunGetMethod(info.Id, new MethodIdName("get_nft_data"));
             boc = rr.Stack[3].ToTvmCell().ToBoc();
 

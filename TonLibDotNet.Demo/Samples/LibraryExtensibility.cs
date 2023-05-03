@@ -3,14 +3,14 @@ using TonLibDotNet.Requests;
 using TonLibDotNet.Types;
 using TonLibDotNet.Utils;
 
-namespace TonLibDotNet
+namespace TonLibDotNet.Samples
 {
-    public class Extensibility
+    public class LibraryExtensibility
     {
         private readonly ITonClient tonClient;
         private readonly ILogger logger;
 
-        public Extensibility(ITonClient tonClient, ILogger<Extensibility> logger)
+        public LibraryExtensibility(ITonClient tonClient, ILogger<LibraryExtensibility> logger)
         {
             this.tonClient = tonClient ?? throw new ArgumentNullException(nameof(tonClient));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
