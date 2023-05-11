@@ -48,7 +48,7 @@ namespace TonLibDotNet
         [DllImport(TonLibResolver.DllNamePlaceholder)]
         private static extern IntPtr tonlib_client_json_receive(IntPtr client, double timeout);
 
-        public OptionsInfo OptionsInfo { get; private set; }
+        public OptionsInfo? OptionsInfo { get; private set; }
 
         /// <summary>
         /// Add assembly with additional <see cref="TypeBase"/> classes for LiteServer interaction.

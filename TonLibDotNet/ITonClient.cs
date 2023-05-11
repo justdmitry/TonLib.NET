@@ -6,7 +6,7 @@ namespace TonLibDotNet
 {
     public interface ITonClient
     {
-        OptionsInfo OptionsInfo { get; }
+        OptionsInfo? OptionsInfo { get; }
 
         Task<OptionsInfo?> InitIfNeeded();
 
