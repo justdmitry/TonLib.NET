@@ -1,1 +1,1 @@
-﻿global using TonLibDotNet.Utils;
+﻿global using TonLibDotNet.Internal;

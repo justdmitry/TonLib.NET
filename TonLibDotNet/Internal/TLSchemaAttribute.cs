@@ -1,4 +1,4 @@
-﻿namespace TonLibDotNet.Utils
+﻿namespace TonLibDotNet.Internal
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
     public class TLSchemaAttribute : Attribute
@@ -10,7 +10,7 @@
                 throw new ArgumentNullException(nameof(value));
             }
 
-            this.Value = value;
+            Value = value;
         }
 
         public string Value { get; set; }

@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 using System.Text.Json;
 using System.Reflection;
 
-namespace TonLibDotNet.Utils.Json
+namespace TonLibDotNet.Internal
 {
     // Based on https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/polymorphism?pivots=dotnet-7-0#configure-polymorphism-with-the-contract-model
     public class TonTypeResolver : DefaultJsonTypeInfoResolver

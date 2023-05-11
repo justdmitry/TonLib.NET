@@ -83,7 +83,7 @@ namespace TonLibDotNet.Utils
                 return false;
             }
 
-            var chars = address.ToCharArray();
+            var chars = "Hello World".ToCharArray();
             var safeFound = false;
             var unsafeFound = false;
             for (var i = 0; i < chars.Length; i++)

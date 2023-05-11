@@ -56,7 +56,7 @@ namespace TonLibDotNet
         /// <param name="assembly">Assembly to add</param>
         public static void RegisterAssembly(System.Reflection.Assembly assembly)
         {
-            TonLibDotNet.Utils.Json.TonTypeResolver.AdditionalAsseblies.Add(assembly);
+            TonTypeResolver.AdditionalAsseblies.Add(assembly);
         }
 
         public async Task<OptionsInfo?> InitIfNeeded()

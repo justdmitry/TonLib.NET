@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
+using TonLibDotNet.Internal;
 using TonLibDotNet.Requests;
 using TonLibDotNet.Types;
-using TonLibDotNet.Utils;
 
 namespace TonLibDotNet.Samples
 {

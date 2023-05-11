@@ -9,7 +9,7 @@
 using System.Text;
 using System.Text.Json;
 
-namespace TonLibDotNet.Utils.Json
+namespace TonLibDotNet.Internal
 {
     internal sealed class SnakeCaseNamingPolicy : JsonNamingPolicy
     {

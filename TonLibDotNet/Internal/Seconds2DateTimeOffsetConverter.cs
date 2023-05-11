@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace TonLibDotNet.Utils.Json
+namespace TonLibDotNet.Internal
 {
     public class Seconds2DateTimeOffsetConverter : JsonConverter<DateTimeOffset>
     {

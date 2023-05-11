@@ -1,4 +1,4 @@
-﻿namespace TonLibDotNet.Utils
+﻿namespace TonLibDotNet.Internal
 {
     public class ArraySegmentOfBoolComparerTests
     {

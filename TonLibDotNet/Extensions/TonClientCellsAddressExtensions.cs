@@ -1,4 +1,5 @@
 ﻿using TonLibDotNet.Cells;
+using TonLibDotNet.Utils;
 
 namespace TonLibDotNet
 {

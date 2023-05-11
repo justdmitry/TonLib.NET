@@ -1,8 +1,8 @@
-﻿namespace TonLibDotNet.Utils
+﻿namespace TonLibDotNet.Internal
 {
     public class ArraySegmentOfBoolComparer : IComparer<ArraySegment<bool>>
     {
-        public static readonly ArraySegmentOfBoolComparer Instance = new ();
+        public static readonly ArraySegmentOfBoolComparer Instance = new();
 
         public int Compare(ArraySegment<bool> x, ArraySegment<bool> y)
         {
