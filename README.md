@@ -72,7 +72,7 @@ On my Win machine I needed `libcrypto-1_1-x64.dll` from OpenSSL.
 
 ## Donate
 
-EQBM3AOINk8wrQ8oBSiA8L9RWCnkscAe0PYX0Nznxy7YugPM
+`EQDP_JFi4IucdPmEHJBSjEoSHlbC57G_8HLJAgqe05a-sGZ8`
 
 ## Useful links
 
