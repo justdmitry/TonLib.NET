@@ -107,10 +107,12 @@ namespace TonLibDotNet.Utils
                 }
             }
 
+#pragma warning disable S2583 // https://github.com/SonarSource/sonar-dotnet/issues/5601 S2583 FP: Variable change not detected inside a loop
             if (safeFound && unsafeFound)
             {
                 return false;
             }
+#pragma warning restore S2583 // Conditionally executed code should be reachable
 
             urlSafe = !unsafeFound;
 
