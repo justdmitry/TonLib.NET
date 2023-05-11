@@ -65,19 +65,21 @@ namespace TonLibDotNet
             {
                 logger.LogDebug("Reinitializing...");
 
-                if (await syncRoot.WaitAsync(tonOptions.TonClientTimeout))
+                if (!await syncRoot.WaitAsync(tonOptions.ConcurrencyTimeout))
                 {
-                    if (client != null)
-                    {
-                        tonlib_client_json_destroy(client.Value);
-                        client = null;
-                    }
-
-                    initialized = false;
-                    needReinit = false;
-
-                    syncRoot.Release();
+                    throw new TimeoutException("Failed while waiting for semaphore");
                 }
+
+                if (client != null)
+                {
+                    tonlib_client_json_destroy(client.Value);
+                    client = null;
+                }
+
+                initialized = false;
+                needReinit = false;
+
+                syncRoot.Release();
             }
 
             if (initialized)
@@ -112,7 +114,12 @@ namespace TonLibDotNet
         {
             if (client == null)
             {
-                if (await syncRoot.WaitAsync(tonOptions.TonClientTimeout))
+                if (!await syncRoot.WaitAsync(tonOptions.ConcurrencyTimeout))
+                {
+                    throw new TimeoutException("Failed while waiting for semaphore");
+                }
+
+                try
                 {
                     if (client == null)
                     {
@@ -120,7 +127,9 @@ namespace TonLibDotNet
                         client = tonlib_client_json_create();
                         initialized = false;
                     }
-
+                }
+                finally
+                {
                     syncRoot.Release();
                 }
             }
@@ -135,26 +144,26 @@ namespace TonLibDotNet
                 throw new InvalidOperationException($"Must call {nameof(InitIfNeeded)}() first");
             }
 
-            if (await syncRoot.WaitAsync(tonOptions.TonClientTimeout))
+            if (!await syncRoot.WaitAsync(tonOptions.ConcurrencyTimeout))
             {
-                try
-                {
-                    var res = await ExecuteInternalAsync(request);
-
-                    if (request is Init)
-                    {
-                        initialized = true;
-                    }
-
-                    return res;
-                }
-                finally
-                {
-                    syncRoot.Release();
-                }
+                throw new TimeoutException("Failed while waiting for semaphore");
             }
 
-            throw new TimeoutException("Failed while waiting for semaphore");
+            try
+            {
+                var res = await ExecuteInternalAsync(request);
+
+                if (request is Init)
+                {
+                    initialized = true;
+                }
+
+                return res;
+            }
+            finally
+            {
+                syncRoot.Release();
+            }
         }
 
         public decimal ConvertFromNanoTon(long nano)
@@ -235,7 +244,7 @@ namespace TonLibDotNet
 
             tonlib_client_json_send(client.Value, reqText);
 
-            var endOfLoop = DateTimeOffset.UtcNow.Add(tonOptions.TonClientTimeout);
+            var endOfLoop = DateTimeOffset.UtcNow.Add(request is Sync ? tonOptions.TonClientSyncTimeout : tonOptions.TonClientTimeout);
 
             while (true)
             {

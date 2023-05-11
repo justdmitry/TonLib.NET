@@ -21,9 +21,28 @@ namespace TonLibDotNet
         public bool UseMainnet { get; set; } = true;
 
         /// <summary>
-        /// Max amount of time TonClient will wait for valid (synced!) response from tonlib.
+        /// Max amount of time TonClient will wait for access to tonlib when used as singleton in multithreaded scenarios.
         /// </summary>
+        /// <remarks>See also <see cref="TonClientTimeout"/> and <see cref="TonClientSyncTimeout"/>.</remarks>
+        /// <seealso cref="TonClientTimeout"/>
+        /// <seealso cref="TonClientSyncTimeout"/>
+        public TimeSpan ConcurrencyTimeout { get; set; } = TimeSpan.FromSeconds(21); // A bit more than TonClientTimeout
+
+        /// <summary>
+        /// Max amount of time TonClient will wait for valid (synced!) response from tonlib (except <see cref="Requests.Sync"/> request).
+        /// </summary>
+        /// <remarks>See also <see cref="TonClientSyncTimeout"/> and <see cref="SemaphoreTimeout"/>.</remarks>
+        /// <seealso cref="TonClientSyncTimeout"/>
+        /// <seealso cref="SemaphoreTimeout"/>
         public TimeSpan TonClientTimeout { get; set; } = TimeSpan.FromSeconds(20);
+
+        /// <summary>
+        /// Max amount of time TonClient will wait for valid (synced!) response from tonlib for <see cref="Requests.Sync"/> request.
+        /// </summary>
+        /// <remarks>See also <see cref="TonClientTimeout"/> and <see cref="SemaphoreTimeout"/>.</remarks>
+        /// <seealso cref="TonClientTimeout"/>
+        /// <seealso cref="SemaphoreTimeout"/>
+        public TimeSpan TonClientSyncTimeout { get; set; } = TimeSpan.FromSeconds(60);
 
         /// <summary>
         /// TonLib timeout when making calls to tonlib/LiteServer.
