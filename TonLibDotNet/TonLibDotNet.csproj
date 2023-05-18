@@ -16,8 +16,8 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>ton, toncoin, the-open-network, tonlib, tonlibjson</PackageTags>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <Version>0.15.0</Version>
-    <PackageReleaseNotes>Reading/writing dict (HashmapE) from/to cells.</PackageReleaseNotes>
+    <Version>0.16.0</Version>
+    <PackageReleaseNotes>Static `TonUtils` class with helpers.</PackageReleaseNotes>
     <Description>TonLib (tonlibjson) wrapper for accessing Telegram Open Network lite servers (nodes) via ADNL protocol.</Description>
   </PropertyGroup>
 
