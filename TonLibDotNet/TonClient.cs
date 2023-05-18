@@ -168,43 +168,23 @@ namespace TonLibDotNet
 
         public decimal ConvertFromNanoTon(long nano)
         {
-            // Last division - to get rid of trailing zeroes, see https://stackoverflow.com/questions/4525854/remove-trailing-zeros
-            return nano * 0.000_000_001M / 1.000000000000000000000000000000000m;
+            return TonUtils.Coins.FromNano(nano);
         }
 
         public long ConvertToNanoTon(decimal ton)
         {
-            return Convert.ToInt64(ton * 1_000_000_000M);
+            return TonUtils.Coins.ToNano(ton);
         }
 
         [return: NotNullIfNotNull("source")]
         public string? EncodeStringAsBase64(string? source)
         {
-            if (string.IsNullOrEmpty(source))
-            {
-                return source;
-            }
-
-            return Convert.ToBase64String(System.Text.Encoding.UTF8.GetBytes(source));
+            return TonUtils.Text.EncodeAsBase64(source);
         }
 
         public bool TryDecodeBase64AsString(string? source, [NotNullWhen(true)] out string? result)
         {
-            if (string.IsNullOrEmpty(source))
-            {
-                result = null;
-                return false;
-            }
-
-            var bytes = new byte[source.Length];
-            if (!Convert.TryFromBase64String(source, bytes, out var count))
-            {
-                result = null;
-                return false;
-            }
-
-            result = System.Text.Encoding.UTF8.GetString(bytes.AsSpan()[..count]);
-            return true;
+            return TonUtils.Text.TryDecodeBase64(source, out result);
         }
 
         public void Dispose()

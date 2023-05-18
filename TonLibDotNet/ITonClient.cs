@@ -15,13 +15,17 @@ namespace TonLibDotNet
         Task<TResponse> Execute<TResponse>(RequestBase<TResponse> request)
             where TResponse : TypeBase;
 
+        [Obsolete("Use TonUtils.Coins.FromNano()")]
         decimal ConvertFromNanoTon(long nano);
 
+        [Obsolete("Use TonUtils.Coins.ToNano()")]
         long ConvertToNanoTon(decimal ton);
 
+        [Obsolete("Use TonUtils.Text.EncodeAsBase64")]
         [return: NotNullIfNotNull("source")]
         string? EncodeStringAsBase64(string? source);
 
+        [Obsolete("Use TonUtils.Text.TryDecodeBase64")]
         bool TryDecodeBase64AsString(string? source, [NotNullWhen(true)] out string? result);
     }
 }
