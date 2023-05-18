@@ -22,7 +22,7 @@ namespace TonLibDotNet
         /// <summary>
         /// Load 'coins' amount as 'long' value.
         /// </summary>
-        /// <remarks>It's safe to load coins into 'long' while total TON supply is unchanged (5*10^18), details are in https://t.me/tondev/122940.</remarks>
+        /// <remarks>It's safe to load coins into 'long' while total TON supply is unchanged (5*10^18), details are in <see href="https://t.me/tondev/122940"/>.</remarks>
         /// <exception cref="InvalidOperationException">When actual stored value is larger than 'long' (it's not amount of TON coins in that case).</exception>
         /// <seealso href="https://t.me/tondev/122940">Explanation (in RUS) why 120bits are used to store 63bits-max values.</seealso>
         public static long LoadCoins(this Slice slice)
@@ -47,7 +47,7 @@ namespace TonLibDotNet
         /// <summary>
         /// Load 'coins' amount as 'ulong' value. Use this if you prefer 'ulong' over 'long' in your app.
         /// </summary>
-        /// <remarks>It's safe to load coins into 'long' while total TON supply is unchanged (5*10^18), details are in https://t.me/tondev/122940.</remarks>
+        /// <remarks>It's safe to load coins into 'long' while total TON supply is unchanged (5*10^18), details are in <see href="https://t.me/tondev/122940"/>.</remarks>
         /// <exception cref="InvalidOperationException">When actual stored value is larger than 'ulong' (it's not amount of TON coins in that case).</exception>
         /// <seealso href="https://t.me/tondev/122940">Explanation (in RUS) why 120bits are used to store 63bits-max values.</seealso>
         public static ulong LoadCoinsToULong(this Slice slice)
@@ -65,7 +65,7 @@ namespace TonLibDotNet
         /// <summary>
         /// Load 'coins' amount as 'BigInteger' value.
         /// </summary>
-        /// <remarks>TON supply (5*10^18) fits into 'long' value (details are in https://t.me/tondev/122940), so this function may be used to load other (jetton?) amounts.</remarks>
+        /// <remarks>TON supply (5*10^18) fits into 'long' value (details are in <see href="https://t.me/tondev/122940"/>), so this function may be used to load other (jetton?) amounts.</remarks>
         public static BigInteger LoadCoinsToBigInt(this Slice slice)
         {
             Span<byte> bytes = stackalloc byte[15];
@@ -86,7 +86,7 @@ namespace TonLibDotNet
         /// <summary>
         /// Store 'coins' amount given by 'long' value (negative values are not allowed).
         /// </summary>
-        /// <remarks>It's safe to store coins as 'long' while total TON supply is unchanged (5*10^18), details are in https://t.me/tondev/122940.</remarks>
+        /// <remarks>It's safe to store coins as 'long' while total TON supply is unchanged (5*10^18), details are in <see href="https://t.me/tondev/122940"/>.</remarks>
         /// <exception cref="ArgumentOutOfRangeException">When 'value' is negative.</exception>
         /// <seealso href="https://t.me/tondev/122940">Explanation (in RUS) why 120bits are used to store 63bits-max values.</seealso>
         public static CellBuilder StoreCoins(this CellBuilder builder, long value)
@@ -109,7 +109,7 @@ namespace TonLibDotNet
         /// <summary>
         /// Store 'coins' amount given by 'ulong' value. Use this if you prefer 'ulong' over 'long' in your app.
         /// </summary>
-        /// <remarks>It's safe to store coins as 'long' while total TON supply is unchanged (5*10^18), details are in https://t.me/tondev/122940.</remarks>
+        /// <remarks>It's safe to store coins as 'long' while total TON supply is unchanged (5*10^18), details are in <see href="https://t.me/tondev/122940"/>.</remarks>
         /// <seealso href="https://t.me/tondev/122940">Explanation (in RUS) why 120bits are used to store 63bits-max values.</seealso>
         public static CellBuilder StoreCoins(this CellBuilder builder, ulong value)
         {
