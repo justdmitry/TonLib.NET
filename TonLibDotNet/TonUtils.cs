@@ -19,5 +19,10 @@ namespace TonLibDotNet
         /// Useful function to work with text strings.
         /// </summary>
         public static TextUtils Text { get; } = TextUtils.Instance;
+
+        /// <summary>
+        /// Useful function to work with ADNL addresses.
+        /// </summary>
+        public static AdnlUtils Adnl { get; } = AdnlUtils.Instance;
     }
 }
