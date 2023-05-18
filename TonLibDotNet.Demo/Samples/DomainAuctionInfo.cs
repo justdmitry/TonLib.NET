@@ -38,10 +38,10 @@ namespace TonLibDotNet.Samples
                 return;
             }
 
-            tonClient.TryDecodeBase64AsString((dnsTx.InMsg.MsgData as DataText).Text, out var domain);
+            TonUtils.Text.TryDecodeBase64((dnsTx.InMsg.MsgData as DataText).Text, out var domain);
 
             var domainAddress = dnsTx.OutMsgs[0].Destination;
-            var bid = tonClient.ConvertFromNanoTon(dnsTx.OutMsgs[0].Value);
+            var bid = TonUtils.Coins.FromNano(dnsTx.OutMsgs[0].Value);
 
             logger.LogInformation("Last auction found: name {Name}.ton (address {Address}), last bid = {Value} TON, bidder is {Address}", domain, domainAddress.Value, bid, dnsTx.InMsg.Source.Value);
 
@@ -56,7 +56,7 @@ namespace TonLibDotNet.Samples
             var adr = smcgai.Stack[0].ToTvmCell().ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
             var coins = long.Parse(smcgai.Stack[1].ToTvmNumberDecimal());
             var endTime = long.Parse(smcgai.Stack[2].ToTvmNumberDecimal());
-            logger.LogInformation("Auction info (method 1): last bid = {Value} TON, bidder is {Address}, auction ends at {Time}", tonClient.ConvertFromNanoTon(coins), adr, DateTimeOffset.FromUnixTimeSeconds(endTime));
+            logger.LogInformation("Auction info (method 1): last bid = {Value} TON, bidder is {Address}, auction ends at {Time}", TonUtils.Coins.FromNano(coins), adr, DateTimeOffset.FromUnixTimeSeconds(endTime));
 
             // Method 2: Parse contract data
             //   structure is (from explorer source code)
@@ -98,7 +98,7 @@ namespace TonLibDotNet.Samples
             var adr2 = aucinfo.LoadAddressIntStd();
             var coins2 = aucinfo.LoadCoins();
             var endTime2 = aucinfo.LoadLong();
-            logger.LogInformation("Auction info (method 2): last bid = {Value} TON, bidder is {Address}, auction ends at {Time}", tonClient.ConvertFromNanoTon(coins2), adr2, DateTimeOffset.FromUnixTimeSeconds(endTime2));
+            logger.LogInformation("Auction info (method 2): last bid = {Value} TON, bidder is {Address}, auction ends at {Time}", TonUtils.Coins.FromNano(coins2), adr2, DateTimeOffset.FromUnixTimeSeconds(endTime2));
         }
     }
 }

@@ -29,24 +29,24 @@ namespace TonLibDotNet.Samples
             logger.LogInformation("Address info 2: Bounceable={Value}, Testnet={Value}, Workchain={Value}, Bytes={Value}", workchainId, bounceable, testnetOnly, Convert.ToBase64String(accountId));
 
             var ast = await tonClient.GetAccountState(account);
-            logger.LogInformation("Acc info via GetAccountState(): balance = {Value} nanoton or {Value} TON", ast.Balance, tonClient.ConvertFromNanoTon(ast.Balance));
+            logger.LogInformation("Acc info via GetAccountState(): balance = {Value} nanoton or {Value} TON", ast.Balance, TonUtils.Coins.FromNano(ast.Balance));
 
             var rast = await tonClient.RawGetAccountState(account);
-            logger.LogInformation("Acc info via RawGetAccountState(): balance = {Value} nanoton or {Value} TON", rast.Balance, tonClient.ConvertFromNanoTon(rast.Balance));
+            logger.LogInformation("Acc info via RawGetAccountState(): balance = {Value} nanoton or {Value} TON", rast.Balance, TonUtils.Coins.FromNano(rast.Balance));
 
             var txs = await tonClient.RawGetTransactions(account, rast.LastTransactionId);
             foreach (var item in txs.TransactionsList)
             {
                 if (item.InMsg?.Value > 0)
                 {
-                    logger.LogInformation("TX {Id}: {Value} ({Value} TON) from {Address}", item.TransactionId.Hash, item.InMsg.Value, tonClient.ConvertFromNanoTon(item.InMsg.Value), item.InMsg.Source.Value);
+                    logger.LogInformation("TX {Id}: {Value} ({Value} TON) from {Address}", item.TransactionId.Hash, item.InMsg.Value, TonUtils.Coins.FromNano(item.InMsg.Value), item.InMsg.Source.Value);
                 }
 
                 if (item.OutMsgs != null)
                 {
                     foreach(var msg in item.OutMsgs)
                     {
-                        logger.LogInformation("TX {Id}: {Value} ({Value} TON) to {Address}", item.TransactionId.Hash, msg.Value, tonClient.ConvertFromNanoTon(msg.Value), msg.Destination.Value);
+                        logger.LogInformation("TX {Id}: {Value} ({Value} TON) to {Address}", item.TransactionId.Hash, msg.Value, TonUtils.Coins.FromNano(msg.Value), msg.Destination.Value);
                     }
                 }
             }

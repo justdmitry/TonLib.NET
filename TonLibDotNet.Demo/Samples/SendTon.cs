@@ -64,8 +64,8 @@ namespace TonLibDotNet.Samples
             // Step 2: Build message and action
             var msg = new Types.Msg.Message(new AccountAddress(TestAddress))
             {
-                Data = new Types.Msg.DataText(tonClient.EncodeStringAsBase64("Sent using https://github.com/justdmitry/TonLib.NET")),
-                Amount = tonClient.ConvertToNanoTon(0.01M),
+                Data = new Types.Msg.DataText(TonUtils.Text.EncodeAsBase64("Sent using https://github.com/justdmitry/TonLib.NET")),
+                Amount = TonUtils.Coins.ToNano(0.01M),
                 SendMode = 1,
             };
 
