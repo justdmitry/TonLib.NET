@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using TonLibDotNet.Types;
 using TonLibDotNet.Types.Msg;
 using TonLibDotNet.Types.Smc;
 
@@ -26,79 +25,58 @@ namespace TonLibDotNet.Samples
 
             await tonClient.InitIfNeeded();
 
-            // Step 1: find some actual domain auction.
-            // We need to check last IN transactions on ".ton DNS" address
-            var dnsAddress = new AccountAddress("EQC3dNlesgVD8YbAazcauIrXBPfiVhMMr5YYk2in0Mtsz0Bz");
-            var dnsState = await tonClient.GetAccountState(dnsAddress);
-            var dnsTransactions = await tonClient.RawGetTransactions(dnsAddress, dnsState.LastTransactionId);
-            var dnsTx = dnsTransactions.TransactionsList.FirstOrDefault(x => x.InMsg != null && x.InMsg.MsgData is DataText dt && !string.IsNullOrEmpty(dt.Text));
-            if (dnsTx == null)
+            // First, we need to find some actual domain auction.
+            var (domainName, domainAddress) = await FindDomainOnAuction();
+            if (string.IsNullOrEmpty(domainName))
             {
-                logger.LogError("Failed to find last Domain transaction");
+                logger.LogError("Failed to find last Domain-on-Auction transaction");
                 return;
             }
 
-            TonUtils.Text.TryDecodeBase64((dnsTx.InMsg.MsgData as DataText).Text, out var domain);
-
-            var domainAddress = dnsTx.OutMsgs[0].Destination;
-            var bid = TonUtils.Coins.FromNano(dnsTx.OutMsgs[0].Value);
-
-            logger.LogInformation("Last auction found: name {Name}.ton (address {Address}), last bid = {Value} TON, bidder is {Address}", domain, domainAddress.Value, bid, dnsTx.InMsg.Source.Value);
-
-            // Step 2: Get some data from NFT
-            var smc = await tonClient.SmcLoad(domainAddress);
-
-            // Method 1: Call get_auction_info, it returns:
+            // Method 1: Call get_auction_info manually, it returns:
             // ;; MsgAddressInt max_bid_address
             // ;; Coins max_bid_amount
             // ;; int auction_end_time
+            var smc = await tonClient.SmcLoad(domainAddress);
             var smcgai = await tonClient.SmcRunGetMethod(smc.Id, new MethodIdName("get_auction_info"));
             var adr = smcgai.Stack[0].ToTvmCell().ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
             var coins = long.Parse(smcgai.Stack[1].ToTvmNumberDecimal());
             var endTime = long.Parse(smcgai.Stack[2].ToTvmNumberDecimal());
             logger.LogInformation("Auction info (method 1): last bid = {Value} TON, bidder is {Address}, auction ends at {Time}", TonUtils.Coins.FromNano(coins), adr, DateTimeOffset.FromUnixTimeSeconds(endTime));
 
-            // Method 2: Parse contract data
-            //   structure is (from explorer source code)
-            // ;; uint256 index
-            // ;; MsgAddressInt collection_address
-            // ;; MsgAddressInt owner_address
-            // ;; cell content
-            // ;; cell domain -e.g contains "alice"(without ending \0) for "alice.ton" domain
-            // ;; cell auction - auction info
-            // ;; int last_fill_up_time
-            var data = await tonClient.SmcGetData(smc.Id);
+            // Method 1-bis: use TonRecipes to call 'get_auction_info' method.
+            var ai = await TonRecipes.RootDns.GetAuctionInfo(tonClient, domainAddress);
+            logger.LogInformation("Auction info (method 1-bis): last bid = {Value} TON, bidder is {Address}, auction ends at {Time}", ai!.MaxBidAmount, ai.MaxBidAddress, ai.AuctionEndTime);
 
-            var slice = data.ToBoc().RootCells[0].BeginRead();
+            // Method 2: Use TonRecipes to parse all DNS Item data.
+            var di = await TonRecipes.RootDns.GetAllInfo(tonClient, domainName);
+            logger.LogInformation("Auction info (method 2): last bid = {Value} TON, bidder is {Address}, auction ends at {Time}", di.AuctionInfo!.MaxBidAmount, di.AuctionInfo.MaxBidAddress, di.AuctionInfo.AuctionEndTime);
+        }
 
-            // skip index
-            slice.SkipBits(256);
+        private async Task<(string name, string address)> FindDomainOnAuction()
+        {
+            // We need to check last IN transactions on ".ton DNS" address
+            var rootDnsAddress = "EQC3dNlesgVD8YbAazcauIrXBPfiVhMMr5YYk2in0Mtsz0Bz";
 
-            // load (and compare) collection address
-            var ca = slice.LoadAddressIntStd();
-            if (ca != dnsAddress.Value)
+            var rootDnsState = await tonClient.GetAccountState(rootDnsAddress);
+            var rootDnsTransactions = await tonClient.RawGetTransactions(rootDnsAddress, rootDnsState.LastTransactionId);
+
+            // Look for transaction with text comment
+            var dnsTx = rootDnsTransactions.TransactionsList.FirstOrDefault(x => x.InMsg != null && x.InMsg.MsgData is DataText dt && !string.IsNullOrEmpty(dt.Text));
+            if (dnsTx == null)
             {
-                throw new Exception("Address mismatch. Something went wrong...");
+                return (string.Empty, string.Empty);
             }
 
-            // owner address (usually empty, as auction is in progress)
-            slice.TryLoadAddressIntStd();
+            TonUtils.Text.TryDecodeBase64((dnsTx.InMsg!.MsgData as DataText)!.Text, out var domain);
+            domain += ".ton";
 
-            // skip Content cell for now
-            slice.LoadRef();
+            var domainAddress = dnsTx.OutMsgs![0].Destination;
+            var bid = TonUtils.Coins.FromNano(dnsTx.OutMsgs[0].Value);
 
-            // domain name is in second cell
-            var domainName2 = System.Text.Encoding.ASCII.GetString(slice.LoadRef().Content);
-            if (domainName2 != domain)
-            {
-                throw new Exception("Domain name mismatch. Something went wrong...");
-            }
+            logger.LogInformation("Last auction found: domain '{Name}' (address {Address}), last bid = {Value} TON, bidder is {Address}", domain, domainAddress.Value, bid, dnsTx.InMsg.Source.Value);
 
-            var aucinfo = slice.LoadDict().BeginRead();
-            var adr2 = aucinfo.LoadAddressIntStd();
-            var coins2 = aucinfo.LoadCoins();
-            var endTime2 = aucinfo.LoadLong();
-            logger.LogInformation("Auction info (method 2): last bid = {Value} TON, bidder is {Address}, auction ends at {Time}", TonUtils.Coins.FromNano(coins2), adr2, DateTimeOffset.FromUnixTimeSeconds(endTime2));
+            return (domain, domainAddress.Value);
         }
     }
 }
