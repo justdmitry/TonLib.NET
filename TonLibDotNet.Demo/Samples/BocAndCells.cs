@@ -4,7 +4,7 @@ using TonLibDotNet.Cells;
 
 namespace TonLibDotNet.Samples
 {
-    public class BocAndCells
+    public class BocAndCells : ISample
     {
         private readonly ITonClient tonClient;
         private readonly ILogger logger;
@@ -15,11 +15,11 @@ namespace TonLibDotNet.Samples
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task Run(bool useMainnet)
+        public async Task Run(bool inMainnet)
         {
-            if (!useMainnet)
+            if (!inMainnet)
             {
-                logger.LogWarning("BocAndCells() must be run in Mainnet to work correctly.");
+                logger.LogWarning("BocAndCells() must be run in Mainnet to work correctly. Switch to testnet in Program.cs and try again.");
                 return;
             }
 

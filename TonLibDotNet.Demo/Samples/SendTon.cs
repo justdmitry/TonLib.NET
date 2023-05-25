@@ -1,18 +1,11 @@
 ﻿using Microsoft.Extensions.Logging;
 using TonLibDotNet.Types.Wallet;
 using TonLibDotNet.Types;
-using Microsoft.Extensions.Options;
 
 namespace TonLibDotNet.Samples
 {
-    public class SendTon
+    public class SendTon : ISample
     {
-        // You need actual mnemonic and address with some coins to test sending.
-        // Double check that you are using testnet!!!
-        private const string TestAddress = "EQAkEWzRLi1sw9AlaGDDzPvk2_F20hjpTjlvsjQqYawVmdT0";
-
-        private const string TestMnemonic = "word1 word2 word3 word4 word5 word6 word7 word8 word9 word10 word11 word12 word13 word14 word15 word16 word17 word18 word19 word20 word21 word22 word23 word24";
-
         private readonly ITonClient tonClient;
         private readonly ILogger logger;
 
@@ -22,17 +15,17 @@ namespace TonLibDotNet.Samples
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task Run(bool useMainnet)
+        public async Task Run(bool inMainnet)
         {
-            if (useMainnet)
+            if (inMainnet)
             {
-                logger.LogWarning("SendTon() demo in Mainnet is disabled for safety reasons");
+                logger.LogWarning("SendTon() sample in Mainnet is disabled for safety reasons. Switch to testnet in Program.cs and try again.");
                 return;
             }
 
-            if (TestMnemonic.StartsWith("word1 "))
+            if (string.IsNullOrWhiteSpace(Program.TestMnemonic))
             {
-                logger.LogWarning("Actual mnemonic is not set. SendTon() demo is skipped.");
+                logger.LogWarning("Actual mnemonic is not set, SendTon() sample is aborted. Put mnemonic phrase in Prograg.cs and try again.");
                 return;
             }
 
@@ -51,18 +44,18 @@ namespace TonLibDotNet.Samples
             // Surprise! Even for testnet, wallet.ton.org uses mainnet value :(
             walletId = 698983191;
 
-            var inputKey = await tonClient.ImportKey(new ExportedKey(TestMnemonic.Split(' ').ToList()));
+            var inputKey = await tonClient.ImportKey(new ExportedKey(Program.TestMnemonic.Split(' ').ToList()));
             var initialAccountState = new V3InitialAccountState() { PublicKey = inputKey.PublicKey, WalletId = walletId };
             var address = await tonClient.GetAccountAddress(initialAccountState, 0, 0);
-            logger.LogDebug("Verifying addresses: expected '{Valid}', got '{Actual}'", TestAddress, address.Value);
-            if (TestAddress != address.Value)
+            logger.LogDebug("Verifying addresses: expected '{Valid}', got '{Actual}'", Program.TestAddress, address.Value);
+            if (Program.TestAddress != address.Value)
             {
                 logger.LogError("Address mismatch, aborting. Check mnemonic words and wallet version you are testing with.");
                 return;
             }
 
             // Step 2: Build message and action
-            var msg = new Types.Msg.Message(new AccountAddress(TestAddress))
+            var msg = new Types.Msg.Message(new AccountAddress(Program.TestAddress))
             {
                 Data = new Types.Msg.DataText(TonUtils.Text.EncodeAsBase64("Sent using https://github.com/justdmitry/TonLib.NET")),
                 Amount = TonUtils.Coins.ToNano(0.01M),

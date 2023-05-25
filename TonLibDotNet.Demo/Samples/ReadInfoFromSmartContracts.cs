@@ -5,7 +5,7 @@ using TonLibDotNet.Types;
 
 namespace TonLibDotNet.Samples
 {
-    public class ReadInfoFromSmartContracts
+    public class ReadInfoFromSmartContracts : ISample
     {
         private readonly ITonClient tonClient;
         private readonly ILogger logger;
@@ -16,9 +16,9 @@ namespace TonLibDotNet.Samples
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public Task Run(bool mainnet)
+        public Task Run(bool inMainnet)
         {
-            return mainnet ? RunOnMainnet() : RunOnTestnet();
+            return inMainnet ? RunOnMainnet() : RunOnTestnet();
         }
 
         protected async Task RunOnTestnet()

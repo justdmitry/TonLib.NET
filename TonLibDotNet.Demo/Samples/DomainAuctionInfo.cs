@@ -4,7 +4,7 @@ using TonLibDotNet.Types.Smc;
 
 namespace TonLibDotNet.Samples
 {
-    public class DomainAuctionInfo
+    public class DomainAuctionInfo : ISample
     {
         private readonly ITonClient tonClient;
         private readonly ILogger logger;
@@ -15,11 +15,11 @@ namespace TonLibDotNet.Samples
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task Run(bool useMainnet)
+        public async Task Run(bool inMainnet)
         {
-            if (!useMainnet)
+            if (!inMainnet)
             {
-                logger.LogWarning("GetDomainAuctionInfo() demo in Testnet is disabled, because I don't know valid DNS Contract addresses");
+                logger.LogWarning("GetDomainAuctionInfo() sample in Testnet is disabled, because I don't know valid DNS Contract addresses. Switch to mainnet in Program.cs and try again.");
                 return;
             }
 

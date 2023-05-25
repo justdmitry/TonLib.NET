@@ -3,7 +3,7 @@ using TonLibDotNet.Utils;
 
 namespace TonLibDotNet.Samples
 {
-    public class AccountBalanceAndTransactions
+    public class AccountBalanceAndTransactions : ISample
     {
         private readonly ITonClient tonClient;
         private readonly ILogger logger;
@@ -16,7 +16,7 @@ namespace TonLibDotNet.Samples
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task Run()
+        public async Task Run(bool inMainnet)
         {
             await tonClient.InitIfNeeded();
 
