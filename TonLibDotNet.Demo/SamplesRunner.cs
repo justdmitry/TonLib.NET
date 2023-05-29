@@ -6,15 +6,18 @@ namespace TonLibDotNet
     public class SamplesRunner : IHostedService
     {
         private readonly IServiceProvider services;
+        private readonly ITonClient tonClient;
 
-        public SamplesRunner(IServiceProvider services)
+        public SamplesRunner(IServiceProvider services, ITonClient tonClient)
         {
             this.services = services;
+            this.tonClient = tonClient;
         }
 
         public async Task StartAsync(CancellationToken cancellationToken)
         {
-            await services.GetRequiredService<ITonClient>().InitIfNeeded();
+            await tonClient.InitIfNeeded();
+            await tonClient.Sync();
 
             var samples = services.GetServices(typeof(ISample)).Cast<ISample>().OrderBy(x => x.GetType().Name).ToList();
 
