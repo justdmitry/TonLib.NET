@@ -21,7 +21,7 @@ namespace TonLibDotNet.Recipes
         /// <remarks>DNS Item contract must already be deployed.</remarks>
         public Message CreateSetWalletMessage(string domainNftAddress, string walletAddress, decimal? amount = null, int? sendMode = null)
         {
-            return CreateUpdateMessage(domainNftAddress, CategoryNameWallet, CreateDnsRecordForWallet(walletAddress), amount, sendMode);
+            return CreateUpdateMessage(domainNftAddress, CategoryNameWallet, StoreWallet(new CellBuilder(), walletAddress), amount, sendMode);
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace TonLibDotNet.Recipes
         /// <remarks>DNS Item contract must already be deployed.</remarks>
         public Message CreateUpdateSiteToAdnlMessage(string domainNftAddress, Span<byte> adnlAddress, decimal? amount = null, int? sendMode = null)
         {
-            return CreateUpdateMessage(domainNftAddress, CategoryNameSite, CreateDnsRecordForAdnl(adnlAddress), amount, sendMode);
+            return CreateUpdateMessage(domainNftAddress, CategoryNameSite, StoreAdnl(new CellBuilder(), adnlAddress), amount, sendMode);
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace TonLibDotNet.Recipes
         /// <remarks>DNS Item contract must already be deployed.</remarks>
         public Message CreateUpdateSiteToStorageMessage(string domainNftAddress, Span<byte> bagId, decimal? amount = null, int? sendMode = null)
         {
-            return CreateUpdateMessage(domainNftAddress, CategoryNameSite, CreateDnsRecordForStorage(bagId), amount, sendMode);
+            return CreateUpdateMessage(domainNftAddress, CategoryNameSite, StoreBagId(new CellBuilder(), bagId), amount, sendMode);
         }
 
         /// <summary>
@@ -89,7 +89,7 @@ namespace TonLibDotNet.Recipes
         /// <remarks>DNS Item contract must already be deployed.</remarks>
         public Message CreateUpdateStorageMessage(string domainNftAddress, Span<byte> bagId, decimal? amount = null, int? sendMode = null)
         {
-            return CreateUpdateMessage(domainNftAddress, CategoryNameStorage, CreateDnsRecordForStorage(bagId), amount, sendMode);
+            return CreateUpdateMessage(domainNftAddress, CategoryNameStorage, StoreBagId(new CellBuilder(), bagId), amount, sendMode);
         }
 
         /// <summary>
@@ -116,7 +116,7 @@ namespace TonLibDotNet.Recipes
         /// <remarks>DNS Item contract must already be deployed.</remarks>
         public Message CreateUpdateNextResolverMessage(string domainNftAddress, string nextResolverAddress, decimal? amount = null, int? sendMode = null)
         {
-            return CreateUpdateMessage(domainNftAddress, CategoryNameNextDnsResolver, CreateDnsRecordForNextResolver(nextResolverAddress), amount, sendMode);
+            return CreateUpdateMessage(domainNftAddress, CategoryNameNextDnsResolver, StoreNextResolver(new CellBuilder(), nextResolverAddress), amount, sendMode);
         }
 
         /// <summary>
@@ -132,16 +132,16 @@ namespace TonLibDotNet.Recipes
             return CreateUpdateMessage(domainNftAddress, CategoryNameNextDnsResolver, null, amount, sendMode);
         }
 
-        protected Message CreateUpdateMessage(string domainNftAddress, string category, Cell? dnsRecord, decimal? amount = null, int? sendMode = null)
+        protected Message CreateUpdateMessage(string domainNftAddress, string category, CellBuilder? entryValue, decimal? amount = null, int? sendMode = null)
         {
             var body = new CellBuilder()
                 .StoreUInt(OPChangeDnsRecord)
                 .StoreULong(0) // query_id
                 .StoreBytes(EncodeCategory(category));
 
-            if (dnsRecord != null)
+            if (entryValue != null)
             {
-                body.StoreRef(dnsRecord);
+                body.StoreRef(entryValue);
             }
 
             return new Message(new AccountAddress(domainNftAddress))
@@ -150,50 +150,6 @@ namespace TonLibDotNet.Recipes
                 Data = new DataRaw(new Boc(body.Build()).SerializeToBase64(), string.Empty),
                 SendMode = sendMode ?? DefaultSendMode,
             };
-        }
-
-        protected static Cell CreateDnsRecordForWallet(string walletAddress)
-        {
-            return new CellBuilder()
-                .StoreUShort(DnsEntryTypeWallet)
-                .StoreAddressIntStd(walletAddress)
-                .StoreByte(0) // flags
-                .Build();
-        }
-
-        protected static Cell CreateDnsRecordForNextResolver(string nextResolverAddress)
-        {
-            return new CellBuilder()
-                .StoreUShort(DnsEntryTypeNextDnsResolver)
-                .StoreAddressIntStd(nextResolverAddress)
-                .Build();
-        }
-
-        protected static Cell CreateDnsRecordForAdnl(ReadOnlySpan<byte> adnl)
-        {
-            if (adnl.Length != 32)
-            {
-                throw new ArgumentOutOfRangeException(nameof(adnl), "ADNL address must be 32 bytes long");
-            }
-
-            return new CellBuilder()
-                .StoreUShort(DnsEntryTypeAdnl)
-                .StoreBytes(adnl)
-                .StoreByte(0)
-                .Build();
-        }
-
-        protected static Cell CreateDnsRecordForStorage(ReadOnlySpan<byte> bagId)
-        {
-            if (bagId.Length != 32)
-            {
-                throw new ArgumentOutOfRangeException(nameof(bagId), "BagId must be 32 bytes long");
-            }
-
-            return new CellBuilder()
-                .StoreUShort(DnsEntryTypeStorageBagId)
-                .StoreBytes(bagId)
-                .Build();
         }
     }
 }

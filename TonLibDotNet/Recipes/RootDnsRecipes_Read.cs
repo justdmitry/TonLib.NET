@@ -1,6 +1,8 @@
 ﻿using System.Globalization;
+using System.Numerics;
 using TonLibDotNet.Types.Dns;
 using TonLibDotNet.Types.Smc;
+using TonLibDotNet.Types.Tvm;
 using TonLibDotNet.Utils;
 
 namespace TonLibDotNet.Recipes
@@ -8,26 +10,65 @@ namespace TonLibDotNet.Recipes
     public partial class RootDnsRecipes
     {
         /// <summary>
-        /// Resolves DNS name into DNS Item NFT address (for both existing/minted and not-minted-yet domains).
+        /// Resolves DNS name into DNS Item NFT address (for both existing/minted and not-minted-yet domains) by calling 'get_nft_address_by_index' method.
         /// </summary>
         /// <param name="tonClient"><see cref="ITonClient"/> instance.</param>
-        /// <param name="domainName">Domain name to resolve. Second-level only, e.g. 'alice.ton'.</param>
+        /// <param name="domainName">Domain name to resolve, with or without '.ton' suffix.</param>
         /// <returns>Address of DNS Item NFT for requested domain.</returns>
-        /// <exception cref="ArgumentOutOfRangeException">Requested domainName is not second-level one.</exception>
+        /// <remarks>Only second-level .ton domains are allowed, with or without '.ton' suffix. E.g. 'alice.ton.', 'alice.ton' and 'alice' are allowed, but 'alice.t.me' is not.</remarks>
+        /// <exception cref="ArgumentOutOfRangeException">Requested <paramref name="domainName"/> is not second-level one, or not from '.ton' namespace.</exception>
+        /// <exception cref="ArgumentNullException">Requested <paramref name="domainName"/> null or white-space only.</exception>
         public async Task<string> GetNftAddress(ITonClient tonClient, string domainName)
         {
-            // Count dots in name, but not count last one.
-            var depth = domainName.Count(x => x == '.') - (domainName.EndsWith('.') ? 1 : 0);
-            if (depth != 1)
+            if (string.IsNullOrWhiteSpace(domainName))
             {
-                throw new ArgumentOutOfRangeException(nameof(domainName), "Only second-level domains (e.g. alice.ton) are supported");
+                throw new ArgumentNullException(nameof(domainName));
             }
 
-            await tonClient.InitIfNeeded();
+            var parts = domainName.ToLowerInvariant().Split('.', StringSplitOptions.RemoveEmptyEntries);
 
-            var resolved = await tonClient.DnsResolve(domainName, ttl: 1); // only resolve in root contract
+            if (parts.Length > 2)
+            {
+                throw new ArgumentOutOfRangeException(nameof(domainName), "Only second-level domains (e.g. 'alice.ton') are supported.");
+            }
 
-            return ((EntryDataNextResolver)resolved.Entries[0].Value).Resolver.Value;
+            if (parts.Length == 2 && !string.Equals(parts[1], "ton", StringComparison.InvariantCulture))
+            {
+                throw new ArgumentOutOfRangeException(nameof(domainName), "Only '.ton' domains (e.g. 'alice.ton') are supported.");
+            }
+
+            // UTF-8 encoded string up to 126 bytes, https://github.com/ton-blockchain/TEPs/blob/master/text/0081-dns-standard.md#domain-names
+            var bytes = System.Text.Encoding.UTF8.GetBytes(parts[0]);
+            if (bytes.Length > 126)
+            {
+                throw new ArgumentOutOfRangeException(nameof(domainName), "Value is too long. No more than 126 chars are allowed.");
+            }
+
+            var hashSource = new byte[bytes.Length + 2];
+            hashSource[0] = 0;
+            hashSource[1] = (byte)(bytes.Length * 2);
+            bytes.CopyTo(hashSource, 2);
+            var index = System.Security.Cryptography.SHA256.HashData(hashSource);
+
+            await tonClient.InitIfNeeded().ConfigureAwait(false);
+
+            var smc = await tonClient.SmcLoad(new Types.AccountAddress(TonRootCollection)).ConfigureAwait(false);
+
+            // slice get_nft_address_by_index(int index)
+            var stack = new List<StackEntry>()
+            {
+                new StackEntryNumber(new NumberDecimal(new BigInteger(index, true, true).ToString(CultureInfo.InvariantCulture))),
+            };
+            var result = await tonClient.SmcRunGetMethod(smc.Id, new MethodIdName("get_nft_address_by_index"), stack).ConfigureAwait(false);
+
+            await tonClient.SmcForget(smc.Id).ConfigureAwait(false);
+
+            if (result.ExitCode != 0)
+            {
+                throw new TonLibNonZeroExitCodeException(result.ExitCode);
+            }
+
+            return result.Stack[0].ToTvmCell().ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
         }
 
         /// <summary>
@@ -204,24 +245,15 @@ namespace TonLibDotNet.Recipes
         /// Resolves *.ton domain to DNS Item NFT and parses data of this contract.
         /// </summary>
         /// <param name="tonClient"><see cref="ITonClient"/> instance.</param>
-        /// <param name="domainName">Domain name to get data from. Second-level only, e.g. 'alice.ton'.</param>
+        /// <param name="domainName">Domain name to resolve, with or without '.ton' suffix.</param>
         /// <returns><see cref="DomainInfo"/> with data about domain.</returns>
         /// <remarks>⚠ Method may fail if future versions of <see href="https://github.com/ton-blockchain/dns-contract/blob/main/func/nft-item.fc">DNS Item smartcontract</see> will change stored data layout.</remarks>
-        /// <exception cref="ArgumentOutOfRangeException">Requested domainName is not second-level one.</exception>
+        /// <remarks>Only second-level .ton domains are allowed, with or without '.ton' suffix. E.g. 'alice.ton.', 'alice.ton' and 'alice' are allowed, but 'alice.t.me' is not.</remarks>
+        /// <exception cref="ArgumentOutOfRangeException">Requested <paramref name="domainName"/> is not second-level one, or not from '.ton' namespace.</exception>
+        /// <exception cref="ArgumentNullException">Requested <paramref name="domainName"/> null or white-space only.</exception>
         public async Task<DomainInfo> GetAllInfo(ITonClient tonClient, string domainName)
         {
-            // Count dots in name, but not count last one.
-            var depth = domainName.Count(x => x == '.') - (domainName.EndsWith('.') ? 1 : 0);
-            if (depth != 1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(domainName), "Only second-level domains (e.g. alice.ton) are supported");
-            }
-
-            await tonClient.InitIfNeeded().ConfigureAwait(false);
-
-            var resolved = await tonClient.DnsResolve(domainName, ttl: 1); // only resolve in root contract
-
-            var address = ((EntryDataNextResolver)resolved.Entries[0].Value).Resolver.Value;
+            var address = await GetNftAddress(tonClient, domainName).ConfigureAwait(false);
 
             var di = new DomainInfo
             {
