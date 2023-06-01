@@ -1,5 +1,5 @@
-﻿using System.Text;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
+using TonLibDotNet.Samples.Recipes;
 using TonLibDotNet.Types.Dns;
 
 namespace TonLibDotNet.Samples
@@ -12,9 +12,6 @@ namespace TonLibDotNet.Samples
         // Values below may change over time. Verify them using explorers as first troubleshooting step.
         private const string DomainName = "toncenter";
         private const string DomainNameFull = "toncenter.ton";
-        private const string CollectionAddress = "EQC3dNlesgVD8YbAazcauIrXBPfiVhMMr5YYk2in0Mtsz0Bz";
-        private const string DomainNftAddress = "EQAiIsvar4OYBn8BGBf9flfin6tl5poBx4MgJe4CQJYasy51";
-        private const string OwnerAddress = "EQCh-GaMveITkw41cHEvi13ZzAXNVtRksHq_PvGuMFENnhrT";
 
         public ResolveDomains(ITonClient tonClient, ILogger<ResolveDomains> logger)
         {
@@ -66,36 +63,8 @@ namespace TonLibDotNet.Samples
             logger.LogInformation("Site (Storage):{Value}", entries.SiteToStorage);
             logger.LogInformation("Next Resolver: {Value}", entries.DnsNextResolver);
 
-
             // Method 3: Use TonRecipes and recieve all info with one call
-            var di = await TonRecipes.RootDns.GetAllInfo(tonClient, DomainNameFull);
-
-            logger.LogInformation("TonRecipes info for '{Domain}':", di.Name);
-            logger.LogInformation("  Collection is: {Value}", di.CollectionAddress);
-            logger.LogInformation("  Index is:      {Value}", Convert.ToBase64String(di.Index));
-            logger.LogInformation("  NFT address:   {Value}", di.Address);
-            logger.LogInformation("  Deployed?:     {Value}", di.IsDeployed);
-
-            if (di.IsDeployed)
-            {
-                logger.LogInformation("  Owner:         {Value}", di.EditorAddress);
-                logger.LogInformation("  In auction:    {Value}", di.AuctionInfo != null);
-                if (di.AuctionInfo != null)
-                {
-                    logger.LogInformation("      Max Bid:    {Value}", di.AuctionInfo.MaxBidAmount);
-                    logger.LogInformation("      Max Bidder: {Value}", di.AuctionInfo.MaxBidAddress);
-                    logger.LogInformation("      End time:   {Value}", di.AuctionInfo.AuctionEndTime);
-                }
-
-                logger.LogInformation("  Last fill-up:  {Value}", di.LastFillUpTime);
-
-                logger.LogInformation("  DNS Entries:");
-                logger.LogInformation("    Wallet:     {Value}", di.Entries.Wallet);
-                logger.LogInformation("    Site (ADNL):{Value}", di.Entries.SiteToAdnl);
-                logger.LogInformation("    Site (Stor):{Value}", di.Entries.SiteToStorage);
-                logger.LogInformation("    Storage:    {Value}", di.Entries.Storage);
-                logger.LogInformation("    Next resolv:{Value}", di.Entries.DnsNextResolver);
-            }
+            logger.LogWarning("Also, check {Name}!", nameof(RootDnsGetAllInfo));
         }
     }
 }

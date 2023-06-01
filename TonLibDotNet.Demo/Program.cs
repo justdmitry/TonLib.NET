@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TonLibDotNet.Samples;
+using TonLibDotNet.Samples.Recipes;
 using TonLibDotNet.Types;
 
 namespace TonLibDotNet
@@ -46,6 +47,8 @@ namespace TonLibDotNet
                 services.AddTransient<ISample, ReadInfoFromSmartContracts>();
                 services.AddTransient<ISample, BocAndCells>();
                 services.AddTransient<ISample, DomainAuctionInfo>();
+                services.AddTransient<ISample, RootDnsGetAllInfo>();
+                services.AddTransient<ISample, TelemintGetAllInfo>();
             });
 
             /// Add types from current assembly (see <see cref="LibraryExtensibility"/> class for more info).

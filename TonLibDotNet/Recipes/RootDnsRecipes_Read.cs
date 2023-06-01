@@ -10,12 +10,60 @@ namespace TonLibDotNet.Recipes
     public partial class RootDnsRecipes
     {
         /// <summary>
+        /// Computes 'index' value for NFT with specified name.
+        /// </summary>
+        /// <param name="domainName">Domain name to resolve, with or without '.ton' suffix.</param>
+        /// <returns><b>byte[8]</b> with required value (<i>cell_hash(domain)</i>, according to <see href="https://github.com/ton-blockchain/dns-contract/blob/main/func/nft-collection.fc#L133">contract source</see>).</returns>
+        /// <remarks>
+        /// <para>Only second-level .ton domains are allowed, with or without '.ton' suffix <br/>
+        /// <i>(e.g. 'alice.ton.', 'alice.ton' and 'alice' are allowed, but 'alice.t.me' or 'thisis.alice.ton' is not)</i>.</para>
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">Requested <paramref name="domainName"/> null or empty.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Requested <paramref name="domainName"/> is not second-level one, or not from '.t.me' namespace, or too long.</exception>
+        public byte[] GetNftIndex(string domainName)
+        {
+            if (string.IsNullOrEmpty(domainName))
+            {
+                throw new ArgumentNullException(nameof(domainName));
+            }
+
+            var parts = domainName.ToLowerInvariant().Split('.', StringSplitOptions.RemoveEmptyEntries);
+
+            if (parts.Length > 2)
+            {
+                throw new ArgumentOutOfRangeException(nameof(domainName), "Only second-level domains (e.g. 'alice.ton') are supported.");
+            }
+
+            if (parts.Length == 2 && !string.Equals(parts[1], "ton", StringComparison.InvariantCulture))
+            {
+                throw new ArgumentOutOfRangeException(nameof(domainName), "Only '.ton' domains (e.g. 'alice.ton') are supported.");
+            }
+
+            // UTF-8 encoded string up to 126 bytes, https://github.com/ton-blockchain/TEPs/blob/master/text/0081-dns-standard.md#domain-names
+            var bytes = System.Text.Encoding.UTF8.GetBytes(parts[0]);
+            if (bytes.Length > 126)
+            {
+                throw new ArgumentOutOfRangeException(nameof(domainName), "Value is too long. No more than 126 chars are allowed.");
+            }
+
+            Span<byte> hashSource = stackalloc byte[bytes.Length + 2];
+            hashSource[0] = 0;
+            hashSource[1] = (byte)(bytes.Length * 2);
+            bytes.CopyTo(hashSource[2..]);
+
+            return System.Security.Cryptography.SHA256.HashData(hashSource);
+        }
+
+        /// <summary>
         /// Resolves DNS name into DNS Item NFT address (for both existing/minted and not-minted-yet domains) by calling 'get_nft_address_by_index' method.
         /// </summary>
         /// <param name="tonClient"><see cref="ITonClient"/> instance.</param>
         /// <param name="domainName">Domain name to resolve, with or without '.ton' suffix.</param>
         /// <returns>Address of DNS Item NFT for requested domain.</returns>
-        /// <remarks>Only second-level .ton domains are allowed, with or without '.ton' suffix. E.g. 'alice.ton.', 'alice.ton' and 'alice' are allowed, but 'alice.t.me' is not.</remarks>
+        /// <remarks>
+        /// <para>Only second-level .ton domains are allowed, with or without '.ton' suffix <br/>
+        /// <i>(e.g. 'alice.ton.', 'alice.ton' and 'alice' are allowed, but 'alice.t.me' or 'thisis.alice.ton' is not)</i>.</para>
+        /// </remarks>
         /// <exception cref="ArgumentOutOfRangeException">Requested <paramref name="domainName"/> is not second-level one, or not from '.ton' namespace.</exception>
         /// <exception cref="ArgumentNullException">Requested <paramref name="domainName"/> null or white-space only.</exception>
         public async Task<string> GetNftAddress(ITonClient tonClient, string domainName)
@@ -77,7 +125,9 @@ namespace TonLibDotNet.Recipes
         /// <param name="tonClient"><see cref="ITonClient"/> instance.</param>
         /// <param name="nftAddress">Address of DNS Item NFT.</param>
         /// <returns>Editor (owner) address, or null (if this domain has no owner, for example when auction is in progress).</returns>
-        /// <remarks>DNS Item contract must be deployed and active (to execute get-method).</remarks>
+        /// <remarks>
+        /// <para>DNS Item contract must be deployed and active (to execute get-method).</para>
+        /// </remarks>
         /// <exception cref="TonLibNonZeroExitCodeException" />
         /// <seealso href="https://github.com/ton-blockchain/dns-contract/blob/main/func/nft-item.fc#L275">Source of 'get_editor' method.</seealso>
         public async Task<string?> GetEditor(ITonClient tonClient, string nftAddress)
@@ -91,10 +141,7 @@ namespace TonLibDotNet.Recipes
 
             await tonClient.SmcForget(smc.Id).ConfigureAwait(false);
 
-            if (result.ExitCode != 0)
-            {
-                throw new TonLibNonZeroExitCodeException(result.ExitCode);
-            }
+            TonLibNonZeroExitCodeException.ThrowIfNonZero(result.ExitCode);
 
             return result.Stack[0].ToTvmCell().ToBoc().RootCells[0].BeginRead().TryLoadAddressIntStd();
         }
@@ -105,7 +152,9 @@ namespace TonLibDotNet.Recipes
         /// <param name="tonClient"><see cref="ITonClient"/> instance.</param>
         /// <param name="nftAddress">Address of DNS Item NFT.</param>
         /// <returns>Domain name stored in this contract, e.g. returns "alice" for "alice.ton" domain.</returns>
-        /// <remarks>DNS Item contract must be deployed and active (to execute get-method).</remarks>
+        /// <remarks>
+        /// <para>DNS Item contract must be deployed and active (to execute get-method).</para>
+        /// </remarks>
         /// <exception cref="TonLibNonZeroExitCodeException" />
         /// <seealso href="https://github.com/ton-blockchain/dns-contract/blob/main/func/nft-item.fc#L280">Source of 'get_domain' method.</seealso>
         public async Task<string> GetDomainName(ITonClient tonClient, string nftAddress)
@@ -119,10 +168,7 @@ namespace TonLibDotNet.Recipes
 
             await tonClient.SmcForget(smc.Id).ConfigureAwait(false);
 
-            if (result.ExitCode != 0)
-            {
-                throw new TonLibNonZeroExitCodeException(result.ExitCode);
-            }
+            TonLibNonZeroExitCodeException.ThrowIfNonZero(result.ExitCode);
 
             return System.Text.Encoding.UTF8.GetString(result.Stack[0].ToTvmCell().ToBoc().RootCells[0].Content);
         }
@@ -133,7 +179,9 @@ namespace TonLibDotNet.Recipes
         /// <param name="tonClient"><see cref="ITonClient"/> instance.</param>
         /// <param name="nftAddress">Address of DNS Item NFT.</param>
         /// <returns>Auction data (max bid, bidder, end time), or <b>null</b> if auction not yet started or already finished.</returns>
-        /// <remarks>DNS Item contract must be deployed and active (to execute get-method).</remarks>
+        /// <remarks>
+        /// <para>DNS Item contract must be deployed and active (to execute get-method).</para>
+        /// </remarks>
         /// <exception cref="TonLibNonZeroExitCodeException" />
         /// <seealso href="https://github.com/ton-blockchain/dns-contract/blob/main/func/nft-item.fc#L285">Source of 'get_auction_info' method.</seealso>
         public async Task<AuctionInfo?> GetAuctionInfo(ITonClient tonClient, string nftAddress)
@@ -150,10 +198,7 @@ namespace TonLibDotNet.Recipes
 
             await tonClient.SmcForget(smc.Id).ConfigureAwait(false);
 
-            if (result.ExitCode != 0)
-            {
-                throw new TonLibNonZeroExitCodeException(result.ExitCode);
-            }
+            TonLibNonZeroExitCodeException.ThrowIfNonZero(result.ExitCode);
 
             var bidNano = long.Parse(result.Stack[1].ToTvmNumberDecimal(), CultureInfo.InvariantCulture);
             if (bidNano == 0)
@@ -174,7 +219,9 @@ namespace TonLibDotNet.Recipes
         /// <param name="tonClient"><see cref="ITonClient"/> instance.</param>
         /// <param name="nftAddress">Address of DNS Item NFT.</param>
         /// <returns>Last fill-up time, as stored in contract. Domain will be release one year after this date.</returns>
-        /// <remarks>DNS Item contract must be deployed and active (to execute get-method).</remarks>
+        /// <remarks>
+        /// <para>DNS Item contract must be deployed and active (to execute get-method).</para>
+        /// </remarks>
         /// <exception cref="TonLibNonZeroExitCodeException" />
         /// <seealso href="https://github.com/ton-blockchain/dns-contract/blob/main/func/nft-item.fc#L290">Source of 'get_last_fill_up_time' method.</seealso>
         public async Task<DateTimeOffset> GetLastFillUpTime(ITonClient tonClient, string nftAddress)
@@ -188,10 +235,7 @@ namespace TonLibDotNet.Recipes
 
             await tonClient.SmcForget(smc.Id).ConfigureAwait(false);
 
-            if (result.ExitCode != 0)
-            {
-                throw new TonLibNonZeroExitCodeException(result.ExitCode);
-            }
+            TonLibNonZeroExitCodeException.ThrowIfNonZero(result.ExitCode);
 
             return DateTimeOffset.FromUnixTimeSeconds(long.Parse(result.Stack[0].ToTvmNumberDecimal(), CultureInfo.InvariantCulture));
         }
@@ -202,7 +246,9 @@ namespace TonLibDotNet.Recipes
         /// <param name="tonClient"><see cref="ITonClient"/> instance.</param>
         /// <param name="nftAddress">Address of DNS Item NFT.</param>
         /// <returns>All records that stored in DNS Item NFT data.</returns>
-        /// <remarks>DNS Item contract must be deployed and active.</remarks>
+        /// <remarks>
+        /// <para>DNS Item contract must be deployed and active (to execute get-method).</para>
+        /// </remarks>
         /// <exception cref="TonLibNonZeroExitCodeException" />
         public async Task<DnsEntries> GetEntries(ITonClient tonClient, string nftAddress)
         {
@@ -242,28 +288,47 @@ namespace TonLibDotNet.Recipes
         }
 
         /// <summary>
-        /// Resolves *.ton domain to DNS Item NFT and parses data of this contract.
+        /// Combines <see cref="GetNftAddress(ITonClient, string)">GetNftAddress</see> and <see cref="GetAllInfo(ITonClient, string)">GetAllInfo</see> calls.
         /// </summary>
         /// <param name="tonClient"><see cref="ITonClient"/> instance.</param>
         /// <param name="domainName">Domain name to resolve, with or without '.ton' suffix.</param>
         /// <returns><see cref="DomainInfo"/> with data about domain.</returns>
-        /// <remarks>⚠ Method may fail if future versions of <see href="https://github.com/ton-blockchain/dns-contract/blob/main/func/nft-item.fc">DNS Item smartcontract</see> will change stored data layout.</remarks>
-        /// <remarks>Only second-level .ton domains are allowed, with or without '.ton' suffix. E.g. 'alice.ton.', 'alice.ton' and 'alice' are allowed, but 'alice.t.me' is not.</remarks>
+        /// <remarks>
+        /// <para>DNS Item contract must be deployed and active (to execute get-method).</para>
+        /// <para>⚠ Will work only for <see href="https://github.com/ton-blockchain/dns-contract/blob/main/func/nft-item.fc">DNS Item smartcontract</see>. May fail if future version will change stored data layout.</para>
+        /// <para>Only second-level .ton domains are allowed, with or without '.ton' suffix <br/>
+        /// <i>(e.g. 'alice.ton.', 'alice.ton' and 'alice' are allowed, but 'alice.t.me' or 'thisis.alice.ton' is not)</i>.</para>
+        /// </remarks>
         /// <exception cref="ArgumentOutOfRangeException">Requested <paramref name="domainName"/> is not second-level one, or not from '.ton' namespace.</exception>
         /// <exception cref="ArgumentNullException">Requested <paramref name="domainName"/> null or white-space only.</exception>
-        public async Task<DomainInfo> GetAllInfo(ITonClient tonClient, string domainName)
+        public async Task<DomainInfo> GetAllInfoByName(ITonClient tonClient, string domainName)
         {
             var address = await GetNftAddress(tonClient, domainName).ConfigureAwait(false);
 
+            return await GetAllInfo(tonClient, address).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Parses all contract data from *.ton DNS Item NFT.
+        /// </summary>
+        /// <param name="tonClient"><see cref="ITonClient"/> instance.</param>
+        /// <param name="nftAddress">Address of DNS Item NFT.</param>
+        /// <returns><see cref="DomainInfo"/> with data about domain.</returns>
+        /// <remarks>
+        /// <para>DNS Item contract must be deployed and active (to execute get-method).</para>
+        /// <para>⚠ Will work only for <see href="https://github.com/ton-blockchain/dns-contract/blob/main/func/nft-item.fc">DNS Item smartcontract</see>. May fail if future version will change stored data layout.</para>
+        /// </remarks>
+        public async Task<DomainInfo> GetAllInfo(ITonClient tonClient, string nftAddress)
+        {
             var di = new DomainInfo
             {
-                Name = domainName.ToLowerInvariant(),
-                Address = address,
+                Address = nftAddress,
                 IsDeployed = false,
             };
 
-            var smc = await tonClient.SmcLoad(address).ConfigureAwait(false);
+            var smc = await tonClient.SmcLoad(nftAddress).ConfigureAwait(false);
             var data = await tonClient.SmcGetData(smc.Id).ConfigureAwait(false);
+            await tonClient.SmcForget(smc.Id);
 
             if (string.IsNullOrEmpty(data.Bytes))
             {
@@ -284,41 +349,15 @@ namespace TonLibDotNet.Recipes
 
             di.Index = slice.LoadBitsToBytes(256);
             di.CollectionAddress = slice.LoadAddressIntStd();
-            di.EditorAddress = slice.TryLoadAddressIntStd();
+            di.OwnerAddress = slice.TryLoadAddressIntStd();
 
             var content = slice.LoadRef();
             var contentSlice = content.BeginRead();
             contentSlice.SkipBits(8);
-            var entries = contentSlice.TryLoadAndParseDict(256, s => s.LoadBitsToBytes(256), s => s);
-            if (entries != null)
-            {
-                foreach (var entry in entries)
-                {
-                    var type = entry.Value.LoadUShort();
-                    if (type == DnsEntryTypeWallet && CategoryBytesWallet.SequenceEqual(entry.Key))
-                    {
-                        di.Entries.Wallet = entry.Value.LoadAddressIntStd();
-                    }
-                    else if (type == DnsEntryTypeAdnl && CategoryBytesSite.SequenceEqual(entry.Key))
-                    {
-                        di.Entries.SiteToAdnl = TonUtils.Adnl.Encode(entry.Value.LoadBitsToBytes(256));
-                    }
-                    else if (type == DnsEntryTypeStorageBagId && CategoryBytesSite.SequenceEqual(entry.Key))
-                    {
-                        di.Entries.SiteToStorage = Convert.ToHexString(entry.Value.LoadBitsToBytes(256));
-                    }
-                    else if (type == DnsEntryTypeStorageBagId && CategoryBytesStorage.SequenceEqual(entry.Key))
-                    {
-                        di.Entries.Storage = Convert.ToHexString(entry.Value.LoadBitsToBytes(256));
-                    }
-                    else if (type == DnsEntryTypeNextDnsResolver && CategoryBytesNextDnsResolver.SequenceEqual(entry.Key))
-                    {
-                        di.Entries.DnsNextResolver = entry.Value.LoadAddressIntStd();
-                    }
-                }
-            }
+            di.Entries = LoadDns(contentSlice);
 
-            slice.LoadRef(); // skip domain
+            var domain = slice.LoadRef();
+            di.Domain = System.Text.Encoding.UTF8.GetString(domain.Content);
 
             var auc = slice.TryLoadDict();
             if (auc != null)
@@ -364,41 +403,8 @@ namespace TonLibDotNet.Recipes
             public DateTimeOffset AuctionEndTime { get; set; }
         }
 
-        public class DnsEntries
-        {
-            /// <summary>
-            /// Domain 'wallet' entry value (address as EQ... string).
-            /// </summary>
-            public string? Wallet { get; set; }
-
-            /// <summary>
-            /// Domain 'site' entry value when set to ADNL address (as 55 characters string).
-            /// </summary>
-            public string? SiteToAdnl { get; set; }
-
-            /// <summary>
-            /// Domain 'site' entry value when set to Storage BagID value (in HEX).
-            /// </summary>
-            public string? SiteToStorage { get; set; }
-
-            /// <summary>
-            /// Domain 'storage' set to BagID value (in HEX).
-            /// </summary>
-            public string? Storage { get; set; }
-
-            /// <summary>
-            /// Domain 'dns_next_resolver' entry value (address as EQ... string).
-            /// </summary>
-            public string? DnsNextResolver { get; set; }
-        }
-
         public class DomainInfo
         {
-            /// <summary>
-            /// Domain name (e.g. 'alice.ton').
-            /// </summary>
-            public string Name { get; set; } = string.Empty;
-
             /// <summary>
             /// Address of DNS Item contract.
             /// </summary>
@@ -420,9 +426,14 @@ namespace TonLibDotNet.Recipes
             public string CollectionAddress { get; set; } = string.Empty;
 
             /// <summary>
+            /// Domain name (e.g. 'alice' for 'alice.ton').
+            /// </summary>
+            public string Domain { get; set; } = string.Empty;
+
+            /// <summary>
             /// Address of editor (owner) of this domain, or null if domain is not yet owned (e.g. auction is in progress).
             /// </summary>
-            public string? EditorAddress { get; set; } = string.Empty;
+            public string? OwnerAddress { get; set; } = string.Empty;
 
             /// <summary>
             /// Information about auction (if any).

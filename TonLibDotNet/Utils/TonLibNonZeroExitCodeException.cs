@@ -14,5 +14,13 @@
         }
 
         public long ExitCode { get; set; }
+
+        public static void ThrowIfNonZero(long exitCode)
+        {
+            if (exitCode != 0)
+            {
+                throw new TonLibNonZeroExitCodeException(exitCode);
+            }
+        }
     }
 }

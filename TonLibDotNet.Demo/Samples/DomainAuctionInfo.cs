@@ -49,7 +49,7 @@ namespace TonLibDotNet.Samples
             logger.LogInformation("Auction info (method 1-bis): last bid = {Value} TON, bidder is {Address}, auction ends at {Time}", ai!.MaxBidAmount, ai.MaxBidAddress, ai.AuctionEndTime);
 
             // Method 2: Use TonRecipes to parse all DNS Item data.
-            var di = await TonRecipes.RootDns.GetAllInfo(tonClient, domainName);
+            var di = await TonRecipes.RootDns.GetAllInfo(tonClient, domainAddress);
             logger.LogInformation("Auction info (method 2): last bid = {Value} TON, bidder is {Address}, auction ends at {Time}", di.AuctionInfo!.MaxBidAmount, di.AuctionInfo.MaxBidAddress, di.AuctionInfo.AuctionEndTime);
         }
 

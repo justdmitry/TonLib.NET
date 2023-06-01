@@ -81,5 +81,69 @@ namespace TonLibDotNet.Recipes
                 .StoreUShort(DnsEntryTypeStorageBagId)
                 .StoreBytes(bagId);
         }
+
+        protected DnsEntries LoadDns(Slice slice)
+        {
+            var result = new DnsEntries();
+
+            var entries = slice.TryLoadAndParseDict(256, s => s.LoadBitsToBytes(256), s => s);
+            if (entries != null)
+            {
+                foreach (var entry in entries)
+                {
+                    var type = entry.Value.LoadUShort();
+                    if (type == DnsEntryTypeWallet && CategoryBytesWallet.SequenceEqual(entry.Key))
+                    {
+                        result.Wallet = entry.Value.LoadAddressIntStd();
+                    }
+                    else if (type == DnsEntryTypeAdnl && CategoryBytesSite.SequenceEqual(entry.Key))
+                    {
+                        result.SiteToAdnl = TonUtils.Adnl.Encode(entry.Value.LoadBitsToBytes(256));
+                    }
+                    else if (type == DnsEntryTypeStorageBagId && CategoryBytesSite.SequenceEqual(entry.Key))
+                    {
+                        result.SiteToStorage = Convert.ToHexString(entry.Value.LoadBitsToBytes(256));
+                    }
+                    else if (type == DnsEntryTypeStorageBagId && CategoryBytesStorage.SequenceEqual(entry.Key))
+                    {
+                        result.Storage = Convert.ToHexString(entry.Value.LoadBitsToBytes(256));
+                    }
+                    else if (type == DnsEntryTypeNextDnsResolver && CategoryBytesNextDnsResolver.SequenceEqual(entry.Key))
+                    {
+                        result.DnsNextResolver = entry.Value.LoadAddressIntStd();
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public class DnsEntries
+        {
+            /// <summary>
+            /// Domain 'wallet' entry value (address as EQ... string).
+            /// </summary>
+            public string? Wallet { get; set; }
+
+            /// <summary>
+            /// Domain 'site' entry value when set to ADNL address (as 55 characters string).
+            /// </summary>
+            public string? SiteToAdnl { get; set; }
+
+            /// <summary>
+            /// Domain 'site' entry value when set to Storage BagID value (in HEX).
+            /// </summary>
+            public string? SiteToStorage { get; set; }
+
+            /// <summary>
+            /// Domain 'storage' set to BagID value (in HEX).
+            /// </summary>
+            public string? Storage { get; set; }
+
+            /// <summary>
+            /// Domain 'dns_next_resolver' entry value (address as EQ... string).
+            /// </summary>
+            public string? DnsNextResolver { get; set; }
+        }
     }
 }

@@ -19,17 +19,18 @@ namespace TonLibDotNet
             await tonClient.InitIfNeeded();
             await tonClient.Sync();
 
-            var samples = services.GetServices(typeof(ISample)).Cast<ISample>().OrderBy(x => x.GetType().Name).ToList();
+            var samples = services.GetServices(typeof(ISample)).Cast<ISample>().OrderBy(x => x.GetType().FullName).ToList();
 
             var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
             while (!cts.IsCancellationRequested)
             {
+                var trimLength = "TonLibDotNet.Samples.".Length;
                 Console.WriteLine();
                 Console.WriteLine("Available samples:");
                 for (var i = 0; i < samples.Count; i++)
                 {
-                    Console.WriteLine("  {0}: {1}", i, samples[i].GetType().Name);
+                    Console.WriteLine("  {0}: {1}", i, samples[i].GetType().FullName![trimLength..]);
                 }
 
                 while (!cts.IsCancellationRequested)
@@ -69,7 +70,7 @@ namespace TonLibDotNet
                     var sample = samples[index];
 
                     Console.WriteLine();
-                    Console.WriteLine("Running {0} sample...", sample.GetType().Name);
+                    Console.WriteLine("Running {0} sample...", sample.GetType().FullName);
                     Console.WriteLine();
 
                     await sample.Run(Program.UseMainnet).ConfigureAwait(false);
