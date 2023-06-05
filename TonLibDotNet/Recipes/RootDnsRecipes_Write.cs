@@ -19,7 +19,7 @@ namespace TonLibDotNet.Recipes
         /// <param name="sendMode">SendMode for this message (when null, <see cref="DefaultSendMode">DefaultSendMode</see> value will be used).</param>
         /// <returns>Constructed and ready-to-be-sent Message (by editor/owner of this domain!).</returns>
         /// <remarks>DNS Item contract must already be deployed.</remarks>
-        public Message CreateSetWalletMessage(string domainNftAddress, string walletAddress, decimal? amount = null, int? sendMode = null)
+        public Message CreateUpdateWalletMessage(string domainNftAddress, string walletAddress, decimal? amount = null, int? sendMode = null)
         {
             return CreateUpdateMessage(domainNftAddress, CategoryNameWallet, StoreWallet(new CellBuilder(), walletAddress), amount, sendMode);
         }
