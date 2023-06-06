@@ -1,5 +1,7 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Numerics;
+using System.Xml.Linq;
 using TonLibDotNet.Types.Dns;
 using TonLibDotNet.Types.Smc;
 using TonLibDotNet.Types.Tvm;
@@ -10,37 +12,60 @@ namespace TonLibDotNet.Recipes
     public partial class RootDnsRecipes
     {
         /// <summary>
-        /// Computes 'index' value for NFT with specified name.
+        /// Tries to normalize domain name to form used by Collection.
         /// </summary>
-        /// <param name="domainName">Domain name to resolve, with or without '.ton' suffix.</param>
-        /// <returns><b>byte[8]</b> with required value (<i>cell_hash(domain)</i>, according to <see href="https://github.com/ton-blockchain/dns-contract/blob/main/func/nft-collection.fc#L133">contract source</see>).</returns>
+        /// <param name="name">Domain name to normalize.</param>
+        /// <param name="normalizedName">Normalized domain name, if possible.</param>
+        /// <returns>Returns <b>true</b> when name had been successfully normalized, and <b>false</b> otherwise.</returns>
         /// <remarks>
-        /// <para>Only second-level .ton domains are allowed, with or without '.ton' suffix <br/>
+        /// <para>Only second-level .ton domains are "valid", with or without '.ton' suffix <br/>
         /// <i>(e.g. 'alice.ton.', 'alice.ton' and 'alice' are allowed, but 'alice.t.me' or 'thisis.alice.ton' is not)</i>.</para>
         /// </remarks>
         /// <exception cref="ArgumentNullException">Requested <paramref name="domainName"/> null or empty.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Requested <paramref name="domainName"/> is not second-level one, or not from '.t.me' namespace, or too long.</exception>
-        public byte[] GetNftIndex(string domainName)
+        public bool TryNormalizeName(string domainName, [NotNullWhen(true)] out string normalizedName)
         {
             if (string.IsNullOrEmpty(domainName))
             {
                 throw new ArgumentNullException(nameof(domainName));
             }
 
-            var parts = domainName.ToLowerInvariant().Split('.', StringSplitOptions.RemoveEmptyEntries);
+            normalizedName = string.Empty;
+
+            var parts = domainName.Trim().ToLowerInvariant().Split('.', StringSplitOptions.RemoveEmptyEntries);
 
             if (parts.Length > 2)
             {
-                throw new ArgumentOutOfRangeException(nameof(domainName), "Only second-level domains (e.g. 'alice.ton') are supported.");
+                return false;
             }
 
             if (parts.Length == 2 && !string.Equals(parts[1], "ton", StringComparison.InvariantCulture))
             {
-                throw new ArgumentOutOfRangeException(nameof(domainName), "Only '.ton' domains (e.g. 'alice.ton') are supported.");
+                return false;
+            }
+
+            normalizedName = parts[0];
+            return true;
+        }
+
+        /// <summary>
+        /// Computes 'index' value for NFT with specified name.
+        /// </summary>
+        /// <param name="domainName">Domain name to resolve, with or without '.ton' suffix.</param>
+        /// <returns><b>byte[8]</b> with required value (<i>cell_hash(domain)</i>, according to <see href="https://github.com/ton-blockchain/dns-contract/blob/main/func/nft-collection.fc#L133">contract source</see>).</returns>
+        /// <remarks>
+        /// <para>Check overriden <see cref="TryNormalizeName">TryNormalizeName</see> docs for 'valid' vs 'invalid' names description.</para>
+        /// </remarks>
+        /// <exception cref="ArgumentNullException">Requested <paramref name="domainName"/> null or empty.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">Requested <paramref name="domainName"/> is too long.</exception>
+        public byte[] GetNftIndex(string domainName)
+        {
+            if (!TryNormalizeName(domainName, out var normalizedName))
+            {
+                throw new ArgumentOutOfRangeException(nameof(domainName), "Invalid domain name.");
             }
 
             // UTF-8 encoded string up to 126 bytes, https://github.com/ton-blockchain/TEPs/blob/master/text/0081-dns-standard.md#domain-names
-            var bytes = System.Text.Encoding.UTF8.GetBytes(parts[0]);
+            var bytes = System.Text.Encoding.UTF8.GetBytes(normalizedName);
             if (bytes.Length > 126)
             {
                 throw new ArgumentOutOfRangeException(nameof(domainName), "Value is too long. No more than 126 chars are allowed.");
@@ -296,11 +321,8 @@ namespace TonLibDotNet.Recipes
         /// <remarks>
         /// <para>DNS Item contract must be deployed and active (to execute get-method).</para>
         /// <para>⚠ Will work only for <see href="https://github.com/ton-blockchain/dns-contract/blob/main/func/nft-item.fc">DNS Item smartcontract</see>. May fail if future version will change stored data layout.</para>
-        /// <para>Only second-level .ton domains are allowed, with or without '.ton' suffix <br/>
-        /// <i>(e.g. 'alice.ton.', 'alice.ton' and 'alice' are allowed, but 'alice.t.me' or 'thisis.alice.ton' is not)</i>.</para>
+        /// <para>Check overriden <see cref="TryNormalizeName">TryNormalizeName</see> docs for 'valid' vs 'invalid' names description.</para>
         /// </remarks>
-        /// <exception cref="ArgumentOutOfRangeException">Requested <paramref name="domainName"/> is not second-level one, or not from '.ton' namespace.</exception>
-        /// <exception cref="ArgumentNullException">Requested <paramref name="domainName"/> null or white-space only.</exception>
         public async Task<DomainInfo> GetAllInfoByName(ITonClient tonClient, string domainName)
         {
             var address = await GetNftAddress(tonClient, domainName).ConfigureAwait(false);
