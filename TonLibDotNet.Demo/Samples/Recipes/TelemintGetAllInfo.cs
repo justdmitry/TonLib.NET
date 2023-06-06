@@ -26,12 +26,19 @@ namespace TonLibDotNet.Samples.Recipes
 
             var domain = "dolboeb.t.me";
 
-            var ti = await TonRecipes.Telemint.GetAllInfoByName(tonClient, domain);
+            var ti = await TonRecipes.TelegramUsernames.GetAllInfoByName(tonClient, domain);
 
             // Output as JSON because I'm too lazy to write separate lines for each field.
             logger.LogInformation(
                 "Info about '{Domain}':\r\n{Json}",
                 domain,
+                JsonSerializer.Serialize(ti, new JsonSerializerOptions() { WriteIndented = true }));
+
+            var number = "+888 0000 8888";
+            ti = await TonRecipes.TelegramNumbers.GetAllInfoByName(tonClient, number);
+            logger.LogInformation(
+                "Info about '{Domain}':\r\n{Json}",
+                number,
                 JsonSerializer.Serialize(ti, new JsonSerializerOptions() { WriteIndented = true }));
         }
     }

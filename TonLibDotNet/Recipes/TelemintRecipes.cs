@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Numerics;
 using TonLibDotNet.Types.Smc;
 using TonLibDotNet.Types.Tvm;
@@ -8,54 +9,44 @@ namespace TonLibDotNet.Recipes
 {
     /// <remarks>
     /// Based on <see href="https://github.com/ton-blockchain/TEPs/blob/master/text/0081-dns-standard.md">TEP 81: TON DNS Standard</see>
-    ///   and <see href="https://github.com/TelegramMessenger/telemint">Telemint (Telegram username) Contracts</see>.
+    ///   and <see href="https://github.com/TelegramMessenger/telemint">Telemint (Telegram usernames and numbers) Contracts</see>.
     /// </remarks>
-    public class TelemintRecipes : Tep81Recipes
+    public abstract class TelemintRecipes : Tep81Recipes
     {
         /// <summary>
-        /// .t.me Root Collection - parent for all .t.me NFTs.
+        /// Collection address (parent for all item NFTs).
         /// </summary>
-        public const string TelemintRootCollection = "EQCA14o1-VWhS2efqoh_9M1b_A9DtKTuoqfmkn83AbJzwnPi";
-
-        public static readonly TelemintRecipes Instance = new();
+        public abstract string CollectionAddress { get; }
 
         /// <summary>
-        /// Computes 'index' value for NFT with specified name.
+        /// Tries to normalize name to form used by Collection.
         /// </summary>
-        /// <param name="domainName">Domain name to get 'index' for, with or without '.t.me' suffix.</param>
+        /// <param name="name">Name to normalize.</param>
+        /// <param name="normalizedName">Normalized name, if possible.</param>
+        /// <returns>Returns <b>true</b> when name had been successfully normalized, and <b>false</b> otherwise.</returns>
+        public abstract bool TryNormalizeName(string name, [NotNullWhen(true)] out string normalizedName);
+
+        /// <summary>
+        /// Computes 'index' value for NFT with specified Name.
+        /// </summary>
+        /// <param name="name">Name to get 'index' for.</param>
         /// <returns><b>byte[8]</b> with required value (<i>string_hash(domain)</i>, according to <see href="https://github.com/TelegramMessenger/telemint/blob/main/func/nft-collection.fc#L93">contract source</see>).</returns>
         /// <remarks>
-        /// <para>Only second-level .t.me domains are allowed, with or without '.t.me' suffix <br/>
-        /// <i>(e.g. 'alice.t.me.', 'alice.t.me' and 'alice' are allowed, but 'alice.ton' or 'thisis.alice.t.me' are not)</i>.</para>
+        /// <para>Check overriden <see cref="TryNormalizeName">TryNormalizeName</see> docs for 'valid' vs 'invalid' names description.</para>
         /// </remarks>
-        /// <exception cref="ArgumentNullException">Requested <paramref name="domainName"/> null or empty.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Requested <paramref name="domainName"/> is not second-level one, or not from '.t.me' namespace, or too long.</exception>
-        public byte[] GetNftIndex(string domainName)
+        /// <exception cref="ArgumentOutOfRangeException">Requested <paramref name="name"/> is not valid or too long.</exception>
+        public byte[] GetNftIndex(string name)
         {
-            if (string.IsNullOrEmpty(domainName))
+            if (!TryNormalizeName(name, out var normalizedName))
             {
-                throw new ArgumentNullException(nameof(domainName));
-            }
-
-            var parts = domainName.ToLowerInvariant().Split('.', StringSplitOptions.RemoveEmptyEntries);
-
-            if (parts.Length == 2 || parts.Length > 3)
-            {
-                throw new ArgumentOutOfRangeException(nameof(domainName), "Only second-level domains (e.g. 'alice.t.me') are supported.");
-            }
-
-            if (parts.Length == 3
-                && !string.Equals(parts[1], "t", StringComparison.InvariantCulture)
-                && !string.Equals(parts[2], "me", StringComparison.InvariantCulture))
-            {
-                throw new ArgumentOutOfRangeException(nameof(domainName), "Only '.t.me' domains (e.g. 'alice.t.me') are supported.");
+                throw new ArgumentOutOfRangeException(nameof(name), "Invalid name.");
             }
 
             // UTF-8 encoded string up to 126 bytes, https://github.com/ton-blockchain/TEPs/blob/master/text/0081-dns-standard.md#domain-names
-            var bytes = System.Text.Encoding.UTF8.GetBytes(parts[0]);
+            var bytes = System.Text.Encoding.UTF8.GetBytes(normalizedName);
             if (bytes.Length > 126)
             {
-                throw new ArgumentOutOfRangeException(nameof(domainName), "Value is too long. No more than 126 chars are allowed.");
+                throw new ArgumentOutOfRangeException(nameof(name), "Value is too long. No more than 126 chars are allowed.");
             }
 
             // index is simple slice_hash(domain), see https://github.com/TelegramMessenger/telemint/blob/main/func/nft-collection.fc#L93
@@ -63,24 +54,21 @@ namespace TonLibDotNet.Recipes
         }
 
         /// <summary>
-        /// Resolves DNS name into DNS Item NFT address (for both existing/minted and not-yet-minted domains) by calling 'get_nft_address_by_index' method.
+        /// Resolves Name into Item NFT address (for both existing/minted and not-yet-minted names) by calling 'get_nft_address_by_index' method.
         /// </summary>
         /// <param name="tonClient"><see cref="ITonClient"/> instance.</param>
-        /// <param name="domainName">Domain name to resolve, with or without '.t.me' suffix.</param>
-        /// <returns>Address of DNS Item NFT for requested domain.</returns>
+        /// <param name="name">Name to resolve.</param>
+        /// <returns>Address of Item NFT for requested Name.</returns>
         /// <remarks>
-        /// <para>Only second-level .t.me domains are allowed, with or without '.t.me' suffix <br/>
-        /// <i>(e.g. 'alice.t.me.', 'alice.t.me' and 'alice' are allowed, but 'alice.ton' or 'thisis.alice.t.me' are not)</i>.</para>
+        /// <para>Check overriden <see cref="TryNormalizeName">TryNormalizeName</see> docs for 'valid' vs 'invalid' names description.</para>
         /// </remarks>
-        /// <exception cref="ArgumentNullException">Requested <paramref name="domainName"/> null or empty.</exception>
-        /// <exception cref="ArgumentOutOfRangeException">Requested <paramref name="domainName"/> is not second-level one, or not from '.t.me' namespace, or too long.</exception>
-        public async Task<string> GetNftAddress(ITonClient tonClient, string domainName)
+        public async Task<string> GetNftAddress(ITonClient tonClient, string name)
         {
-            var index = GetNftIndex(domainName);
+            var index = GetNftIndex(name);
 
             await tonClient.InitIfNeeded().ConfigureAwait(false);
 
-            var smc = await tonClient.SmcLoad(new Types.AccountAddress(TelemintRootCollection)).ConfigureAwait(false);
+            var smc = await tonClient.SmcLoad(new Types.AccountAddress(CollectionAddress)).ConfigureAwait(false);
 
             // slice get_nft_address_by_index(int index)
             var stack = new List<StackEntry>()
@@ -97,11 +85,11 @@ namespace TonLibDotNet.Recipes
         }
 
         /// <summary>
-        /// Returns full domain name (e.g. 'alice.t.me') for specified NFT by calling 'get_full_domain' on it.
+        /// Returns full domain name (e.g. 'alice.t.me' or '888...') for specified NFT by calling 'get_full_domain' on it.
         /// </summary>
         /// <param name="tonClient"><see cref="ITonClient"/> instance.</param>
-        /// <param name="nftAddress">Address of existing t.me NFT.</param>
-        /// <returns>String like 'alice.t.me', returned by 'get_full_domain' method (with \0 -> '.' replaced and parts reversed).</returns>
+        /// <param name="nftAddress">Address of existing Item NFT.</param>
+        /// <returns>String like 'alice.t.me' or '888...', returned by 'get_full_domain' method (with \0 -> '.' replaced and parts reversed).</returns>
         /// <remarks>
         /// <para>Telemint NFT contract must be deployed and active (to execute get-method).</para>
         /// </remarks>
@@ -125,10 +113,10 @@ namespace TonLibDotNet.Recipes
         }
 
         /// <summary>
-        /// Returns domain name (e.g. 'alice' from 'alice.t.me') for specified NFT by calling 'get_telemint_token_name' on it.
+        /// Returns Name (e.g. 'alice' from 'alice.t.me' or '888...' for numbers) for specified NFT by calling 'get_telemint_token_name' on it.
         /// </summary>
         /// <param name="tonClient"><see cref="ITonClient"/> instance.</param>
-        /// <param name="nftAddress">Address of existing t.me NFT.</param>
+        /// <param name="nftAddress">Address of existing Item NFT.</param>
         /// <returns>String like 'alice' (for 'alice.t.me' NFT), returned by 'get_telemint_token_name' method.</returns>
         /// <remarks>
         /// <para>Telemint NFT contract must be deployed and active (to execute get-method).</para>
@@ -155,28 +143,25 @@ namespace TonLibDotNet.Recipes
         /// Combines <see cref="GetNftAddress(ITonClient, string)">GetNftAddress</see> and <see cref="GetAllInfo(ITonClient, string)">GetAllInfo</see> calls.
         /// </summary>
         /// <param name="tonClient"><see cref="ITonClient"/> instance.</param>
-        /// <param name="domainName">Domain name to resolve, with or without '.t.me' suffix.</param>
+        /// <param name="name">Name to resolve and get info for.</param>
         /// <returns><see cref="TelemintInfo"/> with data about smartcontract.</returns>
         /// <remarks>
         /// <para>⚠ Will work only for <see href="https://github.com/TelegramMessenger/telemint/blob/main/func/nft-item.fc">Telemint Item smartcontracts</see>. May fail if future version will change stored data layout.</para>
         /// <para>Telemint NFT contract must be deployed and active (to execute get-method).</para>
-        /// <para>Only second-level .t.me domains are allowed, with or without '.t.me' suffix <br/>
-        /// <i>(e.g. 'alice.t.me.', 'alice.t.me' and 'alice' are allowed, but 'alice.ton' or 'thisis.alice.t.me' are not)</i>.</para>
+        /// <para>Check overriden <see cref="TryNormalizeName">TryNormalizeName</see> docs for 'valid' vs 'invalid' names description.</para>
         /// </remarks>
-        /// <exception cref="ArgumentOutOfRangeException">Requested <paramref name="domainName"/> is not second-level one, or not from '.ton' namespace.</exception>
-        /// <exception cref="ArgumentNullException">Requested <paramref name="domainName"/> null or white-space only.</exception>
-        public async Task<TelemintInfo> GetAllInfoByName(ITonClient tonClient, string domainName)
+        public async Task<TelemintInfo> GetAllInfoByName(ITonClient tonClient, string name)
         {
-            var address = await GetNftAddress(tonClient, domainName).ConfigureAwait(false);
+            var address = await GetNftAddress(tonClient, name).ConfigureAwait(false);
 
             return await GetAllInfo(tonClient, address).ConfigureAwait(false);
         }
 
         /// <summary>
-        /// Parses all contract data from *.t.me Telemint Item NFT (Telegram usernames NFT).
+        /// Parses all contract data from Telemint Item NFT (*.t.me username or +888 number).
         /// </summary>
         /// <param name="tonClient"><see cref="ITonClient"/> instance.</param>
-        /// <param name="nftAddress">Address of Telemint Item (Telegram username) NFT.</param>
+        /// <param name="nftAddress">Address of Telemint Item (*.t.me username or +888 number) NFT.</param>
         /// <returns><see cref="TelemintInfo"/> with data about smartcontract.</returns>
         /// <remarks>
         /// <para>Telemint NFT contract must be deployed and active (to execute get-method).</para>
@@ -291,7 +276,7 @@ namespace TonLibDotNet.Recipes
         }
 
         /// <summary>
-        /// Information from Telemint (Telegram username, *.t.me) smartcontract.
+        /// Information from Telemint (*.t.me username or +888 number) smartcontract.
         /// </summary>
         public class TelemintInfo
         {
@@ -311,7 +296,7 @@ namespace TonLibDotNet.Recipes
             public byte[] Index { get; set; } = Array.Empty<byte>();
 
             /// <summary>
-            /// Address of collection (top-level .t.me domain contract).
+            /// Address of collection (top-level .t.me or +888 numbers contract).
             /// </summary>
             public string CollectionAddress { get; set; } = string.Empty;
 
@@ -321,7 +306,7 @@ namespace TonLibDotNet.Recipes
             public string? OwnerAddress { get; set; }
 
             /// <summary>
-            /// Name of this item (e.g. 'alice' for 'alice.t.me').
+            /// Name of this item (e.g. 'alice' for 'alice.t.me' or '888...' for number).
             /// </summary>
             public string? Name { get; set; }
 
@@ -347,7 +332,7 @@ namespace TonLibDotNet.Recipes
         }
 
         /// <summary>
-        /// Auction info (for *.t.me smartcontract).
+        /// Auction info (for *.t.me or '+888...' smartcontract).
         /// </summary>
         public class AuctionInfo
         {
