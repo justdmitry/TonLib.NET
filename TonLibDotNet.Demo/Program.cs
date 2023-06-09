@@ -49,6 +49,7 @@ namespace TonLibDotNet
                 services.AddTransient<ISample, DomainAuctionInfo>();
                 services.AddTransient<ISample, RootDnsGetAllInfo>();
                 services.AddTransient<ISample, TelemintGetAllInfo>();
+                services.AddTransient<ISample, Jettons>();
             });
 
             /// Add types from current assembly (see <see cref="LibraryExtensibility"/> class for more info).
