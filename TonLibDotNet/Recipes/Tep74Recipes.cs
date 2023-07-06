@@ -65,11 +65,18 @@ namespace TonLibDotNet.Recipes
         /// </summary>
         /// <param name="tonClient"><see cref="ITonClient"/> instance.</param>
         /// <param name="jettonAddress">Jetton address to obtain info for.</param>
-        /// <returns>Information about specified Jetton address: balance, owner (user) wallet address, Jetton Minter contract address.</returns>
+        /// <returns>
+        /// <list type="table">
+        /// <item><i>balance</i> - amount of jettons on wallet</item>
+        /// <item><i>ownerAddress</i> - address of wallet owner</item>
+        /// <item><i>jettonMinterAddress</i> - address of Jetton master-address</item>
+        /// <item><i>jettonWalletCode</i> - code of this wallet</item>
+        /// </list>
+        /// </returns>
         /// <remarks>Jetton contract must be deployed and active (to execute get-method).</remarks>
         /// <exception cref="TonLibNonZeroExitCodeException" />
         /// <seealso href="https://github.com/ton-blockchain/token-contract/blob/main/ft/jetton-wallet.fc#L246">Source of 'get_wallet_address' method.</seealso>
-        public async Task<(BigInteger balance, string ownerAddress, string jettonMinterAddress)> GetJettonAddressInfo(ITonClient tonClient, string jettonAddress)
+        public async Task<(BigInteger balance, string ownerAddress, string jettonMinterAddress, Boc jettonWalletCode)> GetWalletData(ITonClient tonClient, string jettonAddress)
         {
             await tonClient.InitIfNeeded().ConfigureAwait(false);
 
@@ -85,8 +92,48 @@ namespace TonLibDotNet.Recipes
             var balance = BigInteger.Parse(result.Stack[0].ToTvmNumberDecimal(), CultureInfo.InvariantCulture);
             var owner = result.Stack[1].ToTvmCell().ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
             var minter = result.Stack[2].ToTvmCell().ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
+            var code = result.Stack[3].ToTvmCell().ToBoc();
 
-            return (balance, owner, minter);
+            return (balance, owner, minter, code);
+        }
+
+        /// <summary>
+        /// Executes 'get_jetton_data' method on Jetton Minter contract, returns information about this jetton.
+        /// </summary>
+        /// <param name="tonClient"><see cref="ITonClient"/> instance.</param>
+        /// <param name="jettonMinterAddress">Jetton Minter address to obtain info for.</param>
+        /// <returns>
+        /// <list type="table">
+        /// <item><i>totalSupply</i> - the total number of issues jettons</item>
+        /// <item><i>mintable</i> - flag which indicates whether number of jettons can increase</item>
+        /// <item><i>adminAddress</i> - address of smart-contract which control Jetton</item>
+        /// <item><i>jettonContent</i> - data in accordance to Token Data Standard #64</item>
+        /// <item><i>jettonWalletCode</i> - code of wallet for that jetton</item>
+        /// </list>
+        /// </returns>
+        /// <remarks>Jetton contract must be deployed and active (to execute get-method).</remarks>
+        /// <exception cref="TonLibNonZeroExitCodeException" />
+        /// <seealso href="https://github.com/ton-blockchain/token-contract/blob/main/ft/jetton-wallet.fc#L246">Source of 'get_wallet_address' method.</seealso>
+        public async Task<(BigInteger totalSupply, bool mintable, string? adminAddress, Boc jettonContent, Boc jettonWalletCode)> GetJettonData(ITonClient tonClient, string jettonMinterAddress)
+        {
+            await tonClient.InitIfNeeded().ConfigureAwait(false);
+
+            var smc = await tonClient.SmcLoad(new Types.AccountAddress(jettonMinterAddress)).ConfigureAwait(false);
+
+            // (int total_supply, int mintable, slice admin_address, cell jetton_content, cell jetton_wallet_code)
+            var result = await tonClient.SmcRunGetMethod(smc.Id, new MethodIdName("get_jetton_data")).ConfigureAwait(false);
+
+            await tonClient.SmcForget(smc.Id).ConfigureAwait(false);
+
+            TonLibNonZeroExitCodeException.ThrowIfNonZero(result.ExitCode);
+
+            var totalSupply = BigInteger.Parse(result.Stack[0].ToTvmNumberDecimal(), CultureInfo.InvariantCulture);
+            var mintable = int.Parse(result.Stack[1].ToTvmNumberDecimal(), CultureInfo.InvariantCulture) != 0;
+            var adminAddress = result.Stack[2].ToTvmCell().ToBoc().RootCells[0].BeginRead().TryLoadAddressIntStd();
+            var jettonContent = result.Stack[3].ToTvmCell().ToBoc();
+            var jettonWalletCode = result.Stack[4].ToTvmCell().ToBoc();
+
+            return (totalSupply, mintable, adminAddress, jettonContent, jettonWalletCode);
         }
 
         /// <summary>
