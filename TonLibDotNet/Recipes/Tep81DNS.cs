@@ -5,7 +5,7 @@ namespace TonLibDotNet.Recipes
     /// <remarks>
     /// Based on <see href="https://github.com/ton-blockchain/TEPs/blob/master/text/0081-dns-standard.md">TEP 81: TON DNS Standard</see>.
     /// </remarks>
-    public class Tep81Recipes
+    public class Tep81DNS
     {
         /// <remarks>
         /// TL-B: <code>dns_smc_address#9fd3 smc_addr:MsgAddressInt flags:(## 8) { flags &lt;= 1 } cap_list:flags . 0?SmcCapList = DNSRecord</code>

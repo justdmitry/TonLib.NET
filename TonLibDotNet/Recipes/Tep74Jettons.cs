@@ -12,7 +12,7 @@ namespace TonLibDotNet.Recipes
     /// Based on <see href="https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md">TEP 74: Fungible tokens (Jettons) standard</see>
     ///   and <see href="https://github.com/ton-blockchain/token-contract/">Tokens Smart Contracts</see>.
     /// </remarks>
-    public partial class Tep74Recipes
+    public partial class Tep74Jettons
     {
         public decimal DefaultAmount { get; set; } = 0.1M;
 
@@ -28,7 +28,7 @@ namespace TonLibDotNet.Recipes
         /// </summary>
         private const int OPBurn = 0x595f07bc;
 
-        public static readonly Tep74Recipes Instance = new();
+        public static readonly Tep74Jettons Instance = new();
 
         /// <summary>
         /// Executes 'get_wallet_address' method on Jetton Minter contract, returns jetton address for specified owner (user) wallet address.

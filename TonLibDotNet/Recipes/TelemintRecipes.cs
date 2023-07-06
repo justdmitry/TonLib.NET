@@ -11,7 +11,7 @@ namespace TonLibDotNet.Recipes
     /// Based on <see href="https://github.com/ton-blockchain/TEPs/blob/master/text/0081-dns-standard.md">TEP 81: TON DNS Standard</see>
     ///   and <see href="https://github.com/TelegramMessenger/telemint">Telemint (Telegram usernames and numbers) Contracts</see>.
     /// </remarks>
-    public abstract class TelemintRecipes : Tep81Recipes
+    public abstract class TelemintRecipes : Tep81DNS
     {
         /// <summary>
         /// Collection address (parent for all item NFTs).

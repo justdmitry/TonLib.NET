@@ -38,6 +38,6 @@ namespace TonLibDotNet
         /// Based on <see href="https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md">TEP 74: Fungible tokens (Jettons) standard</see>
         ///   and <see href="https://github.com/ton-blockchain/token-contract/">Tokens Smart Contracts</see>.
         /// </remarks>
-        public static Tep74Recipes Jettons { get; } = Tep74Recipes.Instance;
+        public static Tep74Jettons Jettons { get; } = Tep74Jettons.Instance;
     }
 }
