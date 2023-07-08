@@ -16,8 +16,8 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>ton, toncoin, the-open-network, tonlib, tonlibjson</PackageTags>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <Version>0.18.1</Version>
-    <PackageReleaseNotes>`TonRecipes.Telemint` replaced with two (`TonRecipes.TelegramUsernames` and `TonRecipes.TelegramNumbers`) to work with both .t.me domains and +888 anonymous numbers.</PackageReleaseNotes>
+    <Version>0.19.0</Version>
+    <PackageReleaseNotes>`TonRecipes.Jettons` to work with TEP-74 Jettons; additional target framework `net7.0`.</PackageReleaseNotes>
     <Description>TonLib (tonlibjson) wrapper for accessing Telegram Open Network lite servers (nodes) via ADNL protocol.</Description>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
