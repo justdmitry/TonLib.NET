@@ -22,7 +22,7 @@ namespace TonLibDotNet
         long ConvertToNanoTon(decimal ton);
 
         [Obsolete("Use TonUtils.Text.EncodeAsBase64")]
-        [return: NotNullIfNotNull("source")]
+        [return: NotNullIfNotNull(nameof(source))]
         string? EncodeStringAsBase64(string? source);
 
         [Obsolete("Use TonUtils.Text.TryDecodeBase64")]

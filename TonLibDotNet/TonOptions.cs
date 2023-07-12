@@ -31,17 +31,17 @@ namespace TonLibDotNet
         /// <summary>
         /// Max amount of time TonClient will wait for valid (synced!) response from tonlib (except <see cref="Requests.Sync"/> request).
         /// </summary>
-        /// <remarks>See also <see cref="TonClientSyncTimeout"/> and <see cref="SemaphoreTimeout"/>.</remarks>
+        /// <remarks>See also <see cref="TonClientSyncTimeout"/> and <see cref="ConcurrencyTimeout"/>.</remarks>
         /// <seealso cref="TonClientSyncTimeout"/>
-        /// <seealso cref="SemaphoreTimeout"/>
+        /// <seealso cref="ConcurrencyTimeout"/>
         public TimeSpan TonClientTimeout { get; set; } = TimeSpan.FromSeconds(20);
 
         /// <summary>
         /// Max amount of time TonClient will wait for valid (synced!) response from tonlib for <see cref="Requests.Sync"/> request.
         /// </summary>
-        /// <remarks>See also <see cref="TonClientTimeout"/> and <see cref="SemaphoreTimeout"/>.</remarks>
+        /// <remarks>See also <see cref="TonClientTimeout"/> and <see cref="ConcurrencyTimeout"/>.</remarks>
         /// <seealso cref="TonClientTimeout"/>
-        /// <seealso cref="SemaphoreTimeout"/>
+        /// <seealso cref="ConcurrencyTimeout"/>
         public TimeSpan TonClientSyncTimeout { get; set; } = TimeSpan.FromSeconds(60);
 
         /// <summary>

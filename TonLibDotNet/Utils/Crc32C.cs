@@ -1,7 +1,7 @@
 ﻿namespace TonLibDotNet.Utils
 {
     /// <summary>
-    /// Table and params are from https://crccalc.com/?crc=0&method=CRC-32C&datatype=hex&outtype=0
+    /// Table and params are from <see href="https://crccalc.com/?crc=0&amp;method=CRC-32C&amp;datatype=hex&amp;outtype=0">crccalc.com</see>. <br/>
     /// ComputeChecksum is based on http://sanity-free.org/12/crc32_implementation_in_csharp.html
     /// </summary>
     public static class Crc32C

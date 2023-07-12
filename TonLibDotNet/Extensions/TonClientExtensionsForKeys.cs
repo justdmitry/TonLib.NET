@@ -55,6 +55,8 @@ namespace TonLibDotNet
         }
 
         /// <inheritdoc cref="ExportKey(ITonClient, InputKey)"/>
+        /// <param name="client">ITonClient instance.</param>
+        /// <param name="key">Key to export.</param>
         /// <param name="localPassword">Local key password (base64 bytes).</param>
         public static Task<ExportedKey> ExportKey(this ITonClient client, Key key, string? localPassword = null)
         {
@@ -78,7 +80,10 @@ namespace TonLibDotNet
         }
 
         /// <inheritdoc cref="ExportPemKey(ITonClient, InputKey, string?)"/>
+        /// <param name="client">ITonClient instance.</param>
+        /// <param name="key">Key to export.</param>
         /// <param name="localPassword">Local key password (base64 bytes).</param>
+        /// <param name="keyPassword">Password to protect exported key (base64 bytes).</param>
         public static Task<ExportedPemKey> ExportPemKey(this ITonClient client, Key key, string? localPassword = null, string? keyPassword = null)
         {
             ArgumentNullException.ThrowIfNull(key);
@@ -101,7 +106,10 @@ namespace TonLibDotNet
         }
 
         /// <inheritdoc cref="ExportEncryptedKey(ITonClient, InputKey, string?)"/>
+        /// <param name="client">ITonClient instance.</param>
+        /// <param name="key">Key to export.</param>
         /// <param name="localPassword">Local key password (base64 bytes).</param>
+        /// <param name="keyPassword">Password to protect exported key (base64 bytes).</param>
         public static Task<ExportedEncryptedKey> ExportEncryptedKey(this ITonClient client, Key key, string? localPassword = null, string? keyPassword = null)
         {
             ArgumentNullException.ThrowIfNull(key);
@@ -123,6 +131,8 @@ namespace TonLibDotNet
         }
 
         /// <inheritdoc cref="ExportUnencryptedKey(ITonClient, InputKey)"/>
+        /// <param name="client">ITonClient instance.</param>
+        /// <param name="key">Key to export.</param>
         /// <param name="localPassword">Local key password (base64 bytes).</param>
         public static Task<ExportedUnencryptedKey> ExportUnencryptedKey(this ITonClient client, Key key, string? localPassword = null)
         {
@@ -207,7 +217,10 @@ namespace TonLibDotNet
         }
 
         /// <inheritdoc cref="ChangeLocalPassword(ITonClient, InputKey, string?)"/>
+        /// <param name="client">ITonClient instance.</param>
+        /// <param name="key">Key to change password for.</param>
         /// <param name="localPassword">Local key password (base64 bytes).</param>
+        /// <param name="newLocalPassword">New local key password (base64 bytes).</param>
         public static Task<Key> ChangeLocalPassword(this ITonClient client, Key key, string? localPassword = null, string? newLocalPassword = null)
         {
             ArgumentNullException.ThrowIfNull(key);

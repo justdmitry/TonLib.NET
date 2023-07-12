@@ -14,7 +14,7 @@ namespace TonLibDotNet.Recipes
         /// <summary>
         /// Tries to normalize domain name to form used by Collection.
         /// </summary>
-        /// <param name="name">Domain name to normalize.</param>
+        /// <param name="domainName">Domain name to normalize.</param>
         /// <param name="normalizedName">Normalized domain name, if possible.</param>
         /// <returns>Returns <b>true</b> when name had been successfully normalized, and <b>false</b> otherwise.</returns>
         /// <remarks>
