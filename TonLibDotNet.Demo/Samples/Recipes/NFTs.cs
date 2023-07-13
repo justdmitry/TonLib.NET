@@ -35,7 +35,7 @@ namespace TonLibDotNet.Samples.Recipes
 
             var cd = await TonRecipes.NFTs.GetCollectionData(tonClient, collectionAddress);
             logger.LogInformation("GetCollectionData() for NFT Collection {Address}:", collectionAddress);
-            logger.LogInformation("  Collection nextItemIndex: {Value}", cd.nextItemIndex);
+            logger.LogInformation("  Collection nextItemIndex: {Value}", Convert.ToHexString(cd.nextItemIndex));
             logger.LogInformation("  Collection content:       {Value} bits", cd.collection_content.BitsCount);
             logger.LogInformation("  Collection owner:         {Value}", cd.ownerAddress);
 

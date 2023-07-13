@@ -44,7 +44,7 @@ namespace TonLibDotNet.Recipes
         /// <exception cref="TonLibNonZeroExitCodeException" />
         /// <seealso href="https://github.com/ton-blockchain/TEPs/blob/master/text/0062-nft-standard.md#get-methods-1">Get-methods description</seealso>
         /// <seealso href="https://github.com/ton-blockchain/token-contract/blob/main/nft/nft-collection.fc#L137">Reference implementation</seealso>
-        public async Task<(BigInteger nextItemIndex, Cells.Cell collection_content, string? ownerAddress)> GetCollectionData(ITonClient tonClient, string collectionAddress)
+        public async Task<(byte[] nextItemIndex, Cells.Cell collection_content, string? ownerAddress)> GetCollectionData(ITonClient tonClient, string collectionAddress)
         {
             await tonClient.InitIfNeeded().ConfigureAwait(false);
 
@@ -57,7 +57,7 @@ namespace TonLibDotNet.Recipes
 
             TonLibNonZeroExitCodeException.ThrowIfNonZero(result.ExitCode);
 
-            var nextIndex = BigInteger.Parse(result.Stack[0].ToTvmNumberDecimal(), CultureInfo.InvariantCulture);
+            var nextIndex = result.Stack[0].ToBigIntegerBytes();
             var content = result.Stack[1].ToBoc().RootCells[0];
             var owner = result.Stack[2].ToBoc().RootCells[0].BeginRead().TryLoadAddressIntStd();
 
@@ -85,7 +85,7 @@ namespace TonLibDotNet.Recipes
             // slice get_nft_address_by_index(int index)
             var stack = new List<StackEntry>()
             {
-                new StackEntryNumber(new NumberDecimal(new BigInteger(index, true, true).ToString(CultureInfo.InvariantCulture))),
+                new StackEntryNumber(new NumberDecimal(index)),
             };
             var result = await tonClient.SmcRunGetMethod(smc.Id, new MethodIdName("get_nft_address_by_index"), stack).ConfigureAwait(false);
 
@@ -127,8 +127,8 @@ namespace TonLibDotNet.Recipes
 
             TonLibNonZeroExitCodeException.ThrowIfNonZero(result.ExitCode);
 
-            var init = int.Parse(result.Stack[0].ToTvmNumberDecimal(), CultureInfo.InvariantCulture) != 0;
-            var index = BigInteger.Parse(result.Stack[1].ToTvmNumberDecimal(), CultureInfo.InvariantCulture).ToByteArray(true, true);
+            var init = result.Stack[0].ToInt() != 0;
+            var index = result.Stack[1].ToBigIntegerBytes();
             var collectionAddress = result.Stack[2].ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
             var ownerAddress = result.Stack[3].ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
             var individualContent = result.Stack[4].ToBoc();
@@ -169,7 +169,7 @@ namespace TonLibDotNet.Recipes
             // cell get_nft_content(int index, cell individual_content)
             var stack = new List<StackEntry>()
             {
-                new StackEntryNumber(new NumberDecimal(new BigInteger(index, true, true).ToString(CultureInfo.InvariantCulture))),
+                new StackEntryNumber(new NumberDecimal(index)),
                 new StackEntryCell(individualContent),
             };
             var result = await tonClient.SmcRunGetMethod(smc.Id, new MethodIdName("get_nft_content"), stack).ConfigureAwait(false);

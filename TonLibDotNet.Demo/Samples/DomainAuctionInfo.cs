@@ -40,8 +40,8 @@ namespace TonLibDotNet.Samples
             var smc = await tonClient.SmcLoad(domainAddress);
             var smcgai = await tonClient.SmcRunGetMethod(smc.Id, new MethodIdName("get_auction_info"));
             var adr = smcgai.Stack[0].ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
-            var coins = long.Parse(smcgai.Stack[1].ToTvmNumberDecimal());
-            var endTime = long.Parse(smcgai.Stack[2].ToTvmNumberDecimal());
+            var coins = smcgai.Stack[1].ToLong();
+            var endTime = smcgai.Stack[2].ToLong();
             logger.LogInformation("Auction info (method 1): last bid = {Value} TON, bidder is {Address}, auction ends at {Time}", TonUtils.Coins.FromNano(coins), adr, DateTimeOffset.FromUnixTimeSeconds(endTime));
 
             // Method 1-bis: use TonRecipes to call 'get_auction_info' method.

@@ -1,4 +1,5 @@
-﻿using TonLibDotNet.Types.Tvm;
+﻿using System.Numerics;
+using TonLibDotNet.Types.Tvm;
 
 namespace TonLibDotNet
 {
@@ -23,11 +24,11 @@ namespace TonLibDotNet
         }
 
         /// <summary>
-        /// Shortcut for <code>((NumberDecimal)((StackEntryNumber)stackEntry).Number).Number</code>
+        /// Shortcut for <code>(NumberDecimal)((StackEntryNumber)stackEntry).Number</code>
         /// </summary>
-        public static string ToTvmNumberDecimal(this StackEntry stackEntry)
+        public static NumberDecimal ToTvmNumberDecimal(this StackEntry stackEntry)
         {
-            return ((NumberDecimal)((StackEntryNumber)stackEntry).Number).Number;
+            return (NumberDecimal)((StackEntryNumber)stackEntry).Number;
         }
 
         /// <summary>
@@ -87,22 +88,86 @@ namespace TonLibDotNet
         }
 
         /// <summary>
-        /// Converts content to <see cref="Cells.Boc"/> if <paramref name="entry"/> is instance of <see cref="StackEntryCell"/> or <see cref="StackEntrySlice"/>.
+        /// Converts content to <see cref="Cells.Boc"/> if <paramref name="stackEntry"/> is instance of <see cref="StackEntryCell"/> or <see cref="StackEntrySlice"/>.
         /// </summary>
-        /// <exception cref="InvalidOperationException">When type of <paramref name="entry"/> is not supported.</exception>
-        public static Cells.Boc ToBoc(this StackEntry entry)
+        /// <exception cref="InvalidOperationException">When type of <paramref name="stackEntry"/> is not supported.</exception>
+        public static Cells.Boc ToBoc(this StackEntry stackEntry)
         {
-            if (entry is StackEntryCell cell)
+            if (stackEntry is StackEntryCell cell)
             {
                 return Cells.Boc.ParseFromBase64(cell.Cell.Bytes);
             }
-            else if (entry is StackEntrySlice slice)
+            else if (stackEntry is StackEntrySlice slice)
             {
                 return Cells.Boc.ParseFromBase64(slice.Slice.Bytes);
             }
             else
             {
-                throw new InvalidOperationException("Only Cell and Slice stack entries are supported.");
+                throw new InvalidOperationException("Only 'Cell' and 'Slice' stack entries are supported.");
+            }
+        }
+
+        #endregion
+
+        #region Number
+
+        /// <summary>
+        /// Converts content to <see cref="int"/> value if <paramref name="stackEntry"/> is instance of <see cref="StackEntryNumber"/>.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">When type of <paramref name="stackEntry"/> is not supported.</exception>
+        public static int ToInt(this StackEntry stackEntry) {
+            if (stackEntry is StackEntryNumber number)
+            {
+                return ((NumberDecimal)number.Number).NumberAsInt();
+            }
+            else
+            {
+                throw new InvalidOperationException("Only 'Number' stack entries are supported.");
+            }
+        }
+
+        /// <summary>
+        /// Converts content to <see cref="long"/> value if <paramref name="stackEntry"/> is instance of <see cref="StackEntryNumber"/>.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">When type of <paramref name="stackEntry"/> is not supported.</exception>
+        public static long ToLong(this StackEntry stackEntry) {
+            if (stackEntry is StackEntryNumber number)
+            {
+                return ((NumberDecimal)number.Number).NumberAsLong();
+            }
+            else
+            {
+                throw new InvalidOperationException("Only 'Number' stack entries are supported.");
+            }
+        }
+
+        /// <summary>
+        /// Converts content to <see cref="BigInteger"/> value if <paramref name="stackEntry"/> is instance of <see cref="StackEntryNumber"/>.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">When type of <paramref name="stackEntry"/> is not supported.</exception>
+        public static BigInteger ToBigInteger(this StackEntry stackEntry) {
+            if (stackEntry is StackEntryNumber number)
+            {
+                return ((NumberDecimal)number.Number).NumberAsBigInteger();
+            }
+            else
+            {
+                throw new InvalidOperationException("Only 'Number' stack entries are supported.");
+            }
+        }
+
+        /// <summary>
+        /// Converts content to <see cref="BigInteger"/> and then to <see cref="byte">byte array</see> if <paramref name="stackEntry"/> is instance of <see cref="StackEntryNumber"/>.
+        /// </summary>
+        /// <exception cref="InvalidOperationException">When type of <paramref name="stackEntry"/> is not supported.</exception>
+        public static byte[] ToBigIntegerBytes(this StackEntry stackEntry) {
+            if (stackEntry is StackEntryNumber number)
+            {
+                return ((NumberDecimal)number.Number).NumberAsBigIntegerBytes();
+            }
+            else
+            {
+                throw new InvalidOperationException("Only 'Number' stack entries are supported.");
             }
         }
 

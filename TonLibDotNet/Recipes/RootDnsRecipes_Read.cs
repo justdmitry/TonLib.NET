@@ -130,7 +130,7 @@ namespace TonLibDotNet.Recipes
             // slice get_nft_address_by_index(int index)
             var stack = new List<StackEntry>()
             {
-                new StackEntryNumber(new NumberDecimal(new BigInteger(index, true, true).ToString(CultureInfo.InvariantCulture))),
+                new StackEntryNumber(new NumberDecimal(index)),
             };
             var result = await tonClient.SmcRunGetMethod(smc.Id, new MethodIdName("get_nft_address_by_index"), stack).ConfigureAwait(false);
 
@@ -225,7 +225,7 @@ namespace TonLibDotNet.Recipes
 
             TonLibNonZeroExitCodeException.ThrowIfNonZero(result.ExitCode);
 
-            var bidNano = long.Parse(result.Stack[1].ToTvmNumberDecimal(), CultureInfo.InvariantCulture);
+            var bidNano = result.Stack[1].ToLong();
             if (bidNano == 0)
             {
                 return null;
@@ -233,7 +233,7 @@ namespace TonLibDotNet.Recipes
 
             var adr = result.Stack[0].ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
             var bid = TonUtils.Coins.FromNano(bidNano);
-            var end = DateTimeOffset.FromUnixTimeSeconds(long.Parse(result.Stack[2].ToTvmNumberDecimal(), CultureInfo.InvariantCulture));
+            var end = DateTimeOffset.FromUnixTimeSeconds(result.Stack[2].ToLong());
 
             return new AuctionInfo() { MaxBidAddress = adr, MaxBidAmount = bid, AuctionEndTime = end };
         }
@@ -262,7 +262,7 @@ namespace TonLibDotNet.Recipes
 
             TonLibNonZeroExitCodeException.ThrowIfNonZero(result.ExitCode);
 
-            return DateTimeOffset.FromUnixTimeSeconds(long.Parse(result.Stack[0].ToTvmNumberDecimal(), CultureInfo.InvariantCulture));
+            return DateTimeOffset.FromUnixTimeSeconds(result.Stack[0].ToLong());
         }
 
         /// <summary>

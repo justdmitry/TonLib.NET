@@ -89,7 +89,7 @@ namespace TonLibDotNet.Recipes
 
             TonLibNonZeroExitCodeException.ThrowIfNonZero(result.ExitCode);
 
-            var balance = BigInteger.Parse(result.Stack[0].ToTvmNumberDecimal(), CultureInfo.InvariantCulture);
+            var balance = result.Stack[0].ToBigInteger();
             var owner = result.Stack[1].ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
             var minter = result.Stack[2].ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
             var code = result.Stack[3].ToBoc();
@@ -127,8 +127,8 @@ namespace TonLibDotNet.Recipes
 
             TonLibNonZeroExitCodeException.ThrowIfNonZero(result.ExitCode);
 
-            var totalSupply = BigInteger.Parse(result.Stack[0].ToTvmNumberDecimal(), CultureInfo.InvariantCulture);
-            var mintable = int.Parse(result.Stack[1].ToTvmNumberDecimal(), CultureInfo.InvariantCulture) != 0;
+            var totalSupply = result.Stack[0].ToBigInteger();
+            var mintable = result.Stack[1].ToInt() != 0;
             var adminAddress = result.Stack[2].ToBoc().RootCells[0].BeginRead().TryLoadAddressIntStd();
             var jettonContent = result.Stack[3].ToBoc();
             var jettonWalletCode = result.Stack[4].ToBoc();

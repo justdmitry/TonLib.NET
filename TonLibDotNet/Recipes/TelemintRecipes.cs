@@ -73,7 +73,7 @@ namespace TonLibDotNet.Recipes
             // slice get_nft_address_by_index(int index)
             var stack = new List<StackEntry>()
             {
-                new StackEntryNumber(new NumberDecimal(new BigInteger(index, true, true).ToString(CultureInfo.InvariantCulture))),
+                new StackEntryNumber(new NumberDecimal(index)),
             };
             var result = await tonClient.SmcRunGetMethod(smc.Id, new MethodIdName("get_nft_address_by_index"), stack).ConfigureAwait(false);
 
