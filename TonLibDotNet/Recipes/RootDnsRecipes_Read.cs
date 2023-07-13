@@ -141,7 +141,7 @@ namespace TonLibDotNet.Recipes
                 throw new TonLibNonZeroExitCodeException(result.ExitCode);
             }
 
-            return result.Stack[0].ToTvmCell().ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
+            return result.Stack[0].ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
         }
 
         /// <summary>
@@ -168,7 +168,7 @@ namespace TonLibDotNet.Recipes
 
             TonLibNonZeroExitCodeException.ThrowIfNonZero(result.ExitCode);
 
-            return result.Stack[0].ToTvmCell().ToBoc().RootCells[0].BeginRead().TryLoadAddressIntStd();
+            return result.Stack[0].ToBoc().RootCells[0].BeginRead().TryLoadAddressIntStd();
         }
 
         /// <summary>
@@ -195,7 +195,7 @@ namespace TonLibDotNet.Recipes
 
             TonLibNonZeroExitCodeException.ThrowIfNonZero(result.ExitCode);
 
-            return System.Text.Encoding.UTF8.GetString(result.Stack[0].ToTvmCell().ToBoc().RootCells[0].Content);
+            return System.Text.Encoding.UTF8.GetString(result.Stack[0].ToBoc().RootCells[0].Content);
         }
 
         /// <summary>
@@ -231,7 +231,7 @@ namespace TonLibDotNet.Recipes
                 return null;
             }
 
-            var adr = result.Stack[0].ToTvmCell().ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
+            var adr = result.Stack[0].ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
             var bid = TonUtils.Coins.FromNano(bidNano);
             var end = DateTimeOffset.FromUnixTimeSeconds(long.Parse(result.Stack[2].ToTvmNumberDecimal(), CultureInfo.InvariantCulture));
 

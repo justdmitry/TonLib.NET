@@ -39,7 +39,7 @@ namespace TonLibDotNet.Samples
             // ;; int auction_end_time
             var smc = await tonClient.SmcLoad(domainAddress);
             var smcgai = await tonClient.SmcRunGetMethod(smc.Id, new MethodIdName("get_auction_info"));
-            var adr = smcgai.Stack[0].ToTvmCell().ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
+            var adr = smcgai.Stack[0].ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
             var coins = long.Parse(smcgai.Stack[1].ToTvmNumberDecimal());
             var endTime = long.Parse(smcgai.Stack[2].ToTvmNumberDecimal());
             logger.LogInformation("Auction info (method 1): last bid = {Value} TON, bidder is {Address}, auction ends at {Time}", TonUtils.Coins.FromNano(coins), adr, DateTimeOffset.FromUnixTimeSeconds(endTime));

@@ -58,8 +58,8 @@ namespace TonLibDotNet.Recipes
             TonLibNonZeroExitCodeException.ThrowIfNonZero(result.ExitCode);
 
             var nextIndex = BigInteger.Parse(result.Stack[0].ToTvmNumberDecimal(), CultureInfo.InvariantCulture);
-            var content = result.Stack[1].ToTvmCell().ToBoc().RootCells[0];
-            var owner = result.Stack[2].ToTvmCell().ToBoc().RootCells[0].BeginRead().TryLoadAddressIntStd();
+            var content = result.Stack[1].ToBoc().RootCells[0];
+            var owner = result.Stack[2].ToBoc().RootCells[0].BeginRead().TryLoadAddressIntStd();
 
             return (nextIndex, content, owner);
         }
@@ -93,7 +93,7 @@ namespace TonLibDotNet.Recipes
 
             TonLibNonZeroExitCodeException.ThrowIfNonZero(result.ExitCode);
 
-            return result.Stack[0].ToTvmCell().ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
+            return result.Stack[0].ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
         }
 
         /// <summary>
@@ -129,9 +129,9 @@ namespace TonLibDotNet.Recipes
 
             var init = int.Parse(result.Stack[0].ToTvmNumberDecimal(), CultureInfo.InvariantCulture) != 0;
             var index = BigInteger.Parse(result.Stack[1].ToTvmNumberDecimal(), CultureInfo.InvariantCulture).ToByteArray(true, true);
-            var collectionAddress = result.Stack[2].ToTvmCell().ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
-            var ownerAddress = result.Stack[3].ToTvmCell().ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
-            var individualContent = result.Stack[4].ToTvmCell().ToBoc();
+            var collectionAddress = result.Stack[2].ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
+            var ownerAddress = result.Stack[3].ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
+            var individualContent = result.Stack[4].ToBoc();
 
             return (init, index, collectionAddress, ownerAddress, individualContent);
         }
@@ -170,7 +170,7 @@ namespace TonLibDotNet.Recipes
             var stack = new List<StackEntry>()
             {
                 new StackEntryNumber(new NumberDecimal(new BigInteger(index, true, true).ToString(CultureInfo.InvariantCulture))),
-                new StackEntryCell(new Cell(individualContent.SerializeToBase64())),
+                new StackEntryCell(individualContent),
             };
             var result = await tonClient.SmcRunGetMethod(smc.Id, new MethodIdName("get_nft_content"), stack).ConfigureAwait(false);
 
@@ -178,7 +178,7 @@ namespace TonLibDotNet.Recipes
 
             TonLibNonZeroExitCodeException.ThrowIfNonZero(result.ExitCode);
 
-            var content = result.Stack[0].ToTvmCell().ToBoc();
+            var content = result.Stack[0].ToBoc();
 
             return content;
         }

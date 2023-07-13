@@ -81,7 +81,7 @@ namespace TonLibDotNet.Recipes
 
             TonLibNonZeroExitCodeException.ThrowIfNonZero(result.ExitCode);
 
-            return result.Stack[0].ToTvmCell().ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
+            return result.Stack[0].ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
         }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace TonLibDotNet.Recipes
 
             TonLibNonZeroExitCodeException.ThrowIfNonZero(result.ExitCode);
 
-            var invertedDomain = System.Text.Encoding.UTF8.GetString(result.Stack[0].ToTvmCell().ToBoc().RootCells[0].Content);
+            var invertedDomain = System.Text.Encoding.UTF8.GetString(result.Stack[0].ToBoc().RootCells[0].Content);
             return string.Join('.', invertedDomain.Split((char)0, StringSplitOptions.RemoveEmptyEntries).Reverse());
         }
 
@@ -136,7 +136,7 @@ namespace TonLibDotNet.Recipes
 
             TonLibNonZeroExitCodeException.ThrowIfNonZero(result.ExitCode);
 
-            return System.Text.Encoding.UTF8.GetString(result.Stack[0].ToTvmCell().ToBoc().RootCells[0].Content);
+            return System.Text.Encoding.UTF8.GetString(result.Stack[0].ToBoc().RootCells[0].Content);
         }
 
         /// <summary>

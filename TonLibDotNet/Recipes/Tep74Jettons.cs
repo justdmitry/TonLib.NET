@@ -48,7 +48,7 @@ namespace TonLibDotNet.Recipes
             // slice get_wallet_address(slice owner_address)
             var stack = new List<Types.Tvm.StackEntry>
             {
-                new Types.Tvm.StackEntrySlice(new Types.Tvm.Slice(new Cells.Boc(new Cells.CellBuilder().StoreAddressIntStd(ownerAddress).Build()).SerializeToBase64())),
+                new Types.Tvm.StackEntrySlice(new CellBuilder().StoreAddressIntStd(ownerAddress).Build().ToBoc()),
             };
 
             var result = await tonClient.SmcRunGetMethod(smc.Id, new MethodIdName("get_wallet_address"), stack).ConfigureAwait(false);
@@ -57,7 +57,7 @@ namespace TonLibDotNet.Recipes
 
             TonLibNonZeroExitCodeException.ThrowIfNonZero(result.ExitCode);
 
-            return result.Stack[0].ToTvmCell().ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
+            return result.Stack[0].ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
         }
 
         /// <summary>
@@ -90,9 +90,9 @@ namespace TonLibDotNet.Recipes
             TonLibNonZeroExitCodeException.ThrowIfNonZero(result.ExitCode);
 
             var balance = BigInteger.Parse(result.Stack[0].ToTvmNumberDecimal(), CultureInfo.InvariantCulture);
-            var owner = result.Stack[1].ToTvmCell().ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
-            var minter = result.Stack[2].ToTvmCell().ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
-            var code = result.Stack[3].ToTvmCell().ToBoc();
+            var owner = result.Stack[1].ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
+            var minter = result.Stack[2].ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
+            var code = result.Stack[3].ToBoc();
 
             return (balance, owner, minter, code);
         }
@@ -129,9 +129,9 @@ namespace TonLibDotNet.Recipes
 
             var totalSupply = BigInteger.Parse(result.Stack[0].ToTvmNumberDecimal(), CultureInfo.InvariantCulture);
             var mintable = int.Parse(result.Stack[1].ToTvmNumberDecimal(), CultureInfo.InvariantCulture) != 0;
-            var adminAddress = result.Stack[2].ToTvmCell().ToBoc().RootCells[0].BeginRead().TryLoadAddressIntStd();
-            var jettonContent = result.Stack[3].ToTvmCell().ToBoc();
-            var jettonWalletCode = result.Stack[4].ToTvmCell().ToBoc();
+            var adminAddress = result.Stack[2].ToBoc().RootCells[0].BeginRead().TryLoadAddressIntStd();
+            var jettonContent = result.Stack[3].ToBoc();
+            var jettonWalletCode = result.Stack[4].ToBoc();
 
             return (totalSupply, mintable, adminAddress, jettonContent, jettonWalletCode);
         }

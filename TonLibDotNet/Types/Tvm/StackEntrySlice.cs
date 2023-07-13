@@ -8,6 +8,11 @@
             Slice = slice ?? throw new ArgumentNullException(nameof(slice));
         }
 
+        public StackEntrySlice(Cells.Boc boc)
+        {
+            Slice = new Slice(boc.SerializeToBase64());
+        }
+
         public Slice Slice { get; set; }
     }
 }

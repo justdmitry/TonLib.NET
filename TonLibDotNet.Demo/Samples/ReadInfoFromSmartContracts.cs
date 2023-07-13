@@ -47,12 +47,12 @@ namespace TonLibDotNet.Samples
             var info = await tonClient.SmcLoad(adr);
 
             var rr = await tonClient.SmcRunGetMethod(info.Id, new MethodIdName("get_domain"));
-            var boc = rr.Stack[0].ToTvmCell().ToBoc();
+            var boc = rr.Stack[0].ToBoc();
             logger.LogInformation("Domain (expecting 'tonapi'): {Value}", Encoding.ASCII.GetString(boc.RootCells[0].Content));
 
             // Check contract source code in expolorer to understand what get_nft_data() returns
             rr = await tonClient.SmcRunGetMethod(info.Id, new MethodIdName("get_nft_data"));
-            boc = rr.Stack[3].ToTvmCell().ToBoc();
+            boc = rr.Stack[3].ToBoc();
 
             var slice = boc.RootCells[0].BeginRead();
             var ads = slice.LoadAddressIntStd();

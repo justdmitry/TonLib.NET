@@ -8,6 +8,11 @@
             Cell = cell ?? throw new ArgumentNullException(nameof(cell));
         }
 
+        public StackEntryCell(Cells.Boc boc)
+        {
+            Cell = new Cell(boc.SerializeToBase64());
+        }
+
         public Cell Cell { get; set; }
     }
 }
