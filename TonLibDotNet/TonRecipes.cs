@@ -39,5 +39,14 @@ namespace TonLibDotNet
         ///   and <see href="https://github.com/ton-blockchain/token-contract/">Tokens Smart Contracts</see>.
         /// </remarks>
         public static Tep74Jettons Jettons { get; } = Tep74Jettons.Instance;
+
+        /// <summary>
+        /// Functions to work with NFT.
+        /// </summary>
+        /// <remarks>
+        /// Based on <see href="https://github.com/ton-blockchain/TEPs/blob/master/text/0062-nft-standard.md">TEP 62: NFT Standard</see>
+        ///   and <see href="https://github.com/ton-blockchain/token-contract/tree/main/nft/">Reference NFT implementation</see>.
+        /// </remarks>
+        public static Tep62Nft NFTs { get; } = Tep62Nft.Instance;
     }
 }
