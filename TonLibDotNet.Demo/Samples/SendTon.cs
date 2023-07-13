@@ -62,7 +62,7 @@ namespace TonLibDotNet.Samples
                 SendMode = 1,
             };
 
-            var action = new ActionMsg(new List<Types.Msg.Message>() { msg }) { AllowSendToUninited = true };
+            var action = new ActionMsg(msg) { AllowSendToUninited = true };
 
             // Step 3: create query and send it
             var query = await tonClient.CreateQuery(new InputKeyRegular(inputKey), address, action, TimeSpan.FromMinutes(1), initialAccountState: initialAccountState);

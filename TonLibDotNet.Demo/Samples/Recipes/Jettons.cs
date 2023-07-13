@@ -69,7 +69,7 @@ namespace TonLibDotNet.Samples.Recipes
 
                 var inputKey = await tonClient.ImportKey(new ExportedKey(Program.TestMnemonic.Split(' ').ToList()));
 
-                var action = new ActionMsg(new List<Message>() { msg });
+                var action = new ActionMsg(msg);
                 var query = await tonClient.CreateQuery(new InputKeyRegular(inputKey), ownerWalletAddress, action, TimeSpan.FromMinutes(1));
                 _ = await tonClient.QuerySend(query.Id);
 

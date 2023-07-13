@@ -72,7 +72,7 @@ namespace TonLibDotNet.Samples.Recipes
                 // =====================
 
                 var msg = TonRecipes.NFTs.CreateGetStaticDataMessage(nftAddress, 12345);
-                var action = new ActionMsg(new List<Message>() { msg });
+                var action = new ActionMsg(msg);
                 var query = await tonClient.CreateQuery(new InputKeyRegular(inputKey), Program.TestAddress, action, TimeSpan.FromMinutes(1));
                 _ = await tonClient.QuerySend(query.Id);
 
@@ -87,7 +87,7 @@ namespace TonLibDotNet.Samples.Recipes
 
                 msg = TonRecipes.NFTs.CreateTransferMessage(nftAddress, 12345, destination, Program.TestAddress, null, 0.01M, null);
 
-                action = new ActionMsg(new List<Message>() { msg });
+                action = new ActionMsg(msg);
                 query = await tonClient.CreateQuery(new InputKeyRegular(inputKey), Program.TestAddress, action, TimeSpan.FromMinutes(1));
                 _ = await tonClient.QuerySend(query.Id);
 
