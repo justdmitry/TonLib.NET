@@ -1,11 +1,13 @@
 ﻿using System.Globalization;
 using System.Numerics;
+using System.Text.Json.Serialization;
 
 namespace TonLibDotNet.Types.Tvm
 {
     [TLSchema("tvm.numberDecimal number:string = tvm.Number")]
     public class NumberDecimal : Number
     {
+        [JsonConstructor]
         public NumberDecimal(string number)
         {
             Number = number;

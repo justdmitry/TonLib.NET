@@ -1,8 +1,11 @@
-﻿namespace TonLibDotNet.Types.Tvm
+﻿using System.Text.Json.Serialization;
+
+namespace TonLibDotNet.Types.Tvm
 {
     [TLSchema("tvm.stackEntryCell cell:tvm.cell = tvm.StackEntry")]
     public class StackEntryCell : StackEntry
     {
+        [JsonConstructor]
         public StackEntryCell(Cell cell)
         {
             Cell = cell ?? throw new ArgumentNullException(nameof(cell));
