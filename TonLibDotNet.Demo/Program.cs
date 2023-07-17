@@ -1,7 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using TonLibDotNet.Samples;
-using TonLibDotNet.Samples.Recipes;
 using TonLibDotNet.Types;
 
 namespace TonLibDotNet
@@ -38,19 +36,11 @@ namespace TonLibDotNet
 
                 services.AddSingleton<ITonClient, TonClient>();
 
-                services.AddTransient<ISample, GeneralNetworkInfo>();
-                services.AddTransient<ISample, KeysAndMnemonics>();
-                services.AddTransient<ISample, AccountBalanceAndTransactions>();
-                services.AddTransient<ISample, LibraryExtensibility>();
-                services.AddTransient<ISample, SendTon>();
-                services.AddTransient<ISample, ResolveDomains>();
-                services.AddTransient<ISample, ReadInfoFromSmartContracts>();
-                services.AddTransient<ISample, BocAndCells>();
-                services.AddTransient<ISample, DomainAuctionInfo>();
-                services.AddTransient<ISample, RootDnsGetAllInfo>();
-                services.AddTransient<ISample, TelemintGetAllInfo>();
-                services.AddTransient<ISample, Jettons>();
-                services.AddTransient<ISample, NFTs>();
+                var samples = typeof(Program).Assembly.GetTypes().Where(x => x.IsClass && x.IsAssignableTo(typeof(ISample))).ToList();
+                foreach (var sample in samples)
+                {
+                    services.AddTransient(typeof(ISample), sample);
+                }
             });
 
             /// Add types from current assembly (see <see cref="LibraryExtensibility"/> class for more info).

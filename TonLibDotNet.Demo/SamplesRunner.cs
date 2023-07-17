@@ -19,7 +19,12 @@ namespace TonLibDotNet
             await tonClient.InitIfNeeded();
             await tonClient.Sync();
 
-            var samples = services.GetServices(typeof(ISample)).Cast<ISample>().OrderBy(x => x.GetType().FullName).ToList();
+            var samples = services
+                .GetServices(typeof(ISample))
+                .Cast<ISample>()
+                .OrderBy(x => (x.GetType().Namespace ?? string.Empty).EndsWith("Recipes"))
+                .ThenBy(x => x.GetType().Name)
+                .ToList();
 
             var cts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
 
@@ -30,7 +35,7 @@ namespace TonLibDotNet
                 Console.WriteLine("Available samples:");
                 for (var i = 0; i < samples.Count; i++)
                 {
-                    Console.WriteLine("  {0}: {1}", i, samples[i].GetType().FullName![trimLength..]);
+                    Console.WriteLine("  {0,2}: {1}", i, samples[i].GetType().FullName![trimLength..]);
                 }
 
                 while (!cts.IsCancellationRequested)
