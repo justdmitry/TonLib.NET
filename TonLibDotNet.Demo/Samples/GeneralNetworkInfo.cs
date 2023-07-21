@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using TonLibDotNet.Utils;
 
 namespace TonLibDotNet.Samples
 {
@@ -22,6 +23,22 @@ namespace TonLibDotNet.Samples
 
             var mi = await tonClient.GetMasterchainInfo();
             logger.LogInformation("Last block: shard = {Shard}, seqno = {Seqno}", mi.Last.Shard, mi.Last.Seqno);
+
+            var cp = await tonClient.GetConfigParam(4);
+            logger.LogInformation("Config Param 04 (DNS Root Resolver): {Value}", AddressValidator.MakeAddress(0xFF, cp.Config.ToBoc().RootCells[0].BeginRead().LoadBitsToBytes(256)));
+
+            cp = await tonClient.GetConfigParam(14);
+
+            var slice = cp.Config.ToBoc().RootCells[0].BeginRead();
+            slice.SkipBits(8); // 0x6b
+            var masterChain = slice.LoadCoins();
+            var baseChain = slice.LoadCoins();
+            slice.EndRead();
+
+            logger.LogInformation(
+                "Config Param 14 (New block reward): masterchain {Value} TON, basechain {Value} TON",
+                TonUtils.Coins.FromNano(masterChain),
+                TonUtils.Coins.FromNano(baseChain));
         }
     }
 }

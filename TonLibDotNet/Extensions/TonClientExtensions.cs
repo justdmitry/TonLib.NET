@@ -112,5 +112,40 @@ namespace TonLibDotNet
 
             return UnpackAccountAddress(client, accountAddress.Value);
         }
+
+        /// <summary>
+        /// Returns value of Config Param with index <paramref name="param"/>.
+        /// </summary>
+        /// <param name="client">ITonClient instance.</param>
+        /// <param name="param">Parameter number to return.</param>
+        /// <param name="mode">Mode.</param>
+        /// <remarks>
+        /// See also:
+        /// <seealso href="https://github.com/ton-blockchain/ton/blob/v2023.06/tonlib/tonlib/TonlibClient.cpp#L5162">TonLib source</seealso>,
+        /// <seealso href="https://docs.ton.org/develop/howto/config-params">General Config Params info</seealso>,
+        /// <seealso href="https://github.com/ton-blockchain/ton/blob/v2023.06/crypto/block/block.tlb#L605">Config Params TLB schema</seealso>,
+        /// <seealso href="https://docs.ton.org/develop/howto/blockchain-configs">Config Params description</seealso>.
+        /// </remarks>
+        public static Task<ConfigInfo> GetConfigParam(this ITonClient client, int param, int mode = 0)
+        {
+            return client.Execute(new GetConfigParam() { Mode = mode, Param = param });
+        }
+
+        /// <summary>
+        /// Returns values of all Config Params.
+        /// </summary>
+        /// <param name="client">ITonClient instance.</param>
+        /// <param name="mode">Mode.</param>
+        /// <remarks>
+        /// See also:
+        /// <seealso href="https://github.com/ton-blockchain/ton/blob/v2023.06/tonlib/tonlib/TonlibClient.cpp#L5196">TonLib source</seealso>,
+        /// <seealso href="https://docs.ton.org/develop/howto/config-params">General Config Params info</seealso>,
+        /// <seealso href="https://github.com/ton-blockchain/ton/blob/v2023.06/crypto/block/block.tlb#L605">Config Params TLB schema</seealso>,
+        /// <seealso href="https://docs.ton.org/develop/howto/blockchain-configs">Config Params description</seealso>.
+        /// </remarks>
+        public static Task<ConfigInfo> GetConfigAll(this ITonClient client, int mode = 0)
+        {
+            return client.Execute(new GetConfigAll() { Mode = mode });
+        }
     }
 }
