@@ -1,5 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using TonLibDotNet.Utils;
+﻿using TonLibDotNet.Utils;
 
 namespace TonLibDotNet
 {
@@ -24,5 +23,10 @@ namespace TonLibDotNet
         /// Useful function to work with ADNL addresses.
         /// </summary>
         public static AdnlUtils Adnl { get; } = AdnlUtils.Instance;
+
+        /// <summary>
+        /// Useful function to work with keys.
+        /// </summary>
+        public static KeyUtils Keys { get; } = KeyUtils.Instance;
     }
 }
