@@ -20,7 +20,7 @@ namespace TonLibDotNet.Samples.Recipes
         private readonly ITonClient tonClient;
         private readonly ILogger logger;
 
-        public NFTs(ITonClient tonClient, ILogger<Jettons> logger)
+        public NFTs(ITonClient tonClient, ILogger<NFTs> logger)
         {
             this.tonClient = tonClient ?? throw new ArgumentNullException(nameof(tonClient));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
