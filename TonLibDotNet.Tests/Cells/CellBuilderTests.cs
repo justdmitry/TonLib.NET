@@ -114,5 +114,103 @@ namespace TonLibDotNet.Cells
 
             slice.EndRead();
         }
+
+        [Fact]
+        public void WritesStringsOk()
+        {
+            var builder = new CellBuilder();
+
+            var cell = builder.StoreString("Hello ").StoreString("World!").StoreString(" 😀").Build();
+
+            var slice = cell.BeginRead();
+            var text = slice.LoadString();
+
+            Assert.Equal("Hello World! 😀", text);
+
+            slice.EndRead();
+        }
+
+
+        [Fact]
+        public void WritesEmptyStringsOk()
+        {
+            var builder = new CellBuilder();
+
+            var cell = builder.StoreString(string.Empty).Build();
+
+            Assert.Empty(cell.Content);
+
+            var slice = cell.BeginRead();
+            var text = slice.LoadString();
+
+            Assert.Null(text);
+
+            slice.EndRead();
+        }
+
+        [Fact]
+        public void LoadStringFailsOnWrongBitsCount()
+        {
+            var builder = new CellBuilder();
+
+            var cell = builder.StoreUInt(0, 13).Build();
+
+            var slice = cell.BeginRead();
+            Assert.Throws<ArgumentOutOfRangeException>(() => slice.LoadString());
+        }
+
+        [Fact]
+        public void WritesStringSnakeOk()
+        {
+            var text = @"Storing a very long text string, expecting it to split to several cell, chained one after another.
+One cell can store up to 128 bytes, so lets make this text so it uses at least three cells to store.
+This text has length of 283 character now, so this should be enough for our test.";
+
+            var builder = new CellBuilder();
+
+            var cell = builder.StoreInt(123).StoreStringSnake(text).Build();
+
+            var slice = cell.BeginRead();
+            var int2 = slice.LoadInt();
+            var text2 = slice.LoadStringSnake();
+
+            Assert.Equal(text, text2);
+            Assert.Equal(123, int2);
+
+            slice.EndRead();
+        }
+
+        [Fact]
+        public void LoadStringSnakeFailsOnIncompleteBytes()
+        {
+            var text = @"This is some text";
+
+            var builder = new CellBuilder();
+
+            // Also append only part of 0xF09F9880 bytes for 😀
+            var cell = builder.StoreStringSnake(text).StoreByte(0xF0).StoreByte(0x9F).Build();
+
+            var slice = cell.BeginRead();
+
+            // Must fail while reading, because of incomplete byte sequence.
+            Assert.Throws<InvalidDataException>(() => slice.LoadStringSnake(true));
+        }
+
+        [Fact]
+        public void LoadStringSnakeWildOk()
+        {
+            // BOC from random NFT collection
+            var text = "b5ee9c7201010101002900004e0168747470733a2f2f6e66742e746f6e2e6469616d6f6e64732f6469616d6f6e64732e6a736f6e";
+
+            var boc = Boc.ParseFromBytes(Convert.FromHexString(text));
+
+            var slice = boc.RootCells[0].BeginRead();
+
+            var type = slice.LoadByte();
+            Assert.Equal(0x01, type); // off-chain
+
+            var text2 = slice.LoadStringSnake(true);
+            Assert.Equal("https://nft.ton.diamonds/diamonds.json", text2);
+        }
     }
 }

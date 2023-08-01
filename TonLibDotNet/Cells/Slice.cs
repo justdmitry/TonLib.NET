@@ -12,16 +12,15 @@
         {
             this.data = data;
             this.index = 0;
-            this.Length = data.Count;
             this.refs = refs;
             this.refIndex = 0;
         }
 
-        public int Length { get; init; }
+        public int Length => data.Count - index;
 
         public void EndRead()
         {
-            if (index < Length)
+            if (Length > 0)
             {
                 throw new InvalidOperationException("Have more data");
             }
@@ -34,7 +33,7 @@
                 throw new ArgumentOutOfRangeException(nameof(count), "Must be positive");
             }
 
-            return index + count <= data.Count;
+            return count <= Length;
         }
 
         public void EnsureCanLoad(int count)
@@ -207,6 +206,11 @@
         {
             EnsureCanLoadRef();
             return refs![refIndex++];
+        }
+
+        public Cell? TryLoadRef()
+        {
+            return TryCanLoadRef() ? refs![refIndex++] : null;
         }
 
         public Cell PreloadRef()
