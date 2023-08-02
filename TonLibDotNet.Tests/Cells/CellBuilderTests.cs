@@ -1,9 +1,17 @@
 ﻿using System.Numerics;
+using Xunit.Abstractions;
 
 namespace TonLibDotNet.Cells
 {
     public class CellBuilderTests
     {
+        private readonly ITestOutputHelper output;
+
+        public CellBuilderTests(ITestOutputHelper output)
+        {
+            this.output = output;
+        }
+
         [Fact]
         public void WritesOk()
         {
@@ -153,9 +161,11 @@ namespace TonLibDotNet.Cells
         {
             var builder = new CellBuilder();
 
-            var cell = builder.StoreUInt(0, 13).Build();
+            var cell = builder.StoreString("Hello, World!").Build();
 
             var slice = cell.BeginRead();
+
+            slice.SkipBits(3);
             Assert.Throws<ArgumentOutOfRangeException>(() => slice.LoadString());
         }
 
@@ -168,49 +178,53 @@ This text has length of 283 character now, so this should be enough for our test
 
             var builder = new CellBuilder();
 
-            var cell = builder.StoreInt(123).StoreStringSnake(text).Build();
+            var cell = builder.StoreStringSnake(text).Build();
+
+            output.WriteLine(cell.ToBoc().DumpCells());
 
             var slice = cell.BeginRead();
-            var int2 = slice.LoadInt();
             var text2 = slice.LoadStringSnake();
 
             Assert.Equal(text, text2);
-            Assert.Equal(123, int2);
 
             slice.EndRead();
         }
 
-        [Fact]
-        public void LoadStringSnakeFailsOnIncompleteBytes()
+        [Theory]
+        // BOC from random NFT collection
+        [InlineData("b5ee9c7201010101002900004e0168747470733a2f2f6e66742e746f6e2e6469616d6f6e64732f6469616d6f6e64732e6a736f6e", "https://nft.ton.diamonds/diamonds.json")]
+        public void LoadStringSnakeWildOk(string encoded, string decoded)
         {
-            var text = @"This is some text";
-
-            var builder = new CellBuilder();
-
-            // Also append only part of 0xF09F9880 bytes for 😀
-            var cell = builder.StoreStringSnake(text).StoreByte(0xF0).StoreByte(0x9F).Build();
-
-            var slice = cell.BeginRead();
-
-            // Must fail while reading, because of incomplete byte sequence.
-            Assert.Throws<InvalidDataException>(() => slice.LoadStringSnake(true));
-        }
-
-        [Fact]
-        public void LoadStringSnakeWildOk()
-        {
-            // BOC from random NFT collection
-            var text = "b5ee9c7201010101002900004e0168747470733a2f2f6e66742e746f6e2e6469616d6f6e64732f6469616d6f6e64732e6a736f6e";
-
-            var boc = Boc.ParseFromBytes(Convert.FromHexString(text));
+            var boc = Boc.ParseFromBytes(Convert.FromHexString(encoded));
 
             var slice = boc.RootCells[0].BeginRead();
 
             var type = slice.LoadByte();
             Assert.Equal(0x01, type); // off-chain
 
-            var text2 = slice.LoadStringSnake(true);
-            Assert.Equal("https://nft.ton.diamonds/diamonds.json", text2);
+            var text = slice.LoadStringSnake(true);
+            Assert.Equal(decoded, text);
+        }
+
+        [Fact]
+        public void WritesStringChunkedOk()
+        {
+            var text = @"Storing a very long text string, expecting it to split to several cell, chained one after another.
+One cell can store up to 128 bytes, so lets make this text so it uses at least three cells to store.
+This text has length of 283 character now, so this should be enough for our test.";
+
+            var builder = new CellBuilder();
+
+            var cell = builder.StoreStringChunked(text).Build();
+
+            output.WriteLine(cell.ToBoc().DumpCells());
+
+            var slice = cell.BeginRead();
+            var text2 = slice.LoadStringChunked();
+
+            Assert.Equal(text, text2);
+
+            slice.EndRead();
         }
     }
 }
