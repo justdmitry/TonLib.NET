@@ -76,5 +76,39 @@
             Assert.Equal(111, dict2[17]);
             Assert.Equal(777, dict2[128]);
         }
+
+        [Fact]
+        public void Writing2()
+        {
+            var dict = new Dictionary<byte, ushort>
+            {
+                [0] = 10,
+                [1] = 9,
+                [2] = 8,
+                [3] = 7,
+            };
+
+            var cell = new CellBuilder()
+                .StoreDict(dict, 32, (x, v) => x.StoreInt(v), (x, v) => x.StoreInt(v))
+                .Build();
+
+            var boc = new Boc(cell);
+
+            outputHelper.WriteLine("Written BOC:");
+            outputHelper.WriteLine(boc.DumpCells());
+
+            var base64 = boc.SerializeToBase64();
+
+            var boc2 = Boc.ParseFromBase64(base64);
+            var slice2 = boc2.RootCells[0].BeginRead();
+            var dict2 = slice2.LoadAndParseDict(32, x => x.LoadInt(), x => x.LoadInt());
+            slice2.EndRead();
+
+            Assert.Equal(4, dict2.Count);
+            Assert.Equal(10, dict2[0]);
+            Assert.Equal(9, dict2[1]);
+            Assert.Equal(8, dict2[2]);
+            Assert.Equal(7, dict2[3]);
+        }
     }
 }

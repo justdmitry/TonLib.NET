@@ -293,7 +293,7 @@ namespace TonLibDotNet
             }
             while (items0 == 0 || items1 == 0);
 
-            cb = CreateWithLabel(items[0].key.Slice(keyPosition, labelLength - 1), keyLength - keyPosition - labelLength);
+            cb = CreateWithLabel(items[0].key.Slice(keyPosition, labelLength - 1), keyLength - keyPosition);
 
             cb.StoreRef(StoreDictImpl(items.Slice(0, items0), keyLength, keyPosition + labelLength, valueWriter));
             cb.StoreRef(StoreDictImpl(items.Slice(items0), keyLength, keyPosition + labelLength, valueWriter));
