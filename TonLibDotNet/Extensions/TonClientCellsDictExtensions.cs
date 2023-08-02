@@ -103,7 +103,10 @@ namespace TonLibDotNet
                 {
                     var valueSrc = x.value.TryCanLoad(1) ? x.value : x.value.LoadRef().BeginRead();
                     var val = valueReader(valueSrc);
-                    x.value.EndRead();
+                    if (val is not Slice)
+                    {
+                        x.value.EndRead();
+                    }
                     return val;
                 });
         }
