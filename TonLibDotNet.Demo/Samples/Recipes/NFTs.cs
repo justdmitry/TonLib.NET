@@ -35,14 +35,15 @@ namespace TonLibDotNet.Samples.Recipes
 
             var cd = await TonRecipes.NFTs.GetCollectionData(tonClient, collectionAddress);
             logger.LogInformation("GetCollectionData() for NFT Collection {Address}:", collectionAddress);
-            logger.LogInformation("  Collection nextItemIndex: {Value}", Convert.ToHexString(cd.nextItemIndex));
-            logger.LogInformation("  Collection content:       {Value} bits", cd.collection_content.BitsCount);
+            logger.LogInformation("  Collection nextItemIndex: {Value}", cd.nextItemIndex);
             logger.LogInformation("  Collection owner:         {Value}", cd.ownerAddress);
+logger.LogInformation("Collectioncontent:\r\n{Value}",cd.collection_content.DumpCells());
+
 
             var nd = await TonRecipes.NFTs.GetNftData(tonClient, nftAddress);
             logger.LogInformation("GetNftData() for NFT Item {Address}:", nftAddress);
             logger.LogInformation("  Init?:              {Value}", nd.init);
-            logger.LogInformation("  Index?:             {Value}", Convert.ToHexString(nd.index));
+            logger.LogInformation("  Index?:             {Value}", nd.index);
             logger.LogInformation("  Collection adr:     {Value}", nd.collectionAddress);
             logger.LogInformation("  Owner:              {Value}", nd.ownerAddress);
             logger.LogInformation("  Individual content:\r\n{Value}", nd.individualContent.DumpCells());

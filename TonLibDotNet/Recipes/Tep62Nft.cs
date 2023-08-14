@@ -44,7 +44,7 @@ namespace TonLibDotNet.Recipes
         /// <exception cref="TonLibNonZeroExitCodeException" />
         /// <seealso href="https://github.com/ton-blockchain/TEPs/blob/master/text/0062-nft-standard.md#get-methods-1">Get-methods description</seealso>
         /// <seealso href="https://github.com/ton-blockchain/token-contract/blob/main/nft/nft-collection.fc#L137">Reference implementation</seealso>
-        public async Task<(byte[] nextItemIndex, Cells.Cell collection_content, string? ownerAddress)> GetCollectionData(ITonClient tonClient, string collectionAddress)
+        public async Task<(BigInteger nextItemIndex, Cells.Boc collection_content, string? ownerAddress)> GetCollectionData(ITonClient tonClient, string collectionAddress)
         {
             await tonClient.InitIfNeeded().ConfigureAwait(false);
 
@@ -57,8 +57,8 @@ namespace TonLibDotNet.Recipes
 
             TonLibNonZeroExitCodeException.ThrowIfNonZero(result.ExitCode);
 
-            var nextIndex = result.Stack[0].ToBigIntegerBytes();
-            var content = result.Stack[1].ToBoc().RootCells[0];
+            var nextIndex = result.Stack[0].ToBigInteger();
+            var content = result.Stack[1].ToBoc();
             var owner = result.Stack[2].ToBoc().RootCells[0].BeginRead().TryLoadAddressIntStd();
 
             return (nextIndex, content, owner);
@@ -74,7 +74,7 @@ namespace TonLibDotNet.Recipes
         /// <exception cref="TonLibNonZeroExitCodeException" />
         /// <seealso href="https://github.com/ton-blockchain/TEPs/blob/master/text/0062-nft-standard.md#get-methods-1">Get-methods description</seealso>
         /// <seealso href="https://github.com/ton-blockchain/token-contract/blob/main/nft/nft-collection.fc#L143">Reference implementation</seealso>
-        public async Task<string> GetNftAddressByIndex(ITonClient tonClient, string collectionAddress, byte[] index)
+        public async Task<string> GetNftAddressByIndex(ITonClient tonClient, string collectionAddress, BigInteger index)
         {
             ArgumentNullException.ThrowIfNull(index);
 
@@ -114,7 +114,7 @@ namespace TonLibDotNet.Recipes
         /// <exception cref="TonLibNonZeroExitCodeException" />
         /// <seealso href="https://github.com/ton-blockchain/TEPs/blob/master/text/0062-nft-standard.md#get-methods">Get-methods description</seealso>
         /// <seealso href="https://github.com/ton-blockchain/token-contract/blob/main/nft/nft-item.fc#L142">Reference implementation</seealso>
-        public async Task<(bool init, byte[] index, string collectionAddress, string? ownerAddress, Cells.Boc individualContent)> GetNftData(ITonClient tonClient, string nftAddress)
+        public async Task<(bool init, BigInteger index, string collectionAddress, string? ownerAddress, Cells.Boc individualContent)> GetNftData(ITonClient tonClient, string nftAddress)
         {
             await tonClient.InitIfNeeded().ConfigureAwait(false);
 
@@ -128,7 +128,7 @@ namespace TonLibDotNet.Recipes
             TonLibNonZeroExitCodeException.ThrowIfNonZero(result.ExitCode);
 
             var init = result.Stack[0].ToInt() != 0;
-            var index = result.Stack[1].ToBigIntegerBytes();
+            var index = result.Stack[1].ToBigInteger();
             var collectionAddress = result.Stack[2].ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
             var ownerAddress = result.Stack[3].ToBoc().RootCells[0].BeginRead().LoadAddressIntStd();
             var individualContent = result.Stack[4].ToBoc();
@@ -136,8 +136,8 @@ namespace TonLibDotNet.Recipes
             return (init, index, collectionAddress, ownerAddress, individualContent);
         }
 
-        /// <inheritdoc cref="GetNftContent(ITonClient, string, byte[], Cells.Boc)"/>
-        public Task<Cells.Boc> GetNftContent(ITonClient tonClient, string collectionAddress, byte[] index, Cells.Cell individualContent)
+        /// <inheritdoc cref="GetNftContent(ITonClient, string, BigInteger, Cells.Boc)"/>
+        public Task<Cells.Boc> GetNftContent(ITonClient tonClient, string collectionAddress, BigInteger index, Cells.Cell individualContent)
         {
             return GetNftContent(tonClient, collectionAddress, index, new Cells.Boc(individualContent));
         }
@@ -157,7 +157,7 @@ namespace TonLibDotNet.Recipes
         /// <exception cref="TonLibNonZeroExitCodeException" />
         /// <seealso href="https://github.com/ton-blockchain/TEPs/blob/master/text/0062-nft-standard.md#get-methods-1">Get-methods description</seealso>
         /// <seealso href="https://github.com/ton-blockchain/token-contract/blob/main/nft/nft-collection.fc#L155">Reference implementation</seealso>
-        public async Task<Cells.Boc> GetNftContent(ITonClient tonClient, string collectionAddress, byte[] index, Cells.Boc individualContent)
+        public async Task<Cells.Boc> GetNftContent(ITonClient tonClient, string collectionAddress, BigInteger index, Cells.Boc individualContent)
         {
             ArgumentNullException.ThrowIfNull(index);
             ArgumentNullException.ThrowIfNull(individualContent);
