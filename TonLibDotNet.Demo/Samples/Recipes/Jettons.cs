@@ -45,15 +45,15 @@ namespace TonLibDotNet.Samples.Recipes
             logger.LogInformation("  Balance:     {Value}", wd.balance);
             logger.LogInformation("  Owner:       {Value}", wd.ownerAddress);
             logger.LogInformation("  Jett.Master: {Value}", wd.jettonMinterAddress);
-            logger.LogInformation("  Code:        \r\n{Value}", wd.jettonWalletCode.DumpCells());
+            ////logger.LogInformation("  Code:        \r\n{Value}", wd.jettonWalletCode.DumpCells());
 
             var jd = await TonRecipes.Jettons.GetJettonData(tonClient, jettonMinterAddress);
             logger.LogInformation("Info for Jetton Minter address {Address}:", jettonMinterAddress);
             logger.LogInformation("  Total supply:{Value}", jd.totalSupply);
             logger.LogInformation("  Mintable:    {Value}", jd.mintable);
             logger.LogInformation("  Admin:       {Value}", jd.adminAddress);
-            logger.LogInformation("  Content:     \r\n{Value}", jd.jettonContent.DumpCells());
-            logger.LogInformation("  Wallet code: \r\n{Value}", jd.jettonWalletCode.DumpCells());
+            ////logger.LogInformation("  Content:     \r\n{Value}", jd.jettonContent.DumpCells());
+            ////logger.LogInformation("  Wallet code: \r\n{Value}", jd.jettonWalletCode.DumpCells());
 
             if (inMainnet)
             {
@@ -74,6 +74,8 @@ namespace TonLibDotNet.Samples.Recipes
                 _ = await tonClient.QuerySend(query.Id);
 
                 await tonClient.DeleteKey(inputKey);
+
+                logger.LogInformation("Sent 1 jetton to {Dest}", receiverWalletWalletTestnet);
             }
         }
     }
