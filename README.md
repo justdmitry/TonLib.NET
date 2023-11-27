@@ -5,7 +5,7 @@ Wrapper around `tonlibjson` library for accessing [Telegram Open Network](https:
 
 **Does not** require TonAPI, TonCenter API, TonKeeper API or any other HTTP API. 
 
-[![NuGet](https://img.shields.io/nuget/v/TonLib.Net.svg?color=blue)](https://www.nuget.org/packages/TonLib.Net/) ![NuGet downloads](https://img.shields.io/nuget/dt/TonLib.NET?color=blue) ![Framework](https://img.shields.io/badge/framework-net6.0-blue) ![Framework](https://img.shields.io/badge/framework-net7.0-blue) ![GitHub License](https://img.shields.io/github/license/justdmitry/TonLib.NET?color=blue) 
+[![NuGet](https://img.shields.io/nuget/v/TonLib.Net.svg?color=blue)](https://www.nuget.org/packages/TonLib.Net/) ![NuGet downloads](https://img.shields.io/nuget/dt/TonLib.NET?color=blue) ![Framework](https://img.shields.io/badge/framework-net6.0-blue) ![Framework](https://img.shields.io/badge/framework-net7.0-blue) ![Framework](https://img.shields.io/badge/framework-net8.0-blue) ![GitHub License](https://img.shields.io/github/license/justdmitry/TonLib.NET?color=blue) 
 
 ⚠ For `net6.0` uses `System.Text.Json` package **v7.0.0** (from `net7.0`) - it makes [de]serialization much simpler (because of [Polymorphic serialization](https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/polymorphism)). It only updates `System.Text.Encodings.Web` (v6.0 -> v7.0) as a transitive dependency, which I think is acceptable.
 
@@ -19,10 +19,10 @@ Wrapper around `tonlibjson` library for accessing [Telegram Open Network](https:
 * Read and parse smartcontract data, call get-methods [(sample)](/TonLibDotNet.Demo/Samples/ReadInfoFromSmartContracts.cs);
 * Resolve domains [(sample)](/TonLibDotNet.Demo/Samples/ResolveDomains.cs)
 * `TonRecipes` class (ready-to-use one-liners) to work with:
-  * TEP-81 DNS contracts (parse all data, update entries) [(sample)](/TonLibDotNet.Demo/Samples/Recipes/RootDnsGetAllInfo.cs);
-  * Telemint contracts (*.t.me usernames and +888 anonymous numbers) [(sample)](/TonLibDotNet.Demo/Samples/Recipes/TelemintGetAllInfo.cs)
-  * TEP-74 Jettons (transfer, burn, read info) - *blocked by https://github.com/ton-blockchain/ton/issues/709*
-  * TEP-62 NFTs - *soon*
+  * [TEP-81](https://github.com/ton-blockchain/TEPs/blob/master/text/0081-dns-standard.md) DNS contracts (parse all data, update entries) [(sample)](/TonLibDotNet.Demo/Samples/Recipes/RootDnsGetAllInfo.cs);
+  * Telemint contracts (*.t.me usernames and +888 anonymous numbers) [(sample)](/TonLibDotNet.Demo/Samples/Recipes/Jetton.cs)
+  * [TEP-74](https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md) Jettons (read info, transfer, burn) [(sample)](/TonLibDotNet.Demo/Samples/Recipes/TelemintGetAllInfo.cs)
+  * [TEP-62](https://github.com/ton-blockchain/TEPs/blob/master/text/0062-nft-standard.md) NFTs (read info, transfer) [(sample)](/TonLibDotNet.Demo/Samples/Recipes/NFTs.cs)
 
 And more:
 
@@ -74,15 +74,15 @@ The number of additional dependencies you need depends of what you already have 
 
 ## 3rd-party libraries and dependencies
 
-* Microsoft.Extensions.Logging.Abstractions v6.0.0 / v7.0.0
-* Microsoft.Extensions.Options v6.0.0 / v7.0.0
-* System.Text.Json v7.0.0 always (even for `net6.0`)
-  * System.Text.Encodings.Web v7.0.0 as transitive dependency
+* Microsoft.Extensions.Logging.Abstractions v6.0.0 / v7.0.0 / v8.0.0
+* Microsoft.Extensions.Options v6.0.0 / v7.0.0 / v8.0.0
+* System.Text.Json v7.0.0 for `net6.0` and `net7.0`, v8.0.0 for `net8.0`
+  * System.Text.Encodings.Web v7.0.0 for `net6.0` as transitive dependency
 
 
 ## Donate
 
-`EQDP_JFi4IucdPmEHJBSjEoSHlbC57G_8HLJAgqe05a-sGZ8`
+`just_dmitry.ton`
 
 
 ## Useful links
