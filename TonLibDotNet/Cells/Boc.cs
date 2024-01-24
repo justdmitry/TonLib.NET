@@ -58,6 +58,11 @@ namespace TonLibDotNet.Cells
             return TryParseFromBytes(Convert.FromBase64String(base64data), out boc);
         }
 
+        public static bool TryParseFromHex(string hex, [NotNullWhen(true)] out Boc? boc)
+        {
+            return TryParseFromBytes(Convert.FromHexString(hex), out boc);
+        }
+
         public static bool TryParseFromBytes(ReadOnlySpan<byte> bytes, [NotNullWhen(true)] out Boc? boc)
         {
             (boc, _) = TryParseImpl(bytes);
@@ -67,6 +72,11 @@ namespace TonLibDotNet.Cells
         public static Boc ParseFromBase64(string base64data)
         {
             return ParseFromBytes(Convert.FromBase64String(base64data));
+        }
+
+        public static Boc ParseFromHex(string hex)
+        {
+            return ParseFromBytes(Convert.FromHexString(hex));
         }
 
         public static Boc ParseFromBytes(ReadOnlySpan<byte> bytes)
