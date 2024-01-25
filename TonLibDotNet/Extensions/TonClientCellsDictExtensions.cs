@@ -63,11 +63,11 @@ namespace TonLibDotNet
         /// Sometimes <see href="https://github.com/ton-blockchain/dns-contract/blob/main/func/nft-item.fc#L21">arbitrary cells are stored using store_dict()</see>, so not every <see cref="LoadDict"/> result should be parsed.
         /// </remarks>
         /// <exception cref="InvalidOperationException">Dictionary is empty</exception>
-        public static Dictionary<TKey, TValue> LoadAndParseDict<TKey, TValue>(this Slice slice, int keyBitLength, Func<Slice, TKey> keyReader, Func<Slice, TValue> valueReader)
+        public static Dictionary<TKey, TValue> LoadAndParseDict<TKey, TValue>(this Slice slice, int keyBitLength, Func<Slice, TKey> keyReader, Func<Slice, TValue> valueReader, IEqualityComparer<TKey>? comparer = null)
             where TKey : notnull
         {
             var cell = LoadDict(slice);
-            return ParseDict(cell, keyBitLength, keyReader, valueReader);
+            return ParseDict(cell, keyBitLength, keyReader, valueReader, comparer);
         }
 
         /// <summary>
@@ -76,17 +76,17 @@ namespace TonLibDotNet
         /// <remarks>
         /// Sometimes <see href="https://github.com/ton-blockchain/dns-contract/blob/main/func/nft-item.fc#L21">arbitrary cells are stored using store_dict()</see>, so not every <see cref="TryLoadDict"/> result should be parsed.
         /// </remarks>
-        public static Dictionary<TKey, TValue>? TryLoadAndParseDict<TKey, TValue>(this Slice slice, int keyBitLength, Func<Slice, TKey> keyReader, Func<Slice, TValue> valueReader)
+        public static Dictionary<TKey, TValue>? TryLoadAndParseDict<TKey, TValue>(this Slice slice, int keyBitLength, Func<Slice, TKey> keyReader, Func<Slice, TValue> valueReader, IEqualityComparer<TKey>? comparer = null)
             where TKey : notnull
         {
             var cell = TryLoadDict(slice);
-            return cell == null ? null : ParseDict(cell, keyBitLength, keyReader, valueReader);
+            return cell == null ? null : ParseDict(cell, keyBitLength, keyReader, valueReader, comparer);
         }
 
         /// <summary>
         /// Parses dictionary from Cell (previously loaded by <see cref="LoadDict(Slice)"/>).
         /// </summary>
-        public static Dictionary<TKey, TValue> ParseDict<TKey, TValue>(this Cell cell, int keyBitLength, Func<Slice, TKey> keyReader, Func<Slice, TValue> valueReader)
+        public static Dictionary<TKey, TValue> ParseDict<TKey, TValue>(this Cell cell, int keyBitLength, Func<Slice, TKey> keyReader, Func<Slice, TValue> valueReader, IEqualityComparer<TKey>? comparer = null)
             where TKey : notnull
         {
             var items = new List<(Slice key, Slice value)>();
@@ -108,7 +108,8 @@ namespace TonLibDotNet
                         x.value.EndRead();
                     }
                     return val;
-                });
+                },
+                comparer);
         }
 
         /// <summary>
