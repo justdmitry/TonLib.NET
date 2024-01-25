@@ -8,6 +8,11 @@ namespace TonLibDotNet
     {
         OptionsInfo? OptionsInfo { get; }
 
+		/// <summary>
+		/// Current masterchain height (TonClient synced to LiteServer synced to blockchain).
+		/// </summary>
+		int SyncStateCurrentSeqno { get; }
+
         Task<OptionsInfo?> InitIfNeeded();
 
         Task<OptionsInfo?> Reinit();

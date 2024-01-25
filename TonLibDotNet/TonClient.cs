@@ -50,11 +50,14 @@ namespace TonLibDotNet
 
         public OptionsInfo? OptionsInfo { get; private set; }
 
-        /// <summary>
-        /// Add assembly with additional <see cref="TypeBase"/> classes for LiteServer interaction.
-        /// </summary>
-        /// <param name="assembly">Assembly to add</param>
-        public static void RegisterAssembly(System.Reflection.Assembly assembly)
+        /// <inheritdoc />
+        public int SyncStateCurrentSeqno { get; private set; }
+
+		/// <summary>
+		/// Add assembly with additional <see cref="TypeBase"/> classes for LiteServer interaction.
+		/// </summary>
+		/// <param name="assembly">Assembly to add</param>
+		public static void RegisterAssembly(System.Reflection.Assembly assembly)
         {
             TonTypeResolver.AdditionalAsseblies.Add(assembly);
         }
@@ -271,11 +274,16 @@ namespace TonLibDotNet
                         continue;
                     }
 
-                    if (DateTimeOffset.UtcNow < endOfLoop && uss.SyncState is UpdateSyncState.SyncStateInProgress ssip)
+                    if (uss.SyncState is UpdateSyncState.SyncStateInProgress ssip)
                     {
-                        var delay = (ssip.ToSeqno - ssip.CurrentSeqno) < 1000 ? 50 : 500;
-                        await Task.Delay(delay);
-                        continue;
+                        SyncStateCurrentSeqno = ssip.CurrentSeqno;
+
+                        if (DateTimeOffset.UtcNow < endOfLoop)
+                        {
+                            var delay = (ssip.ToSeqno - ssip.CurrentSeqno) < 1000 ? 50 : 500;
+                            await Task.Delay(delay);
+                            continue;
+                        }
                     }
 
                     Deinit();
