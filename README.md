@@ -89,4 +89,5 @@ The number of additional dependencies you need depends of what you already have 
 
 * TON ADNL API Home: https://ton.org/docs/develop/dapps/apis/adnl
 * TonLib TL Schema: https://github.com/ton-blockchain/ton/blob/master/tl/generate/scheme/tonlib_api.tl
+* Block.tlb schema: https://github.com/ton-blockchain/ton/blob/master/crypto/block/block.tlb
 * TL Language description: https://core.telegram.org/mtproto/TL
