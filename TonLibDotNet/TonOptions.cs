@@ -8,12 +8,34 @@ namespace TonLibDotNet
         /// <summary>
         /// Path to JSON config for testnet (default value is from https://ton.org/docs/develop/dapps/apis/adnl).
         /// </summary>
+        /// <remarks>
+        /// Unless <see cref="ConfigPathLocalTestnet"/> is set, this url will be used to obtain config file on every TonClient init.
+        /// </remarks>
         public Uri ConfigPathTestnet { get; set; } = new ("https://ton.org/testnet-global.config.json");
 
         /// <summary>
         /// Path to JSON config for mainnet (default value is from https://ton.org/docs/develop/dapps/apis/adnl).
         /// </summary>
+        /// <remarks>
+        /// Unless <see cref="ConfigPathLocalMainnet"/> is set, this url will be used to obtain config file on every TonClient init.
+        /// </remarks>
         public Uri ConfigPathMainnet { get; set; } = new("https://ton.org/global-config.json");
+
+        /// <summary>
+        /// Path to local file with JSON config for testnet (default value is empty string).
+        /// </summary>
+        /// <remarks>
+        /// Download config file and set this property to prevent downloading config from internet (see <see cref="ConfigPathLocalTestnet"/>) every time.
+        /// </remarks>
+        public string ConfigPathLocalTestnet { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Path to local file with JSON config for mainnet (default value is empty string).
+        /// </summary>
+        /// <remarks>
+        /// Download config file and set this property to prevent downloading config from internet (see <see cref="ConfigPathLocalMainnet"/>) every time.
+        /// </remarks>
+        public string ConfigPathLocalMainnet { get; set; } = string.Empty;
 
         /// <summary>
         /// 'True' by default. Set to 'false' to use testnet config.

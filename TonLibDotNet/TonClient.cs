@@ -53,11 +53,11 @@ namespace TonLibDotNet
         /// <inheritdoc />
         public int SyncStateCurrentSeqno { get; private set; }
 
-		/// <summary>
-		/// Add assembly with additional <see cref="TypeBase"/> classes for LiteServer interaction.
-		/// </summary>
-		/// <param name="assembly">Assembly to add</param>
-		public static void RegisterAssembly(System.Reflection.Assembly assembly)
+        /// <summary>
+        /// Add assembly with additional <see cref="TypeBase"/> classes for LiteServer interaction.
+        /// </summary>
+        /// <param name="assembly">Assembly to add</param>
+        public static void RegisterAssembly(System.Reflection.Assembly assembly)
         {
             TonTypeResolver.AdditionalAsseblies.Add(assembly);
         }
@@ -90,8 +90,20 @@ namespace TonLibDotNet
                 return null;
             }
 
-            var httpClient = new HttpClient();
-            var fullConfig = await httpClient.GetStringAsync(tonOptions.UseMainnet ? tonOptions.ConfigPathMainnet : tonOptions.ConfigPathTestnet).ConfigureAwait(false);
+            string fullConfig;
+            var localConfigSource = tonOptions.UseMainnet ? tonOptions.ConfigPathLocalMainnet : tonOptions.ConfigPathLocalTestnet;
+            if (!string.IsNullOrEmpty(localConfigSource))
+            {
+                fullConfig = await File.ReadAllTextAsync(localConfigSource);
+                logger.LogDebug("Used local config file: {Name}", localConfigSource);
+            }
+            else
+            {
+                var remoteConfigSource = tonOptions.UseMainnet ? tonOptions.ConfigPathMainnet : tonOptions.ConfigPathTestnet;
+                using var httpClient = new HttpClient();
+                fullConfig = await httpClient.GetStringAsync(remoteConfigSource).ConfigureAwait(false);
+                logger.LogDebug("Used internet config file: {Url}", remoteConfigSource);
+            }
 
             var jdoc = JsonNode.Parse(fullConfig);
             var servers = jdoc["liteservers"].AsArray();
