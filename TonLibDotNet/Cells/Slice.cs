@@ -218,5 +218,11 @@
             EnsureCanLoadRef();
             return refs![refIndex];
         }
+
+        public void SkipRef()
+        {
+            EnsureCanLoadRef();
+            refIndex++;
+        }
     }
 }
