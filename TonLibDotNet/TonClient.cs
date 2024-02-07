@@ -62,6 +62,7 @@ namespace TonLibDotNet
             TonTypeResolver.AdditionalAsseblies.Add(assembly);
         }
 
+        /// <inheritdoc />
         public async Task<OptionsInfo?> InitIfNeeded()
         {
             if (needReinit)
@@ -118,12 +119,21 @@ namespace TonLibDotNet
             return OptionsInfo;
         }
 
+        /// <inheritdoc />
+        public virtual void Deinit()
+        {
+            logger.LogWarning("De-initializing.");
+            needReinit = true;
+        }
+
+        /// <inheritdoc />
         public Task<OptionsInfo?> Reinit()
         {
             Deinit();
             return InitIfNeeded();
         }
 
+        /// <inheritdoc />
         public async Task<TResponse> Execute<TResponse>(RequestBase<TResponse> request)
             where TResponse : TypeBase
         {
@@ -378,12 +388,6 @@ namespace TonLibDotNet
 
             Deinit();
             throw new TonClientException(0, "Invalid (unexpected) response type") { ActualAnswer = respObj };
-        }
-
-        protected virtual void Deinit()
-        {
-            logger.LogWarning("De-initializing.");
-            needReinit = true;
         }
 
         protected virtual void Dispose(bool disposing)
