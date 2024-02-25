@@ -30,22 +30,22 @@ namespace TonLibDotNet
             this.tonOptions = options?.Value ?? throw new ArgumentNullException(nameof(options));
         }
 
-        [DllImport(TonLibResolver.DllNamePlaceholder)]
+        [DllImport(TonLibResolver.DllNamePlaceholder, CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr tonlib_client_json_create();
 
-        [DllImport(TonLibResolver.DllNamePlaceholder)]
+        [DllImport(TonLibResolver.DllNamePlaceholder, CallingConvention = CallingConvention.Cdecl)]
         private static extern void tonlib_client_json_destroy(IntPtr client);
 
-        [DllImport(TonLibResolver.DllNamePlaceholder)]
+        [DllImport(TonLibResolver.DllNamePlaceholder, CallingConvention = CallingConvention.Cdecl)]
         private static extern void tonlib_client_set_verbosity_level(int level);
 
-        [DllImport(TonLibResolver.DllNamePlaceholder, CharSet = CharSet.Ansi)]
-        private static extern IntPtr tonlib_client_json_execute(IntPtr client, string request);
+        [DllImport(TonLibResolver.DllNamePlaceholder, CallingConvention = CallingConvention.Cdecl)]
+        private static extern IntPtr tonlib_client_json_execute(IntPtr client, [MarshalAs(UnmanagedType.LPStr)] string request);
 
-        [DllImport(TonLibResolver.DllNamePlaceholder, CharSet = CharSet.Ansi)]
-        private static extern void tonlib_client_json_send(IntPtr client, string request);
+        [DllImport(TonLibResolver.DllNamePlaceholder, CallingConvention = CallingConvention.Cdecl)]
+        private static extern void tonlib_client_json_send(IntPtr client, [MarshalAs(UnmanagedType.LPStr)] string request);
 
-        [DllImport(TonLibResolver.DllNamePlaceholder)]
+        [DllImport(TonLibResolver.DllNamePlaceholder, CallingConvention = CallingConvention.Cdecl)]
         private static extern IntPtr tonlib_client_json_receive(IntPtr client, double timeout);
 
         public OptionsInfo? OptionsInfo { get; private set; }
