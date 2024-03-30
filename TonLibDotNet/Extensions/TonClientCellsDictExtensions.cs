@@ -71,6 +71,20 @@ namespace TonLibDotNet
         }
 
         /// <summary>
+        /// Chains <see cref="LoadDict"/> and <see cref="ParseDictRef"/> calls and returns actual dict with data.
+        /// </summary>
+        /// <remarks>
+        /// Sometimes <see href="https://github.com/ton-blockchain/dns-contract/blob/main/func/nft-item.fc#L21">arbitrary cells are stored using store_dict()</see>, so not every <see cref="LoadDict"/> result should be parsed.
+        /// </remarks>
+        /// <exception cref="InvalidOperationException">Dictionary is empty</exception>
+        public static Dictionary<TKey, Cell> LoadAndParseDictRef<TKey>(this Slice slice, int keyBitLength, Func<Slice, TKey> keyReader, IEqualityComparer<TKey>? comparer = null)
+            where TKey : notnull
+        {
+            var cell = LoadDict(slice);
+            return ParseDictRef(cell, keyBitLength, keyReader, comparer);
+        }
+
+        /// <summary>
         /// Chains <see cref="TryLoadDict"/> and <see cref="ParseDict"/> calls and returns actual dict with data (or null).
         /// </summary>
         /// <remarks>
@@ -84,7 +98,20 @@ namespace TonLibDotNet
         }
 
         /// <summary>
-        /// Parses dictionary from Cell (previously loaded by <see cref="LoadDict(Slice)"/>).
+        /// Chains <see cref="TryLoadDict"/> and <see cref="ParseDictRef"/> calls and returns actual dict with data (or null).
+        /// </summary>
+        /// <remarks>
+        /// Sometimes <see href="https://github.com/ton-blockchain/dns-contract/blob/main/func/nft-item.fc#L21">arbitrary cells are stored using store_dict()</see>, so not every <see cref="TryLoadDict"/> result should be parsed.
+        /// </remarks>
+        public static Dictionary<TKey, Cell>? TryLoadAndParseDictRef<TKey>(this Slice slice, int keyBitLength, Func<Slice, TKey> keyReader, IEqualityComparer<TKey>? comparer = null)
+            where TKey : notnull
+        {
+            var cell = TryLoadDict(slice);
+            return cell == null ? null : ParseDictRef(cell, keyBitLength, keyReader, comparer);
+        }
+
+        /// <summary>
+        /// Parses dictionary from Cell (previously loaded by <see cref="LoadDict(Slice)"/>) where values are <see cref="Slice">Slice-based</see>.
         /// </summary>
         public static Dictionary<TKey, TValue> ParseDict<TKey, TValue>(this Cell cell, int keyBitLength, Func<Slice, TKey> keyReader, Func<Slice, TValue> valueReader, IEqualityComparer<TKey>? comparer = null)
             where TKey : notnull
@@ -107,6 +134,31 @@ namespace TonLibDotNet
                     {
                         x.value.EndRead();
                     }
+                    return val;
+                },
+                comparer);
+        }
+
+        /// <summary>
+        /// Parses dictionary from Cell (previously loaded by <see cref="LoadDict(Slice)"/>) where values are <see cref="Cell">Cells</see> (stored using dict_set_ref in FunC).
+        /// </summary>
+        public static Dictionary<TKey, Cell> ParseDictRef<TKey>(this Cell cell, int keyBitLength, Func<Slice, TKey> keyReader, IEqualityComparer<TKey>? comparer = null)
+            where TKey : notnull
+        {
+            var items = new List<(Slice key, Slice value)>();
+            ParseDictImpl(cell, Array.Empty<bool>(), keyBitLength, items);
+
+            return items.ToDictionary(
+                x =>
+                {
+                    var val = keyReader(x.key);
+                    x.key.EndRead();
+                    return val;
+                },
+                x =>
+                {
+                    var val = x.value.LoadRef();
+                    x.value.EndRead();
                     return val;
                 },
                 comparer);
