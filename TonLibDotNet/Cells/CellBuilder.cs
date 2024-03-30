@@ -58,9 +58,18 @@
 
         public CellBuilder StoreSlice(Slice value)
         {
-            EnsureCanStore(value.Length);
-            value.LoadBitsTo(data.AsSpan(Length, value.Length));
-            Length += value.Length;
+            var len = value.Length;
+            EnsureCanStore(len);
+            value.LoadBitsTo(data.AsSpan(Length, len));
+            Length += len;
+
+            var rf = value.TryLoadRef();
+            while (rf != null)
+            {
+                StoreRef(rf);
+                rf = value.TryLoadRef();
+            }
+
             return this;
         }
 

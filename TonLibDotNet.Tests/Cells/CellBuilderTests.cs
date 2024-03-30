@@ -226,5 +226,24 @@ This text has length of 283 character now, so this should be enough for our test
 
             slice.EndRead();
         }
+
+        [Fact]
+        public void StoreSliceStoresBitsAndRefs()
+        {
+            var original = new CellBuilder()
+                .StoreUInt(11, 32)
+                .StoreUInt(12, 32)
+                .StoreRef(new CellBuilder().StoreBit(true))
+                .StoreRef(new CellBuilder().StoreBit(false))
+                .Build()
+                .BeginRead();
+
+            Assert.Equal((uint)11, original.LoadUInt(32));
+            Assert.True(original.LoadRef().BeginRead().LoadBit());
+
+            var slice = new CellBuilder().StoreSlice(original).Build().BeginRead();
+            Assert.Equal((uint)12, slice.LoadUInt(32));
+            Assert.False(slice.LoadRef().BeginRead().LoadBit());
+        }
     }
 }
