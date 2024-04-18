@@ -99,7 +99,7 @@ namespace TonLibDotNet
         /// </summary>
         /// <param name="client">ITonClient instance.</param>
         /// <param name="id">ID of previously loaded smc.</param>
-        /// <param name="methodId">Method ID (<see cref="MethodIdName"/> or <see cref="MethodIdNumber"/>).</param>
+        /// <param name="methodId">Method ID (use <see cref="MethodIdName"/> or <see cref="MethodIdNumber"/>).</param>
         /// <param name="stack">Stack data.</param>
         /// <seealso href="https://github.com/ton-blockchain/ton/blob/v2023.03/tonlib/tonlib/TonlibClient.cpp#L4361" />
         public static Task<RunResult> SmcRunGetMethod(this ITonClient client, long id, MethodId methodId, List<StackEntry>? stack = null)
@@ -107,6 +107,32 @@ namespace TonLibDotNet
             ArgumentNullException.ThrowIfNull(methodId);
 
             return client.Execute(new RunGetMethod(id, methodId, stack));
+        }
+
+        /// <summary>
+        /// Executes GET method on smc.
+        /// </summary>
+        /// <param name="client">ITonClient instance.</param>
+        /// <param name="id">ID of previously loaded smc.</param>
+        /// <param name="methodName">Method name.</param>
+        /// <param name="stack">Stack data.</param>
+        /// <seealso href="https://github.com/ton-blockchain/ton/blob/v2023.03/tonlib/tonlib/TonlibClient.cpp#L4361" />
+        public static Task<RunResult> SmcRunGetMethod(this ITonClient client, long id, string methodName, params StackEntry[] stack)
+        {
+            return SmcRunGetMethod(client, id, new MethodIdName(methodName), stack.ToList());
+        }
+
+        /// <summary>
+        /// Executes GET method on smc.
+        /// </summary>
+        /// <param name="client">ITonClient instance.</param>
+        /// <param name="id">ID of previously loaded smc.</param>
+        /// <param name="methodNumber">Method number.</param>
+        /// <param name="stack">Stack data.</param>
+        /// <seealso href="https://github.com/ton-blockchain/ton/blob/v2023.03/tonlib/tonlib/TonlibClient.cpp#L4361" />
+        public static Task<RunResult> SmcRunGetMethod(this ITonClient client, long id, int methodNumber, params StackEntry[] stack)
+        {
+            return SmcRunGetMethod(client, id, new MethodIdNumber(methodNumber), stack.ToList());
         }
     }
 }
