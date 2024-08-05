@@ -76,7 +76,7 @@ The number of additional dependencies you need depends of what you already have 
 
 * Microsoft.Extensions.Logging.Abstractions v6.0.0 / v8.0.0
 * Microsoft.Extensions.Options v6.0.0 / v8.0.0
-* System.Text.Json v8.0.4 for both `net6.0` and `net7.0`
+* System.Text.Json v8.0.4 for both `net6.0` and `net8.0`
   * System.Text.Encodings.Web v8.0.0 for `net6.0` as transitive dependency
 
 
