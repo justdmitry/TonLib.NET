@@ -5,6 +5,7 @@ using TonLibDotNet.Types.Msg;
 using TonLibDotNet.Types;
 using TonLibDotNet.Types.Smc;
 using TonLibDotNet.Utils;
+using System.Diagnostics.CodeAnalysis;
 
 namespace TonLibDotNet.Recipes
 {
@@ -27,6 +28,11 @@ namespace TonLibDotNet.Recipes
         /// From <see href="https://github.com/ton-blockchain/token-contract/blob/main/ft/op-codes.fc">op-codes.fc</see>
         /// </summary>
         private const int OPBurn = 0x595f07bc;
+
+        /// <summary>
+        /// From <see href="https://github.com/ton-blockchain/token-contract/blob/main/ft/op-codes.fc">op-codes.fc</see>
+        /// </summary>
+        private const int OPTransferNotification = 0x7362d09c;
 
         public static readonly Tep74Jettons Instance = new();
 
@@ -263,6 +269,63 @@ namespace TonLibDotNet.Recipes
                 Data = new DataRaw(new Boc(body).SerializeToBase64(), string.Empty),
                 SendMode = DefaultSendMode,
             };
+        }
+
+        /// <summary>
+        /// Checks if incoming message is a Transfer Notification, and parses it.
+        /// </summary>
+        /// <param name="msg">Incoming transaction message.</param>
+        /// <param name="jettonWalletAddress">Address of jetton wallet who sent coins (compare with your known jetton wallet addresses to know what jetton has arrived).</param>
+        /// <param name="queryId">Request number.</param>
+        /// <param name="userWalletAddress">Address of user (master wallet) who sent jettons.</param>
+        /// <param name="amount">Amount of jettons to burn <b>in elementary units</b>.</param>
+        /// <param name="forwardPayload">Optional custom data.</param>
+        /// <returns>True when message is a jetton transfer notification message and it has been parsed succesfully, false otherwise.</returns>
+        /// <seealso href="https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#1-transfer">Transfer message in TEP</seealso>
+        public bool TryParseJettonTransferNotification(
+            TonLibDotNet.Types.Raw.Message? msg,
+            [NotNullWhen(true)] out string? jettonWalletAddress,
+            [NotNullWhen(true)] out long? queryId,
+            [NotNullWhen(true)] out string? userWalletAddress,
+            [NotNullWhen(true)] out BigInteger? amount,
+            out Cell? forwardPayload)
+        {
+            jettonWalletAddress = default;
+            queryId = default;
+            userWalletAddress = default;
+            amount = default;
+            forwardPayload = default;
+
+            if (msg is null || msg.MsgData is not DataRaw data || string.IsNullOrWhiteSpace(data.Body))
+            {
+                return false;
+            }
+
+            jettonWalletAddress = msg.Source.Value;
+
+            var slice = Boc.ParseFromBase64(data.Body).RootCells[0].BeginRead();
+
+            if (!slice.TryCanLoad(32))
+            {
+                return false;
+            }
+
+            var op = slice.LoadInt(32);
+            if (op != OPTransferNotification)
+            {
+                return false;
+            }
+
+            queryId = slice.LoadLong(64);
+            amount = slice.LoadCoinsToBigInt();
+            userWalletAddress = slice.LoadAddressIntStd();
+
+            if (slice.TryCanLoadRef())
+            {
+                forwardPayload = slice.LoadRef();
+            }
+
+            return true;
         }
     }
 }
