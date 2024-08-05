@@ -49,8 +49,15 @@ namespace TonLibDotNet
             return LoadAddressIntStd(slice, bounceable, testnetOnly, urlSafe);
         }
 
-        public static CellBuilder StoreAddressIntStd(this CellBuilder builder, string address)
+        public static CellBuilder StoreAddressIntStd(this CellBuilder builder, string? address)
         {
+            if (string.IsNullOrEmpty(address))
+            {
+                builder.StoreBit(false);
+                builder.StoreBit(false);
+                return builder;
+            }
+
             if (!AddressValidator.TryParseAddress(address, out var workchainId, out var accountId, out _, out _, out _))
             {
                 throw new ArgumentException("Not a valid address", nameof(address));

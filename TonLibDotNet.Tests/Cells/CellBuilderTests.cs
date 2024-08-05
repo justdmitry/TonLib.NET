@@ -65,6 +65,18 @@ namespace TonLibDotNet.Cells
         }
 
         [Fact]
+        public void WritesEmptyAddressesOk()
+        {
+            var cell = new CellBuilder()
+                .StoreAddressIntStd(string.Empty)
+                .Build();
+
+            var slice = cell.BeginRead();
+            Assert.Null(slice.TryLoadAddressIntStd());
+            slice.EndRead();
+        }
+
+        [Fact]
         public void WritesCoinsOk()
         {
             var builder = new CellBuilder()
