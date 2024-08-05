@@ -82,7 +82,7 @@ The number of additional dependencies you need depends of what you already have 
 
 ## Donate
 
-`just_dmitry.ton`
+`just-dmitry.ton`
 
 
 ## Useful links
