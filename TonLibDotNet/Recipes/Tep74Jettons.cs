@@ -137,6 +137,42 @@ namespace TonLibDotNet.Recipes
         }
 
         /// <summary>
+        /// Creates body cell that should be used to transfer jettons from source to destination.
+        /// </summary>
+        /// <param name="queryId">Arbitrary request number.</param>
+        /// <param name="amount">Amount of transferred jettons <b>in elementary units</b>.</param>
+        /// <param name="destination">Address of the new owner of the jettons (user main-wallet address, not his jetton address).</param>
+        /// <param name="responseDestination">Address where to send a response with confirmation of a successful transfer and the rest of the incoming message Toncoins.</param>
+        /// <param name="customPayload">Optional custom data (which is used by either sender or receiver jetton wallet for inner logic).</param>
+        /// <param name="forwardTonAmount">The amount of nanotons to be sent to the destination address.</param>
+        /// <param name="forwardPayload">Optional custom data that should be sent to the destination address.</param>
+        /// <returns>Constructed Cell (body of message to send).</returns>
+        /// <remarks>
+        /// <para>Your Jetton wallet address must already be deployed and active, and contain enough jettons to send.</para>
+        /// </remarks>
+        /// <seealso href="https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#1-transfer">Transfer message in TEP</seealso>
+        public Cell CreateTransferCell(
+            ulong queryId,
+            BigInteger amount,
+            string destination,
+            string responseDestination,
+            Cell? customPayload,
+            decimal forwardTonAmount,
+            Cell? forwardPayload)
+        {
+            return new CellBuilder()
+                .StoreUInt(OPTransfer)
+                .StoreULong(queryId)
+                .StoreCoins(amount)
+                .StoreAddressIntStd(destination)
+                .StoreAddressIntStd(responseDestination)
+                .StoreDict(customPayload)
+                .StoreCoins(TonUtils.Coins.ToNano(forwardTonAmount))
+                .StoreDict(forwardPayload)
+                .Build();
+        }
+
+        /// <summary>
         /// Creates message that will transfer jettons from source to destination.
         /// </summary>
         /// <param name="sourceJettonAddress">Jetton wallet address to send coins from (use <see cref="GetWalletAddress">GetWalletAddress</see> if needed).</param>
@@ -162,23 +198,41 @@ namespace TonLibDotNet.Recipes
             decimal forwardTonAmount,
             Cell? forwardPayload)
         {
-            var body = new CellBuilder()
-                .StoreUInt(OPTransfer)
-                .StoreULong(queryId)
-                .StoreCoins(amount)
-                .StoreAddressIntStd(destination)
-                .StoreAddressIntStd(responseDestination)
-                .StoreDict(customPayload)
-                .StoreCoins(TonUtils.Coins.ToNano(forwardTonAmount))
-                .StoreDict(forwardPayload)
-                ;
+            var body = CreateTransferCell(queryId, amount, destination, responseDestination, customPayload, forwardTonAmount, forwardPayload);
 
             return new Message(new AccountAddress(sourceJettonAddress))
             {
                 Amount = TonUtils.Coins.ToNano(DefaultAmount),
-                Data = new DataRaw(new Boc(body.Build()).SerializeToBase64(), string.Empty),
+                Data = new DataRaw(new Boc(body).SerializeToBase64(), string.Empty),
                 SendMode = DefaultSendMode,
             };
+        }
+
+        /// <summary>
+        /// Creates body cell that should be used to burn specified amount of jettons.
+        /// </summary>
+        /// <param name="queryId">Arbitrary request number.</param>
+        /// <param name="amount">Amount of jettons to burn <b>in elementary units</b>.</param>
+        /// <param name="responseDestination">Address where to send a response with confirmation of a successful transfer and the rest of the incoming message Toncoins.</param>
+        /// <param name="customPayload">Optional custom data (which is used by either sender or receiver jetton wallet for inner logic).</param>
+        /// <returns>Constructed Cell (body of message to send).</returns>
+        /// <remarks>
+        /// <para>Your Jetton wallet address must already be deployed and active, and contain enough jettons to send.</para>
+        /// </remarks>
+        /// <seealso href="https://github.com/ton-blockchain/TEPs/blob/master/text/0074-jettons-standard.md#2-burn">Burn message in TEP</seealso>
+        public Cell CreateBurnCell(
+            ulong queryId,
+            BigInteger amount,
+            string responseDestination,
+            Cell? customPayload)
+        {
+            return new CellBuilder()
+                .StoreUInt(OPBurn)
+                .StoreULong(queryId)
+                .StoreCoins(amount)
+                .StoreAddressIntStd(responseDestination)
+                .StoreDict(customPayload)
+                .Build();
         }
 
         /// <summary>
@@ -201,18 +255,12 @@ namespace TonLibDotNet.Recipes
             string responseDestination,
             Cell? customPayload)
         {
-            var body = new CellBuilder()
-                .StoreUInt(OPBurn)
-                .StoreULong(queryId)
-                .StoreCoins(amount)
-                .StoreAddressIntStd(responseDestination)
-                .StoreDict(customPayload)
-                ;
+            var body = CreateBurnCell(queryId, amount, responseDestination, customPayload);
 
             return new Message(new AccountAddress(sourceJettonAddress))
             {
                 Amount = TonUtils.Coins.ToNano(DefaultAmount),
-                Data = new DataRaw(new Boc(body.Build()).SerializeToBase64(), string.Empty),
+                Data = new DataRaw(new Boc(body).SerializeToBase64(), string.Empty),
                 SendMode = DefaultSendMode,
             };
         }
