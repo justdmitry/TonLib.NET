@@ -20,7 +20,7 @@ namespace TonLibDotNet
         /// Will do nothing, if already connected.
         /// </remarks>
         /// <returns>Information about blockchain params, e.g. <see cref="OptionsConfigInfo.DefaultWalletId">DefaultWalletId</see>.</returns>
-        Task<OptionsInfo?> InitIfNeeded();
+        Task<OptionsInfo?> InitIfNeeded(CancellationToken cancellationToken = default);
 
         /// <summary>
         /// De-initialize TonClient. Next call to <see cref="InitIfNeeded"/> will choose LiteServer again and connect to it.
@@ -38,9 +38,9 @@ namespace TonLibDotNet
         ///   InitIfNeeded();
         /// </code>
         /// </remarks>
-        Task<OptionsInfo?> Reinit();
+        Task<OptionsInfo?> Reinit(CancellationToken cancellationToken = default);
 
-        Task<TResponse> Execute<TResponse>(RequestBase<TResponse> request)
+        Task<TResponse> Execute<TResponse>(RequestBase<TResponse> request, CancellationToken cancellationToken = default)
             where TResponse : TypeBase;
 
         [Obsolete("Use TonUtils.Coins.FromNano()")]

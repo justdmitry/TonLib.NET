@@ -63,13 +63,13 @@ namespace TonLibDotNet
         }
 
         /// <inheritdoc />
-        public async Task<OptionsInfo?> InitIfNeeded()
+        public async Task<OptionsInfo?> InitIfNeeded(CancellationToken cancellationToken = default)
         {
             if (needReinit)
             {
                 logger.LogDebug("Reinitializing...");
 
-                if (!await syncRoot.WaitAsync(tonOptions.ConcurrencyTimeout))
+                if (!await syncRoot.WaitAsync(tonOptions.ConcurrencyTimeout, cancellationToken))
                 {
                     throw new TimeoutException("Failed while waiting for semaphore");
                 }
@@ -95,14 +95,14 @@ namespace TonLibDotNet
             var localConfigSource = tonOptions.UseMainnet ? tonOptions.ConfigPathLocalMainnet : tonOptions.ConfigPathLocalTestnet;
             if (!string.IsNullOrEmpty(localConfigSource))
             {
-                fullConfig = await File.ReadAllTextAsync(localConfigSource);
+                fullConfig = await File.ReadAllTextAsync(localConfigSource, cancellationToken);
                 logger.LogDebug("Used local config file: {Name}", localConfigSource);
             }
             else
             {
                 var remoteConfigSource = tonOptions.UseMainnet ? tonOptions.ConfigPathMainnet : tonOptions.ConfigPathTestnet;
                 using var httpClient = new HttpClient();
-                fullConfig = await httpClient.GetStringAsync(remoteConfigSource).ConfigureAwait(false);
+                fullConfig = await httpClient.GetStringAsync(remoteConfigSource, cancellationToken).ConfigureAwait(false);
                 logger.LogDebug("Used internet config file: {Url}", remoteConfigSource);
             }
 
@@ -115,7 +115,7 @@ namespace TonLibDotNet
 
             tonOptions.Options.Config.ConfigJson = jdoc.ToJsonString();
 
-            OptionsInfo = await Execute(new Init(tonOptions.Options));
+            OptionsInfo = await Execute(new Init(tonOptions.Options), cancellationToken);
             return OptionsInfo;
         }
 
@@ -127,19 +127,19 @@ namespace TonLibDotNet
         }
 
         /// <inheritdoc />
-        public Task<OptionsInfo?> Reinit()
+        public Task<OptionsInfo?> Reinit(CancellationToken cancellationToken = default)
         {
             Deinit();
-            return InitIfNeeded();
+            return InitIfNeeded(cancellationToken);
         }
 
         /// <inheritdoc />
-        public async Task<TResponse> Execute<TResponse>(RequestBase<TResponse> request)
+        public async Task<TResponse> Execute<TResponse>(RequestBase<TResponse> request, CancellationToken cancellationToken = default)
             where TResponse : TypeBase
         {
             if (client == null)
             {
-                if (!await syncRoot.WaitAsync(tonOptions.ConcurrencyTimeout))
+                if (!await syncRoot.WaitAsync(tonOptions.ConcurrencyTimeout, cancellationToken))
                 {
                     throw new TimeoutException("Failed while waiting for semaphore");
                 }
@@ -169,14 +169,14 @@ namespace TonLibDotNet
                 throw new InvalidOperationException($"Must call {nameof(InitIfNeeded)}() first");
             }
 
-            if (!await syncRoot.WaitAsync(tonOptions.ConcurrencyTimeout))
+            if (!await syncRoot.WaitAsync(tonOptions.ConcurrencyTimeout, cancellationToken))
             {
                 throw new TimeoutException("Failed while waiting for semaphore");
             }
 
             try
             {
-                var res = await ExecuteInternalAsync(request);
+                var res = await ExecuteInternalAsync(request, cancellationToken);
 
                 if (request is Init)
                 {
@@ -223,7 +223,7 @@ namespace TonLibDotNet
             Dispose(disposing: false);
         }
 
-        protected async Task<TResponse> ExecuteInternalAsync<TResponse>(RequestBase<TResponse> request)
+        protected async Task<TResponse> ExecuteInternalAsync<TResponse>(RequestBase<TResponse> request, CancellationToken cancellationToken = default)
             where TResponse : TypeBase
         {
             if (client == null)
@@ -253,8 +253,12 @@ namespace TonLibDotNet
 
             while (true)
             {
+                cancellationToken.ThrowIfCancellationRequested();
+
                 var respTextPtr = tonlib_client_json_receive(client.Value, tonOptions.TonLibTimeout.TotalSeconds);
                 var respText = Marshal.PtrToStringAnsi(respTextPtr);
+
+                cancellationToken.ThrowIfCancellationRequested();
 
                 if (string.IsNullOrEmpty(respText))
                 {
@@ -303,7 +307,7 @@ namespace TonLibDotNet
                         if (DateTimeOffset.UtcNow < endOfLoop)
                         {
                             var delay = (ssip.ToSeqno - ssip.CurrentSeqno) < 1000 ? 50 : 500;
-                            await Task.Delay(delay);
+                            await Task.Delay(delay, cancellationToken);
                             continue;
                         }
                     }
