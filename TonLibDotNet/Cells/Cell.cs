@@ -10,7 +10,7 @@ namespace TonLibDotNet.Cells
         public const int MaxRefs = 4;
 
         public Cell(ReadOnlySpan<byte> content, bool isAugmented, ICollection<Cell>? refs = null)
-            : this(false, 0, content, isAugmented, refs)
+            : this(false, refs?.Max(x => x.Level) ?? 0, content, isAugmented, refs)
         {
             // Nothing.
         }
