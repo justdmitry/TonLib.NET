@@ -1,4 +1,7 @@
-﻿namespace TonLibDotNet.Cells
+﻿using System.Buffers.Binary;
+using System.Security.Cryptography;
+
+namespace TonLibDotNet.Cells
 {
     public class Cell
     {
@@ -7,7 +10,7 @@
         public const int MaxRefs = 4;
 
         public Cell(ReadOnlySpan<byte> content, bool isAugmented, ICollection<Cell>? refs = null)
-            : this (false, 0, content, isAugmented, refs)
+            : this(false, 0, content, isAugmented, refs)
         {
             // Nothing.
         }
@@ -54,11 +57,14 @@
             this.IsAugmented = isAugmented;
 
             this.Refs = refs?.ToList().AsReadOnly() ?? new List<Cell>().AsReadOnly();
+            this.Depth = Refs.Count == 0 ? (short)0 : (short)(Refs.Max(x => x.Depth) + 1);
         }
 
-        public bool IsExotic { get; set; }
+        public bool IsExotic { get; init; }
 
-        public byte Level { get; set; }
+        public byte Level { get; init; }
+
+        public short Depth { get; init; }
 
         public byte[] Content { get; init; }
 
@@ -67,6 +73,8 @@
         public IReadOnlyList<Cell> Refs { get; protected set; }
 
         public int BitsCount { get; protected set; }
+
+        private byte[]? hashValue;
 
         public static (byte refCount, bool isExotic, byte level, int dataLength, bool isAugmented) ParseDescriptors(byte d1, byte d2)
         {
@@ -101,12 +109,45 @@
         {
             var bits = new bool[BitsCount];
 
-            for(var i = 0; i < BitsCount; i++)
+            for (var i = 0; i < BitsCount; i++)
             {
                 bits[i] = (Content[i / 8] & (0b1000_0000 >> (i & 0b111))) != 0;
             }
 
             return new Slice(new ArraySegment<bool>(bits, 0, BitsCount), Refs);
+        }
+
+        public byte[] Hash()
+        {
+            if (hashValue == null)
+            {
+                var bytes = new byte[2 + Content.Length + Refs.Count * (2 + 32)];
+
+                var (d1, d2) = GetDescriptors();
+                bytes[0] = d1;
+                bytes[1] = d2;
+                Content.CopyTo(bytes, 2);
+
+                var pos = 2 + Content.Length;
+
+                Span<byte> depth = stackalloc byte[2];
+                foreach (var r in Refs)
+                {
+                    BinaryPrimitives.WriteInt16BigEndian(depth, r.Depth);
+                    depth.CopyTo(bytes.AsSpan(pos, 2));
+                    pos += 2;
+                }
+
+                foreach (var r in Refs)
+                {
+                    r.Hash().CopyTo(bytes, pos);
+                    pos += 32;
+                }
+
+                hashValue = SHA256.HashData(bytes);
+            }
+
+            return hashValue;
         }
     }
 }
