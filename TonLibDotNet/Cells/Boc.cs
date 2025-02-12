@@ -165,8 +165,9 @@ namespace TonLibDotNet.Cells
 
             foreach(var cell in list)
             {
-                ms.WriteByte((byte)cell.Refs.Count);
-                ms.WriteByte((byte)(Math.Ceiling(cell.BitsCount / 8f) + Math.Floor(cell.BitsCount / 8f)));
+                var (d1, d2) = cell.GetDescriptors();
+                ms.WriteByte(d1);
+                ms.WriteByte(d2);
                 ms.Write(cell.Content);
                 foreach(var r in cell.Refs)
                 {
@@ -282,39 +283,31 @@ namespace TonLibDotNet.Cells
                 }
             }
 
-            var data = new (bool isOrdinary, int start, int length, bool isAugmented, int[] links)[numberOfCells];
+            var data = new (bool isExotic, byte level, int start, int length, bool isAugmented, int[] links)[numberOfCells];
             for (var i = 0; i < numberOfCells; i++)
             {
                 var d1 = bytes[pos++];
-                var numberOfLinks = d1 & 0b111;
-                var isOrdinary = (d1 & 0b1000) == 0;
                 var d2 = bytes[pos++];
-                var isAugmented = (d2 % 2) != 0;
-                var bytesOfData = d2 / 2 + (isAugmented ? 1 : 0);
+                var (refCount, isExotic, level, dataLength, isAugmented) = Cell.ParseDescriptors(d1, d2);
                 var dataStart = pos;
-                pos += bytesOfData;
+                pos += dataLength;
 
-                var refs = new int[numberOfLinks];
-                for (var j = 0; j < numberOfLinks; j++)
+                var refs = new int[refCount];
+                for (var j = 0; j < refCount; j++)
                 {
                     refs[j] = ReadValue(bytes, ref pos, bytesForNumberOfCells);
                 }
 
-                data[i] = (isOrdinary, dataStart, bytesOfData, isAugmented, refs);
+                data[i] = (isExotic, level, dataStart, dataLength, isAugmented, refs);
             }
 
             var cells = new Cell[numberOfCells];
             for (var i = numberOfCells - 1; i >= 0; i--)
             {
-                var item = data[i];
-                if (!item.isOrdinary)
-                {
-                    continue;
-                }
-
-                var content = bytes.Slice(item.start, item.length);
-                var refs = item.links.Select(x => cells[x]).ToArray();
-                cells[i] = new Cell(content, item.isAugmented, refs);
+                var (isExotic, level, start, length, isAugmented, links) = data[i];
+                var content = bytes.Slice(start, length);
+                var refs = links.Select(x => cells[x]).ToArray();
+                cells[i] = new Cell(isExotic, level, content, isAugmented, refs);
             }
 
             var rootCells = rootCellIndexes.Select(x => cells[x]).ToArray();

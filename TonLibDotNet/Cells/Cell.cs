@@ -7,6 +7,12 @@
         public const int MaxRefs = 4;
 
         public Cell(ReadOnlySpan<byte> content, bool isAugmented, ICollection<Cell>? refs = null)
+            : this (false, 0, content, isAugmented, refs)
+        {
+            // Nothing.
+        }
+
+        public Cell(bool isExotic, byte level, ReadOnlySpan<byte> content, bool isAugmented, ICollection<Cell>? refs = null)
         {
             if (content.Length > MaxContentLength)
             {
@@ -23,6 +29,8 @@
                 throw new ArgumentOutOfRangeException(nameof(refs), $"Too many refs ({refs.Count}), only {MaxRefs} are allowed.");
             }
 
+            this.IsExotic = isExotic;
+            this.Level = level;
             this.Content = content.ToArray();
             BitsCount = this.Content.Length * 8;
             if (isAugmented)
@@ -48,6 +56,10 @@
             this.Refs = refs?.ToList().AsReadOnly() ?? new List<Cell>().AsReadOnly();
         }
 
+        public bool IsExotic { get; set; }
+
+        public byte Level { get; set; }
+
         public byte[] Content { get; init; }
 
         public bool IsAugmented { get; init; }
@@ -55,6 +67,35 @@
         public IReadOnlyList<Cell> Refs { get; protected set; }
 
         public int BitsCount { get; protected set; }
+
+        public static (byte refCount, bool isExotic, byte level, int dataLength, bool isAugmented) ParseDescriptors(byte d1, byte d2)
+        {
+            var refCount = d1 & 0b111;
+            var isExotic = (d1 & 0b1000) != 0;
+            var level = d1 / 32;
+            var isAugmented = (d2 % 2) != 0;
+            var dataLength = d2 / 2 + (isAugmented ? 1 : 0);
+            return ((byte)refCount, isExotic, (byte)level, dataLength, isAugmented);
+        }
+
+        /// <summary>
+        /// Builds cell d1 and d2 descriptors.
+        /// </summary>
+        /// <remarks>
+        /// <para>tvm.pdf, 3.1.4. Standard cell representation:</para>
+        /// <para>
+        /// Byte d1 equals r + 8s + 32l, where 0 ≤ r ≤ 4 is the quantity of cell references contained
+        ///   in the cell, 0 ≤ l ≤ 3 is the level of the cell, and 0 ≤ s ≤ 1 is 1 for
+        ///   exotic cells and 0 for ordinary cells.
+        /// </para>
+        /// <para>Byte d2 equals ⌊b / 8⌋+⌈b / 8⌉, where 0 ≤ b ≤ 1023 is the quantity of data bits in c.</para>
+        /// </remarks>
+        public (byte d1, byte d2) GetDescriptors()
+        {
+            var d1 = 32 * Level + (IsExotic ? 8 : 0) + Refs.Count;
+            var d2 = Math.Ceiling(BitsCount / 8f) + Math.Floor(BitsCount / 8f);
+            return ((byte)d1, (byte)d2);
+        }
 
         public Slice BeginRead()
         {
