@@ -5,9 +5,9 @@ Wrapper around `tonlibjson` library for accessing [Telegram Open Network](https:
 
 **Does not** require TonAPI, TonCenter API, TonKeeper API or any other HTTP API. 
 
-[![NuGet](https://img.shields.io/nuget/v/TonLib.Net.svg?color=blue)](https://www.nuget.org/packages/TonLib.Net/) ![NuGet downloads](https://img.shields.io/nuget/dt/TonLib.NET?color=blue) ![Framework](https://img.shields.io/badge/framework-net6.0-blue) ![Framework](https://img.shields.io/badge/framework-net8.0-blue) ![GitHub License](https://img.shields.io/github/license/justdmitry/TonLib.NET?color=blue) 
+[![NuGet](https://img.shields.io/nuget/v/TonLib.Net.svg)](https://www.nuget.org/packages/TonLib.Net/) ![NuGet downloads](https://img.shields.io/nuget/dt/TonLib.NET) ![.NET 6.0](https://img.shields.io/badge/.NET-6.0-512BD4) ![.NET 8.0](https://img.shields.io/badge/.NET-8.0-512BD4) ![.NET 9.0](https://img.shields.io/badge/.NET-9.0-512BD4) ![GitHub License](https://img.shields.io/github/license/justdmitry/TonLib.NET) 
 
-⚠ For `net6.0` uses `System.Text.Json` package **v8.0.4** (from `net8.0`) - it makes [de]serialization much simpler (because of [Polymorphic serialization](https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/polymorphism)). It only updates `System.Text.Encodings.Web` (v6.0 -> v8.0) as a transitive dependency, which I think is acceptable.
+⚠ For `net6.0` uses `System.Text.Json` package **v8.0.5** (from `net8.0`) - it makes [de]serialization much simpler (because of [Polymorphic serialization](https://learn.microsoft.com/en-us/dotnet/standard/serialization/system-text-json/polymorphism)). It only updates `System.Text.Encodings.Web` (v6.0 -> v8.0) as a transitive dependency, which I think is acceptable.
 
 
 ## Features
@@ -74,9 +74,9 @@ The number of additional dependencies you need depends of what you already have 
 
 ## 3rd-party libraries and dependencies
 
-* Microsoft.Extensions.Logging.Abstractions v6.0.0 / v8.0.0
-* Microsoft.Extensions.Options v6.0.0 / v8.0.0
-* System.Text.Json v8.0.4 for both `net6.0` and `net8.0`
+* Microsoft.Extensions.Logging.Abstractions v6.0.0 / v8.0.0 / v9.0.0
+* Microsoft.Extensions.Options v6.0.0 / v8.0.0 / v9.0.0
+* System.Text.Json v8.0.5 for both `net6.0` and `net8.0`, v9.0.0 for `net9.0`
   * System.Text.Encodings.Web v8.0.0 for `net6.0` as transitive dependency
 
 
