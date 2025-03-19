@@ -16,8 +16,8 @@
     <RepositoryType>git</RepositoryType>
     <PackageTags>ton, toncoin, the-open-network, tonlib, tonlibjson</PackageTags>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <Version>0.23.0</Version>
-    <PackageReleaseNotes>Several changes, see GitHub changelog.</PackageReleaseNotes>
+    <Version>0.23.1</Version>
+    <PackageReleaseNotes>Fix "Sequence contains no elements" exception, see GitHub changelog for details.</PackageReleaseNotes>
     <Description>TonLib (tonlibjson) wrapper for accessing Telegram Open Network lite servers (nodes) via ADNL protocol.</Description>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
