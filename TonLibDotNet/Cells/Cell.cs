@@ -9,13 +9,14 @@ namespace TonLibDotNet.Cells
         public const int MaxBitsCount = 1023;
         public const int MaxRefs = 4;
 
-       public Cell(ReadOnlySpan<byte> content, bool isAugmented, ICollection<Cell>? refs = null)
-        	: this(false, refs != null && refs.Any() ? refs.Max(x => x.Level) : (byte)0, content, isAugmented, refs)
-        {
-        	// Nothing.
-        }
+		public Cell(ReadOnlySpan<byte> content, bool isAugmented, ICollection<Cell>? refs = null)
+	        : this(false, refs != null && refs.Count > 0 ? refs.Max(x => x.Level) : (byte)0, content, isAugmented, refs)
+		{
+			// Nothing.
+		}
 
-        public Cell(bool isExotic, byte level, ReadOnlySpan<byte> content, bool isAugmented, ICollection<Cell>? refs = null)
+
+		public Cell(bool isExotic, byte level, ReadOnlySpan<byte> content, bool isAugmented, ICollection<Cell>? refs = null)
         {
             if (content.Length > MaxContentLength)
             {
