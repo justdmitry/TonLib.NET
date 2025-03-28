@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using TonLibDotNet.Utils;
 
 namespace TonLibDotNet.Samples
 {
@@ -31,6 +32,9 @@ namespace TonLibDotNet.Samples
             var key = await tonClient.CreateNewKey(localPass, mnemonicPass, randomExtra);
             logger.LogInformation("New key: public = {PublicKey}, secret = {Secret}", key.PublicKey, key.Secret);
 
+            var decodedPublicKey = KeyUtils.Instance.ParseEd25519PublicKey(key.PublicKey);
+            logger.LogInformation("Decoded public key (hex): {Value}", Convert.ToHexString(decodedPublicKey).ToLowerInvariant());
+
             var ek = await tonClient.ExportKey(key, localPass);
             logger.LogInformation("Mnemonic for this key is: {Words}", string.Join(" ", ek.WordList));
 
@@ -41,7 +45,8 @@ namespace TonLibDotNet.Samples
             logger.LogInformation("Same key exported with password: {Value}", eek.Data);
 
             var euk = await tonClient.ExportUnencryptedKey(key, localPass);
-            logger.LogInformation("Same key in unencrypted form: {Value}", euk.Data);
+            logger.LogInformation("Same key in unencrypted form (base64): {Value}", euk.Data);
+            logger.LogInformation("Same key in unencrypted form (hex):    {Value}", Convert.ToHexString(Convert.FromBase64String(euk.Data)).ToLowerInvariant());
 
             //// does not work, see https://github.com/ton-blockchain/ton/issues/202
             //// key = await tonClient.ChangeLocalPassword(key, localPass, Convert.ToBase64String(new byte[] { 7, 6, 5 }));
