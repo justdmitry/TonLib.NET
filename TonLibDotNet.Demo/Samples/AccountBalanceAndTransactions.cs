@@ -8,7 +8,7 @@ namespace TonLibDotNet.Samples
         private readonly ITonClient tonClient;
         private readonly ILogger logger;
 
-        private const string account = "EQCD39VS5jcptHL8vMjEXrzGaRcCVYto7HUn4bpAOg8xqB2N"; // TON Foundation wallet
+        private const string account = "Ef8zMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzMzM0vF"; // Elector wallet
 
         public AccountBalanceAndTransactions(ITonClient tonClient, ILogger<AccountBalanceAndTransactions> logger)
         {
@@ -34,7 +34,7 @@ namespace TonLibDotNet.Samples
             var rast = await tonClient.RawGetAccountState(account);
             logger.LogInformation("Acc info via RawGetAccountState(): balance = {Value} nanoton or {Value} TON", rast.Balance, TonUtils.Coins.FromNano(rast.Balance));
 
-            var txs = await tonClient.RawGetTransactions(account, rast.LastTransactionId);
+            var txs = await tonClient.RawGetTransactionsV2(account, rast.LastTransactionId, 5);
             foreach (var item in txs.TransactionsList)
             {
                 if (item.InMsg?.Value > 0)
