@@ -1,14 +1,7 @@
 ﻿namespace TonLibDotNet.Cells
 {
-    public class DictTests
+    public class DictTests(ITestOutputHelper testOutputHelper)
     {
-        private readonly Xunit.Abstractions.ITestOutputHelper outputHelper;
-
-        public DictTests(Xunit.Abstractions.ITestOutputHelper testOutputHelper)
-        {
-            this.outputHelper = testOutputHelper;
-        }
-
         [Fact]
         // From https://docs.ton.org/develop/data-formats/tl-b-types#hashmap
         public void SampleIsOk()
@@ -29,8 +22,8 @@
 
             var boc = new Boc(cell);
 
-            outputHelper.WriteLine("BOC before parsing:");
-            outputHelper.WriteLine(boc.DumpCells());
+            testOutputHelper.WriteLine("BOC before parsing:");
+            testOutputHelper.WriteLine(boc.DumpCells());
 
             var slice = boc.RootCells[0].BeginRead();
             var dict = slice.LoadAndParseDict(8, x => x.LoadByte(), x => x.LoadUShort());
@@ -61,8 +54,8 @@
 
             var boc = new Boc(cell);
 
-            outputHelper.WriteLine("Written BOC:");
-            outputHelper.WriteLine(boc.DumpCells());
+            testOutputHelper.WriteLine("Written BOC:");
+            testOutputHelper.WriteLine(boc.DumpCells());
 
             var base64 = boc.SerializeToBase64();
 
@@ -94,8 +87,8 @@
 
             var boc = new Boc(cell);
 
-            outputHelper.WriteLine("Written BOC:");
-            outputHelper.WriteLine(boc.DumpCells());
+            testOutputHelper.WriteLine("Written BOC:");
+            testOutputHelper.WriteLine(boc.DumpCells());
 
             var base64 = boc.SerializeToBase64();
 

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net6.0;net8.0;net9.0</TargetFrameworks>
+    <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <Platforms>AnyCPU</Platforms>
@@ -9,15 +9,15 @@
     <PackageId>TonLib.Net</PackageId>
     <Title>TonLib (tonlibjson) wrapper</Title>
     <Authors>just_dmitry</Authors>
-    <Copyright>Copyright © Dmitry Popov, 2023-2025</Copyright>
+    <Copyright>Copyright © Dmitry Popov, 2023-2026</Copyright>
     <PackageProjectUrl>https://github.com/justdmitry/TonLib.NET</PackageProjectUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <RepositoryUrl>git@github.com:justdmitry/TonLib.NET.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <PackageTags>ton, toncoin, the-open-network, tonlib, tonlibjson</PackageTags>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
-    <Version>0.24.0</Version>
-    <PackageReleaseNotes>Add `GetTransactionsV2` (thanks @mhbdev).</PackageReleaseNotes>
+    <Version>0.25.0</Version>
+    <PackageReleaseNotes>Update TargetFrameworks to net8 and net10.</PackageReleaseNotes>
     <Description>TonLib (tonlibjson) wrapper for accessing Telegram Open Network lite servers (nodes) via ADNL protocol.</Description>
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
   </PropertyGroup>
@@ -37,22 +37,14 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net6.0'">
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.0" />
-    <PackageReference Include="System.Text.Json" Version="8.0.5" />
-  </ItemGroup>
-
   <ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="8.0.0" />
-    <PackageReference Include="System.Text.Json" Version="8.0.5" />
   </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.0" />
-    <PackageReference Include="System.Text.Json" Version="9.0.0" />
+  <ItemGroup Condition="'$(TargetFramework)' == 'net10.0'">
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.0" />
   </ItemGroup>
 
 </Project>

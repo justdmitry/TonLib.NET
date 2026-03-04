@@ -12,7 +12,7 @@ namespace TonLibDotNet
         private readonly ILogger logger;
         private readonly TonOptions tonOptions;
 
-        private readonly SemaphoreSlim syncRoot = new (1);
+        private readonly SemaphoreSlim syncRoot = new(1);
 
         private IntPtr? client;
         private bool initialized;
@@ -262,7 +262,8 @@ namespace TonLibDotNet
 
                 if (string.IsNullOrEmpty(respText))
                 {
-                    throw new TonClientException(0, "Empty response received");
+                    logger.LogDebug("Empty response received, retrying...");
+                    continue;
                 }
 
                 if (tonOptions.LogTextLimit > 0 && respText.Length > tonOptions.LogTextLimit)
