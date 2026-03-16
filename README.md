@@ -55,8 +55,8 @@ var tonClient = app.Services.GetRequiredService<ITonClient>();
 //   to remember that you already called it.
 await tonClient.InitIfNeeded();
 
-// Use 'Execute' to send requests.
-var lsi = await tonClient.Execute(new LiteServerGetInfo());
+// Get lite server info with an extension method
+var lsi = await tonClient.LiteServerGetInfo();
 logger.LogInformation("Server time: {Now}", lsi.Now);
 ```
 
